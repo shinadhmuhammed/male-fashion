@@ -35,7 +35,9 @@ const logoutAdmin = (req, res, next) => {
 }
 const logouting = (req,res,next) => {
     req.session.destroy()
-    res.redirect('/login')
+    res.redirect('/login') 
+
+    // dahsflklas.
     
     
     
