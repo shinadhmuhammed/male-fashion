@@ -1,0 +1,109 @@
+<%- include('../layout/dashhead') %>
+<%- include('../layout/header.ejs') %>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+      <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+      <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+    </ol>
+    <h6 class="font-weight-bolder mb-0">Users</h6>
+  </nav>
+  <div class="table-responsive">
+    <% if (users.length) { %>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr style="text-align: center;">
+                <th>NO</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Verified</th>
+                <th>Actions</th> 
+            </tr>
+        </thead>
+        <tbody style="text-align: center;">
+            <% users.forEach((user, i) => { %>
+                <tr>
+                    <td><%= i + 1 %></td>
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.mobile %></td>
+                    <td>
+                        <% if (user.is_verified === 0) { %>
+                            Not verified
+                        <% } else { %>
+                            Verified
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (user.is_blocked) { %>
+                            <button onclick="unblockUser('<%= user._id %>')">Unblock</button>
+                        <% } else { %>
+                            <button onclick="blockUser('<%= user._id %>')">Block</button>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <% } else { %>
+    <p>No users found.</p>
+    <% } %>
+</div>
+
+
+<script>
+    function blockUser(userId){
+        fetch(`/admin/blockuser/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+            
+        },
+    })
+    .then(response => {
+        if (response.status === 200) {
+         
+            console.log(`User with ID ${userId} blocked successfully.`);
+        } else {
+          
+            console.error(`Error blocking user with ID ${userId}`);
+        }
+    })
+    .catch(error => {
+       
+        console.error('Network error:', error);
+    });
+}
+
+
+    function unblockUser(userId){
+        fetch(`/admin/unblockuser/${userId}`, {
+        method: 'GET', 
+        headers: {
+            'Content-Type': 'application/json'
+            
+        },
+    })
+    .then(response => {
+        if (response.status === 200) {
+            
+            console.log(`User with ID ${userId} unblocked successfully.`);
+        } else {
+            
+            console.error(`Error unblocking user with ID ${userId}`);
+        }
+    })
+    .catch(error => {
+        console.error('Network error:', error);
+    });
+}
+    
+</script>
+
+
+
+
+
+
+<%- include( '../layout/footer') %>

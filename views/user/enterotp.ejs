@@ -1,0 +1,27 @@
+<%- include('../layout/header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+</head>
+<body>
+  
+    <div class="container">
+        <h2>Enter OTP</h2>
+        
+        <form action="/otpenter" method="post">
+            <div class="form-group">
+                <label for="otp">Enter OTP:</label>
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+   
+</body>
+</html>
+
+
+
+<%- include('../layout/footer') %>

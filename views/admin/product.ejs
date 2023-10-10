@@ -1,0 +1,41 @@
+<%- include('../layout/dashhead') %>
+<%- include('../layout/header') %>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+    <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+    <li class="breadcrumb-item text-sm text-dark active" aria-current="page">dashboard</li>
+  </ol>
+  <h6 class="font-weight-bolder mb-0">Products</h6>
+</nav>
+
+<div class="container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Product Name</th>
+        <th scope="col">Product Image</th>
+        <th scope="col">Product Price</th>
+        <th scope="col">Product Category</th>
+        <th scope="col">Product Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach((product, index) => { %>
+        <tr>
+          <td><%= product.productName %></td>
+          <td><img src="<%= product.productImage %>" alt="Product Image" width="100"></td>
+
+          <td><%= product.productPrice %></td>
+          <td><%= product.productCategory %></td>
+          <td><%= product.productDescription %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <a href="/admin/form" class="btn btn-primary add-user" id="addUser">Add Product</a>
+</div>
+</form>
+</body>
+</html>

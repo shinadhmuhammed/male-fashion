@@ -1,0 +1,126 @@
+
+<%- include('../layout/header') %>
+
+
+<div class="center form">
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <!-- <div class="card-header bg-primary text-white"> -->
+                    <!-- <h1 class="mb-0">User Registration</h1> -->
+                <!-- </div> -->
+                <div class="card-body">
+                    <form action="/register" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mno" class="form-label">Mobile Number</label>
+                            <input type="number" class="form-control" id="mno" name="mno" placeholder="Mobile Number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                        </div>
+                        <!-- <a href="/" class="btn btn-md btn-block btn-danger"></a>
+                        <i class="fab fa-google me-1"></i>Go Back</a> -->
+                        <button type="submit" class="text-center btn btn-success ">Register</button>
+                    </form>
+                    <div class="member mb-4">
+                        Already a member? <a href="/login">Login here</a>
+                    </div>
+
+                    <% if (typeof message !== 'undefined') { %>
+                        <p class="mt-3 text-success"><%= message %></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<style>
+    /* Container styles */
+    .center.form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 100;
+      padding: 0;
+      background-color: rgb(93,90, 90);
+    }
+  
+    /* Form styles */
+    .container {
+      background-color:white(75, 52, 52);
+      padding: 50px 50px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  
+    .mb-3 {
+      margin-bottom: 35px;
+    }
+  
+    .form-label {
+      font-weight: bold;
+    }
+  
+    .form-control {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+  
+    /* Button styles */
+    .btn-success {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  
+    .btn-success:hover {
+      background-color: #1e7e34;
+    }
+  
+    /* Member link styles */
+    .member {
+      text-align: center;
+      margin-top: 15px;
+    }
+  
+    .member a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  
+    .member a:hover {
+      text-decoration: underline;
+    }
+  
+    /* Message styles */
+    .text-success {
+      color: #28a745;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+  
+
+<!-- Include footer -->
+<%- include('../layout/footer') %>

@@ -1,0 +1,88 @@
+
+<%- include( '../layout/header') %>
+
+<div class="container">
+  <div class="py-5">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h1 class="fs-2">Edit <%= user.name %></h1>
+        </div>
+        <form
+          id="edituserform"
+          method="POST"
+          action="/admin/users/<%= user.id %>"
+          novalidate
+        >
+          <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              value="<%= user.name %>"
+              required
+            />
+            <div class="invalid-feedback">Please enter your name.</div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              value="<%= user.email %>"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="mobile" class="form-label">Mobile Number:</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="mobile"
+              name="phone"
+              pattern="[0-9]{10}"
+              value="<%= user.mobile %>"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter a valid mobile number.
+            </div>
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="is_varified" value="1" <%= user.is_varified ? 'checked' : '' %> id="flexRadioDefault1">
+            <label class="form-check-label" for="flexRadioDefault1">
+              Verify
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="is_varified" value="0" <%= user.is_varified ? 'checked' : '' %> id="flexRadioDefault2">
+            <label class="form-check-label" for="flexRadioDefault2">
+              Not verify
+            </label>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="/admin/dashboard" class="btn btn-outline-secondary"
+              >Back to Dashboard</a
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<%- include( '../layout/footer') %>
