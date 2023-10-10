@@ -1,7 +1,7 @@
 const { render } = require('ejs');
 const {User} = require('../models/userModel');
 const bcrypt = require('bcrypt')
-const Products=require('../controlers/userController')
+const Users=require('../controlers/userController')
 const {Product}=require('../models/productmodel');
 const multer=require('multer')
 const storage=multer.memoryStorage();
@@ -91,25 +91,34 @@ const addProducts=async(req,res)=>{
 }
 
 
+
 const addProduct = async (req, res) => {
-    const { productName, productPrice, productCategory, productDescription } = req.body;
-    const productImage = req.file;  
-    console.log(productName,productCategory)
+    console.log(req.body);
+    console.log(req.file)
     try {
         const newProduct = new Product({
-            productName,
-            productPrice,
-            productCategory,
-            productDescription,
-            productImage,  
+            productName: req.body.productName,
+            productImage: req.file.filename, 
+            productPrice: req.body.productPrice,
+            productDescription: req.body.productDescription,
+            productCategory: req.body.productCategory,
         });
-        await newProduct.save();
-        res.redirect('/admin/products');
+
+        const savedProduct = await newProduct.save();
+        if (savedProduct) {
+            console.log('Product saved successfully:', savedProduct);
+            res.redirect('/admin/products');
+        } else {
+            console.error('Failed to save product.');
+            res.render('admin/addproduct', { error: "Error adding the product" });
+        }
     } catch (error) {
-        console.error(error);
+        console.error('Error adding product:', error);
         res.render('admin/addproduct', { error: "Error adding the product" });
     }
 }
+
+
 
 
 
@@ -192,7 +201,7 @@ const blockUser = async (req, res) => {
 
     
 
-    
+
 // const deleteUser = async (req,res)=>{
 //     try{
 //         const { userId } = req.query

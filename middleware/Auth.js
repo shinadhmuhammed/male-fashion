@@ -1,3 +1,15 @@
+const isLogged = (req, res, next) => {
+    if (req.session.user) {
+        req.user = req.session.user
+        next()
+    } 
+    else {
+        console.log(7)
+        res.redirect('/login')
+    }
+}
+
+
 const isLogedout = (req, res, next) => {
     if (!req.session.user) {
        next()
@@ -6,22 +18,13 @@ const isLogedout = (req, res, next) => {
     }
 }
 
-const isLogged = (req, res, next) => {
-    if (req.session.user) {
-        req.user = req.session.user
-        next()
-    } 
-    else {
-        res.redirect('/login')
-    }
-}
-
 const loggedadmin = (req, res, next) => {
     if(req.session.admin){
-        req.admin = req.session.user
-        next()
+        req.admin = req.session.admin
+       next()
     } 
     else {
+        console.log('ss')
         res.redirect('/admin/login')
     }
 }
@@ -33,11 +36,12 @@ const logoutAdmin = (req, res, next) => {
         res.redirect('/admin/dashboard')
     }
 }
+
 const logouting = (req,res,next) => {
     req.session.destroy()
     res.redirect('/login') 
 
-    // dahsflklas.
+   
     
     
     

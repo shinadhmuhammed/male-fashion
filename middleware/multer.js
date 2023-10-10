@@ -1,29 +1,25 @@
-const multer=require('multer')
+const multer = require('multer');
 const path=require('path')
 
 const FILE_TYPE_MAP={
-    "image/png": "png",
-    "image/jpeg": "jpeg",
-    "image/jpg": "jpg",
-    "image/avif": "avif",
-};
+    'image/png':'png',
+    'image/jpeg':'jpeg',
+    'image/jpg':'jpg',
+    'image/avif':'avif'
+}
 
-const storage = multer.diskStorage({
+
+const destinationPath = path.join(__dirname, '../public/malefashion-master/images');
+
+var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const isValid = FILE_TYPE_MAP[file.mimetype];
-        let uploadError = new Error("invalid image type");
-
-        if (isValid) {
-            uploadError = null;
-        }
-        cb(uploadError, path.join(__dirname, "../public/malefashion-master/img"));
+        cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
-        const fileName = Date.now() + "_" + file.originalname;
-        cb(null, fileName);
-    },
+        cb(null, file.originalname);
+    }
 });
 
-const store=multer({storage:storage})
+module.exports = multer({ storage: storage });
 
-module.exports=store;
+

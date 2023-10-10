@@ -1,4 +1,4 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 
 
 const productSchema = new mongoose.Schema({
@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     productImage: {
-        type: Buffer, 
+        type: String, 
         required: true,
     },
     productPrice: {

@@ -2,7 +2,8 @@ const express = require('express')
 const admin_route = express.Router()
 const adminController = require('../controlers/adminController')
 const Auth = require("../middleware/Auth")
-const store=require('../middleware/multer')
+const uploadMulter=require('../middleware/multer')
+
 
 
 
@@ -20,7 +21,7 @@ admin_route.get('/form',Auth.loggedadmin,adminController.form)
 
 admin_route.get('/addproduct',Auth.loggedadmin,adminController.addProducts)
 
-admin_route.post('/addproduct', Auth.loggedadmin, store.single('productImage'), adminController.addProduct);
+admin_route.post('/addproduct',Auth.loggedadmin,uploadMulter.single('productImage'),adminController.addProduct);
 
 
 admin_route.get('/users',Auth.loggedadmin,adminController.user)

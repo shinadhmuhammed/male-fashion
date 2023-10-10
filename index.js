@@ -8,13 +8,14 @@ const mongoose = require("mongoose")
 const nocache = require('nocache')
 const express = require('express')
 const app = express();
+const morgan=require('morgan')
 
 
 const otp = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
 app.use(express.urlencoded({ extended: true }));
-// console.log('Generated OTP:', otp);
 app.set('view engine', 'ejs')
 app.use(nocache())
+// app.use(morgan('tiny'))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
     secret:"asdfghjkloiuyyjdsh",

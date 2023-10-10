@@ -8,7 +8,6 @@
   </ol>
   <h6 class="font-weight-bolder mb-0">Products</h6>
 </nav>
-
 <div class="container">
   <table class="table table-bordered">
     <thead>
@@ -16,19 +15,21 @@
         <th scope="col">Product Name</th>
         <th scope="col">Product Image</th>
         <th scope="col">Product Price</th>
-        <th scope="col">Product Category</th>
         <th scope="col">Product Description</th>
+        <th scope="col">Product Category</th>
       </tr>
     </thead>
     <tbody>
       <% products.forEach((product, index) => { %>
         <tr>
           <td><%= product.productName %></td>
-          <td><img src="<%= product.productImage %>" alt="Product Image" width="100"></td>
+          <td>
+            <img src="/malefashion-master/images/<%= product.productImage %>"  width="100">
 
+          </td>
           <td><%= product.productPrice %></td>
-          <td><%= product.productCategory %></td>
           <td><%= product.productDescription %></td>
+          <td><%= product.productCategory %></td>
         </tr>
       <% }) %>
     </tbody>
@@ -36,6 +37,3 @@
 
   <a href="/admin/form" class="btn btn-primary add-user" id="addUser">Add Product</a>
 </div>
-</form>
-</body>
-</html>

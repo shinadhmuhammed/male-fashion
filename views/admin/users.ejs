@@ -64,7 +64,7 @@
     .then(response => {
         if (response.status === 200) {
          
-            console.log(`User with ID ${userId} blocked successfully.`);
+            window.location = '/admin/users';
         } else {
           
             console.error(`Error blocking user with ID ${userId}`);
@@ -86,9 +86,10 @@
         },
     })
     .then(response => {
+        console.log(response.status,"statuss");
         if (response.status === 200) {
             
-            console.log(`User with ID ${userId} unblocked successfully.`);
+            window.location = '/admin/users';
         } else {
             
             console.error(`Error unblocking user with ID ${userId}`);
