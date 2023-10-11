@@ -140,7 +140,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Home</a>
+                            <a href="./index">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -338,47 +338,59 @@
                         </div>
                     </div>
                     
+                    
                     <div class="row">
-                        <% products.forEach((product) => { %>
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
-                                <!-- <div class="product__item__pic set-bg" data-setbg="<%= product.imageUrl[0].url %>"> -->
-                                    <ul class="product__hover">
-                                        <li><a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a></li>
-                                        <li><a href="#"><img src="malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a>
-                                        </li>
-                                        <li><a href="#"><img src="malefashion-master/img/icon/search.png" alt=""></a></li>
-                                    </ul>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                              <div class="product__item">
+                                <% if (products.length > 0) { %>
+                                    <% products.forEach((product) => { %>
+                                      <% if (productImage.length > 0) { %>
+                                           <% productImage.forEach((image) => { %>
+                                      <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= image %>" >
+                                    
+                                  <ul class="product__hover">
+                                    <li><a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a></li>
+                                    <li><a href="#"><img src="malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                    <li><a href="#"><img src="malefashion-master/img/icon/search.png" alt=""></a></li>
+                                  </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><%= product.productName %></h6>
-                                    <p><%= product.productDescription %></p>
-                                    <a href="#" class="add-cart">+ Add To Cart</a>
-                                    <div class="rating">
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </div>
-                                    <h5>$<%= product.productPrice.toFixed(2) %></h5>
-                                    <div class="product__color__select">
-                                        <label for="pc-4">
-                                            <input type="radio" id="pc-4">
-                                        </label>
-                                        <label class="active black" for="pc-5">
-                                            <input type="radio" id="pc-5">
-                                        </label>
-                                        <label class="grey" for="pc-6">
-                                            <input type="radio" id="pc-6">
-                                        </label>
-                                    </div>
+                                  <h6><%= product.productName %></h6>
+                                  <p><%= product.productDescription %></p>
+                                  <a href="#" class="add-cart">+ Add To Cart</a>
+                                  <div class="rating">
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                  </div>
+                                  <h5>$<%= product.productPrice %></h5>
+                                  <div class="product__color__select">
+                                    <label for="pc-4">
+                                      <input type="radio" id="pc-4">
+                                    </label>
+                                    <label class="active black" for="pc-5">
+                                      <input type="radio" id="pc-5">
+                                    </label>
+                                    <label class="grey" for="pc-6">
+                                      <input type="radio" id="pc-6">
+                                    </label>
+                                  </div>
                                 </div>
+                              </div>
                             </div>
-                        </div>
-                        <% }); %>
+                            <% }); %>
+                            <% } %>
+                          <% }) %>
+                        <% } else { %>
+                          <p>No products available.</p>
+                        <% } %>
                     </div>
+                      
                     
+
+                      
                         <!-- <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item sale">
                                 <div class="product__item__pic set-bg" data-setbg="malefashion-master/img/product/product-3.jpg">
@@ -415,6 +427,8 @@
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="malefashion-master/img/product/product-4.jpg">

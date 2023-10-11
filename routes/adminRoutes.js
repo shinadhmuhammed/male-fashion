@@ -10,27 +10,25 @@ const uploadMulter=require('../middleware/multer')
 
 
 admin_route.get('/login', Auth.logoutAdmin, adminController.loadAdmin)
-
 admin_route.post('/login', Auth.logoutAdmin,  adminController.adminValid)
-
 admin_route.get('/dashboard', Auth.loggedadmin, adminController.userDashboard)
 
+
+
 admin_route.get('/products',Auth.loggedadmin,adminController.products)
-
 admin_route.get('/form',Auth.loggedadmin,adminController.form)
-
 admin_route.get('/addproduct',Auth.loggedadmin,adminController.addProducts)
+admin_route.post('/addproduct',Auth.loggedadmin,uploadMulter.array('productImage',5),adminController.addProduct);
+admin_route.delete('/deleteproduct/:productId',adminController.deleteProduct)
+admin_route.get('/editproduct/:productId',Auth.loggedadmin,adminController.editProductForm)
+admin_route.post('/editproduct/:productId', Auth.loggedadmin, uploadMulter.array('productImage', 5), adminController.editProduct);
 
-admin_route.post('/addproduct',Auth.loggedadmin,uploadMulter.single('productImage'),adminController.addProduct);
+
 
 
 admin_route.get('/users',Auth.loggedadmin,adminController.user)
-
 admin_route.get('/blockuser/:userId', Auth.loggedadmin, adminController.blockUser);
-
 admin_route.get('/unblockuser/:userId',Auth.loggedadmin,adminController.unblockUser)
-
-
 
 
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)

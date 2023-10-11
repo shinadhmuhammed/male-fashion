@@ -211,9 +211,12 @@ const loadindex=async(req,res)=>{
 
 const loadshop = async (req, res) => {
     try {
-        const products = await Product.find({ listStatus: true, deleteStatus: false });
-        console.log("Products:", products); 
-        res.render("user/shop", { products }); 
+        console.log('Query Criteria:', { listStatus: true, deleteStatus: false });
+        const products = await Product.find();
+        const productImage = products.map(product => product.productImage[0].filename);
+        res.render("user/shop", { products,productImage }); 
+        
+        console.log('products',products,productImage)
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while loading the shop.");

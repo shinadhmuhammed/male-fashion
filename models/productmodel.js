@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
-
 const productSchema = new mongoose.Schema({
     productName: {
         type: String,
         required: true,
     },
-    productImage: {
-        type: String, 
-        required: true,
-    },
+    productImage: [{
+        filename: String,
+        data: Buffer,
+        contentType: String,
+    }],
     productPrice: {
         type: Number,
         required: true,
@@ -22,8 +22,17 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    // listStatus: {
+    //     type: Boolean,
+    //     required: true,
+    // },
+    // deleteStatus: {
+    //     type: Boolean,
+    //     required: true,
+    // },
 });
 
 module.exports = {
     Product: mongoose.model('Product', productSchema),
 };
+

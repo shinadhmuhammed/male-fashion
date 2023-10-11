@@ -4,7 +4,6 @@ const isLogged = (req, res, next) => {
         next()
     } 
     else {
-        console.log(7)
         res.redirect('/login')
     }
 }
@@ -18,16 +17,17 @@ const isLogedout = (req, res, next) => {
     }
 }
 
+
 const loggedadmin = (req, res, next) => {
     if(req.session.admin){
         req.admin = req.session.admin
        next()
     } 
     else {
-        console.log('ss')
         res.redirect('/admin/login')
     }
 }
+
 
 const logoutAdmin = (req, res, next) => {
     if(!req.session.admin){
@@ -36,6 +36,7 @@ const logoutAdmin = (req, res, next) => {
         res.redirect('/admin/dashboard')
     }
 }
+
 
 const logouting = (req,res,next) => {
     req.session.destroy()

@@ -68,6 +68,8 @@ const userDashboard = async (req,res)=>{
     }
 }
 
+ /////////////////products////////////////////////
+
 
 const products = async (req, res) => {
     try {
@@ -80,11 +82,10 @@ const products = async (req, res) => {
 }
 
 
-
-
 const form=async(req,res)=>{
     res.render('admin/addproduct')
 }
+
 
 const addProducts=async(req,res)=>{
     res.render('admin/addproduct')
@@ -94,11 +95,18 @@ const addProducts=async(req,res)=>{
 
 const addProduct = async (req, res) => {
     console.log(req.body);
-    console.log(req.file)
+    console.log(req.files);
+
     try {
+        const productImages = req.files.map(file => ({
+            filename: file.originalname, 
+            data: file.buffer, 
+            contentType: file.mimetype 
+        }));
+
         const newProduct = new Product({
             productName: req.body.productName,
-            productImage: req.file.filename, 
+            productImage: productImages, 
             productPrice: req.body.productPrice,
             productDescription: req.body.productDescription,
             productCategory: req.body.productCategory,
@@ -120,13 +128,82 @@ const addProduct = async (req, res) => {
 
 
 
+const deleteProduct = async (req, res) => {
+    const productId = req.params.productId;
+  
+    try {
+      const deletedProduct = await Product.findByIdAndRemove(productId);
+  
+      if (deletedProduct) {
+        res.status(200).send("Product deleted successfully");
+      } else {
+        res.status(404).send("Product not found");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.status(500).send("An error occurred while deleting the product");
+    }
+  };
+  
 
 
-// const user=async(req,res)=>{
-//     res.render('admin/users')
-// }
+  
+  const editProductForm = async (req, res) => {
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+  
+    if (!product) {
+      res.status(404).send('Product not found');
+      return;
+    }
+  
+    res.render('admin/editproduct', { product });
+  };
 
 
+
+
+  
+  
+  const editProduct = async (req, res) => {
+    const productId = req.params.productId;
+    try {
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            res.status(404).send('Product not found');
+            return;
+        }
+
+        product.productName = req.body.productName;
+        product.productPrice = req.body.productPrice;
+        product.productDescription = req.body.productDescription;
+        product.productCategory = req.body.productCategory;
+
+        if (req.files && req.files.length > 0) {
+            product.productImage = req.files.map(file => ({
+                filename: file.originalname,
+                data: file.buffer,
+                contentType: file.mimetype
+            }));
+        }
+
+        const updatedProduct = await product.save();
+
+        if (updatedProduct) {
+            res.redirect('/admin/products');
+        } else {
+            res.render('admin/editproduct', { product, error: "Error updating the product" });
+        }
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.render('admin/editproduct', { productId, error: "Error updating the product" });
+    }
+};
+
+
+
+////////////////USERS///////////////////////////
 
 const user=async(req,res)=>{
     const {query}=req.query;
@@ -202,54 +279,8 @@ const blockUser = async (req, res) => {
     
 
 
-// const deleteUser = async (req,res)=>{
-//     try{
-//         const { userId } = req.query
-//         const deleteUser = await User.findByIdAndDelete(userId)
 
 
-//         if(!deleteUser){
-           
-//             res.render('admin/dashboard',{message:"user not found"})
-//         }
-//         if(deleteUser){
-         
-//             return res.redirect('/admin/dashboard')
-//         }
-
-
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
-
-// const editerload = async(req,res) =>{
-//     const { id } = req.params
-//     try{
-//         const user = await User.findById(id)
-//         res.render('admin/userEdit', { user })    
-
-//     } catch(error){
-//         console.log(error);
-//     }
-// }
-
-// const updateUser = async (req,res) => {
-//     const { id } = req.params
-//     const { name, email, mobile, is_varified } = req.body
-//     try{
-//         await User.findByIdAndUpdate(id, {$set: {
-//             name,
-//             email,
-//             mobile,
-//             is_varified
-//         }})
-
-//         res.redirect('/admin/dashboard')
-//     } catch(erro){
-//         console.log(erro);
-//     }
-// }
 
 const logout = (req, res) => {
     req.session.destroy()
@@ -265,6 +296,9 @@ module.exports = {
     products,
     addProducts,
     addProduct,
+    deleteProduct,
+    editProductForm,
+    editProduct,
     user,
     blockUser,
     unblockUser,

@@ -20,7 +20,7 @@ user_route.post('/otpenter', isLogedout, userController.verifyOtp)
 
 
 user_route.get('/',Auth.checkinguseroradmin)
-// user_route.post('/logout',Auth.logouting)
+user_route.post('/logout',Auth.logouting)
 
 
 
