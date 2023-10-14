@@ -1,0 +1,21 @@
+
+<%- include('../layout/dashhead') %>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Category</title>
+</head>
+<body>
+  
+  
+  <form method="POST" action="/admin/addcategory">
+   <p> <label for="CategoryName">Category Name:</label>
+    <input type="text" id="CategoryName" name="CategoryName" required></p>
+    <button type="submit">Add Category</button>
+  </form>
+  
+  
+</body>
+</html>

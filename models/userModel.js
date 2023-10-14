@@ -1,44 +1,50 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        require:true
+    name: {
+        type: String,
+        required: true,
     },
-    email:{
-        type:String,
-        require:true
+    email: {
+        type: String,
+        required: true,
     },
-    mobile:{
-        type:String,
-        require:true
+    mobile: {
+        type: String,
+        required: true,
     },
-    password:{
-        type:String,
-        require:true
+    password: {
+        type: String,
+        required: true,
+        validate:{
+            validator:function(value){
+                return value.length >=6;
+            },
+            message:"password must be at least 6 characters long",
+        },
     },
-    is_admin:{
-        type:Number,
-        default:0
+    is_admin: {
+        type: Number,
+        default: 0,
     },
-    is_varified:{
-        type:Number,
-        default:0
-    },
-    otp:{
-        type:String,
-        default:null
-    },
-    is_blocked: { 
+    is_verified: {
         type: Boolean,
-        default: false 
-    }
-})
+        default: false,
+    },
+    is_blocked: {
+        type: Boolean,
+        default: false,
+    },
+    otp: {
+        type: String,
+    },
+    otpTimestamp: {
+        type: Date,
+    },
+});
 
-
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = {
-    User
+    User,
 };
- 

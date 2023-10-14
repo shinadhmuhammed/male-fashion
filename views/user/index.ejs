@@ -28,6 +28,8 @@
                 </ul>
             </div>
         </div>
+       
+
         <div class="offcanvas__nav__option">
             <a href="#" class="search-switch"><img src="/malefashion-master/img/icon/search.png" alt=""></a>
             <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
@@ -42,35 +44,8 @@
     <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
-    <header class="header">
-        <div class="header__top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-7">
-                        <div class="header__top__left">
-                            <p>Free shipping, 30-day return or refund guarantee.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-5">
-                        <div class="header__top__right">
-                            <div class="header__top__links">
-                                <a href="#">Sign in</a>
-                                <a href="#">FAQs</a>
-                            </div>
-                            <div class="header__top__hover">
-                                <span>Usd <i class="arrow_carrot-down"></i></span>
-                                <ul>
-                                    <li>USD</li>
-                                    <li>EUR</li>
-                                    <li>USD</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="container">
+             
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
@@ -102,7 +77,9 @@
                         <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
                         <a href="#"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
                         <div class="price">$0.00</div>
+                        <button id="logoutButton" type="button">Logout</button>
                     </div>
+                    
                 </div>
             </div>
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
@@ -427,9 +404,29 @@
 
 
 
-<form action="/logout" method="post" class="d-grid">
-    <button type="submit" class="">Logout</button>
-</form>
+
+
+<script>
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      fetch('/logout', {
+        method: 'POST', 
+        credentials: 'same-origin' 
+      })
+      .then(function(response) {
+        if (response.status === 200) {
+          window.location.href = '/login';
+        } else {
+          console.error('Logout failed');
+        }
+      })
+      .catch(function(error) {
+        console.error('Logout request failed:', error);
+      });
+    });
+  </script>
+
+
+
 <style>
     .btn.btn-warning {
         font-size: 18px;

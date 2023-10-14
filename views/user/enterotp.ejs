@@ -10,10 +10,16 @@
 <html>
 <head>
     <style>
-        /* Container styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
         .container {
             max-width: 400px;
-            margin: 0 auto;
             padding: 20px;
             background-color: #f4f4f4;
             border: 1px solid #ddd;
@@ -21,14 +27,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Header styles */
         h2 {
             font-size: 24px;
             text-align: center;
             margin-bottom: 20px;
         }
 
-        /* Form styles */
         .form-group {
             margin-bottom: 20px;
         }
@@ -45,8 +49,8 @@
             border-radius: 3px;
             font-size: 16px;
         }
-
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -57,24 +61,20 @@
                 <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">resend otp</button>
         </form>
+        <% 
+        if(typeof message !== 'undefined'){ 
+            %>
+                <p style="color: rgb(174, 0, 0);"><%= message%> </p>
+            <%
+        }
+      %>
     </div>
 </body>
 </html>
 
 
-
-    <div class="container">
-        <h2>Enter OTP</h2>
-        
-        <form action="/otpenter" method="post">
-            <div class="form-group">
-                <label for="otp">Enter OTP:</label>
-                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
 
    
 </body>

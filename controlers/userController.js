@@ -5,7 +5,9 @@ const session = require("express-session")
 const generateOtp=require('otp-generator')
 const nodemailer=require('nodemailer')
 const {Product}=require('../models/productmodel');
+const {Category}=require('../models/categorymodel')
 const productmodel = require('../models/productmodel');
+const mongoose=require('mongoose')
 
 
 
@@ -33,41 +35,62 @@ const loadRegister = async(req,res)=>{
     }
 }
 
-//user registration 
+/////////////////////////user registration/////////////////////////////////////
 let nname
 let eemail
 let ppassword
 let mobile
 
 
+
+
 const insertUser = async (req, res) => {
     try {
         const { name, email, password, mno } = req.body;
 
-        nname = name,
-        eemail=email,
-        ppassword=password,
-        mobile=mno
+        // Validate the 'name' field
+        if (!/^[A-Za-z]+$/.test(name)) {
+            return res.render('user/registration', { message: 'Name can only contain alphabetic characters.' });
+        }
 
+        // Validate the 'email' field
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.render('user/registration', { message: 'Invalid email format.' });
+        }
+
+        if (password.length < 6) {
+            return res.render('user/registration', { message: 'Password must be at least 6 characters long.' });
+        }
+
+        nname = name;
+        eemail = email;
+        mobile = mno;
+        ppassword=password
         try {
+            
             const spassword = await securepassword(password);
 
-          
             const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return res.render('user/registration', { message: 'User with this email already exists.' });
             }
 
-        
-            const otp = generateOTP(); 
-            await sendOtpMail(email, otp); 
+            const otp = generateOTP();
+            await sendOtpMail(email, otp);
             req.session.saveOtp = otp;
-            console.log(otp)
+            console.log(otp);
 
-           
-               
-                res.redirect(`/showOtp/${eemail}/${otp}`);
             
+            const newUser = new User({
+                name: nname,
+                email: eemail,
+                password: spassword, 
+                mobile: mobile,
+            });
+
+            await newUser.save();
+
+            res.redirect(`/showOtp/${eemail}/${otp}`);
         } catch (error) {
             console.log(error.message);
         }
@@ -75,6 +98,9 @@ const insertUser = async (req, res) => {
         console.log(error.message);
     }
 };
+
+
+
 
 
 
@@ -134,8 +160,7 @@ const verifyOtp = async (req, res) => {
             password: ppassword,
             mobile: mobile,
         });
-        const savedUser = await user.save();
-        res.render('user/login');
+        res.render('user/login',{message:'user signup successfully'});
     } else {
         res.render('user/enterotp', { message: 'Invalid OTP, please try again.' });
     }
@@ -146,6 +171,10 @@ const verifyOtp = async (req, res) => {
 
 
 
+
+
+/////////////////////////login/////////////////////////////
+
 const loadlogin = async(req,res)=>{
     try{
         res.render('user/login')
@@ -155,25 +184,26 @@ const loadlogin = async(req,res)=>{
     }
 }
 
-
-
 const userValid = async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await User.findOne({ email });
-        
+
         if (!user) {
             console.log("User not found in the database");
             return res.render('user/login', { message: "User not found" });
         }
+
+        const storedPassword = user.password; 
 
         const is_blocked = user.is_blocked;
 
         if (is_blocked === true) {
             res.render('user/login');
         } else {
-            const isMatch =  bcrypt.compare(password, user.password);
+            const isMatch = await bcrypt.compare(password, storedPassword); 
+            console.log('Password comparison result:', isMatch);
 
             if (!isMatch) {
                 console.log("Wrong password");
@@ -195,6 +225,9 @@ const userValid = async (req, res) => {
 
 
 
+
+//////////////////Home page/////////////////////////
+
 const loadHome = async (req, res) => {
     try {
         const user = await User.findById(req.user)
@@ -209,21 +242,24 @@ const loadindex=async(req,res)=>{
 }
 
 
+
 const loadshop = async (req, res) => {
     try {
-        console.log('Query Criteria:', { listStatus: true, deleteStatus: false });
         const products = await Product.find();
-        const productImage = products.map(product => product.productImage[0].filename);
-        res.render("user/shop", { products,productImage }); 
+        const categories = await Category.find(); 
+        const productImages = products.map(product => product.productImage.map(image => image.filename));
+        res.render("user/shop", { products, productImages, categories }); 
         
-        console.log('products',products,productImage)
+        console.log('products', products, productImages,Category);
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while loading the shop.");
     }
 }
 
-
+const zoom=async(req,res)=>{
+    res.render('user/zoom')
+}
 
 
 
@@ -241,9 +277,11 @@ module.exports = {
     insertUser,
     showOtp,
     verifyOtp,
+    // resendOtp,
     loadlogin,
     loadindex,
     loadshop,
+    zoom,
     userValid,
     loadHome,
     logout,

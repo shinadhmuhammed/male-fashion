@@ -25,10 +25,16 @@ admin_route.post('/editproduct/:productId', Auth.loggedadmin, uploadMulter.array
 
 
 
-
 admin_route.get('/users',Auth.loggedadmin,adminController.user)
 admin_route.get('/blockuser/:userId', Auth.loggedadmin, adminController.blockUser);
 admin_route.get('/unblockuser/:userId',Auth.loggedadmin,adminController.unblockUser)
+
+
+
+admin_route.get('/category',Auth.loggedadmin,adminController.categories)
+admin_route.get('/categories',Auth.loggedadmin,adminController.categori)
+admin_route.get('/addcategories',Auth.loggedadmin,adminController.addcategories)
+admin_route.post('/addcategory',Auth.loggedadmin,adminController.addcategory)
 
 
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)

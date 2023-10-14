@@ -1,0 +1,36 @@
+<%- include('../layout/dashhead') %>
+<%- include('../layout/header') %>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+      <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+      <li class="breadcrumb-item text-sm text-dark active" aria-current="page">dashboard</li>
+    </ol>
+    <h6 class="font-weight-bolder mb-0">Category</h6>
+  </nav>
+
+  <div class="row">
+    <div class="col-lg-10 m-auto">
+        <div class="table-container">
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Category Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% categories.forEach(category => { %>
+                        <tr>
+                            <td><%= category.category %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+ <a href="/admin/categories" class="btn btn-primary add-user" id="addUser">Add Category</a>

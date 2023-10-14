@@ -22,14 +22,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // listStatus: {
-    //     type: Boolean,
-    //     required: true,
-    // },
-    // deleteStatus: {
-    //     type: Boolean,
-    //     required: true,
-    // },
 });
 
 module.exports = {

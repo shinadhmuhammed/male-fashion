@@ -3,6 +3,7 @@ const {User} = require('../models/userModel');
 const bcrypt = require('bcrypt')
 const Users=require('../controlers/userController')
 const {Product}=require('../models/productmodel');
+const {Category} = require('../models/categorymodel');
 const multer=require('multer')
 const storage=multer.memoryStorage();
 const upload=multer({storage})
@@ -16,6 +17,8 @@ const securepassword = async(password)=>{
         console.log(error.message);
     }
 }
+
+
 const loadAdmin = async(req,res)=>{
     try{
         res.render('admin/adminLogin')
@@ -276,11 +279,47 @@ const blockUser = async (req, res) => {
         }
     };
 
+
+    ////////////////////////Category////////////////////////////////
+    
+    const categories = async (req, res) => {
+        try {
+            const categories = await Category.find({});
+            res.render('admin/category', { categories: categories }); 
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error occurred");
+        }
+    }
     
 
 
+    const categori=async(req,res)=>{
+            res.render('admin/addcategory')
+    }
+
+    const addcategories=async(req,res)=>{
+        res.render('admin/addcategory')
+    }
 
 
+   const addcategory = async (req, res) => {
+    try { 
+
+        const newCategory = new Category({
+            category: req.body.CategoryName 
+        });
+        await newCategory.save();
+        res.redirect('/admin/categories');
+    } catch (error) {
+        console.error('Error adding category:', error);
+        res.status(500).send('Error adding category: ' + error.message);
+    }
+}
+
+    
+
+    
 
 const logout = (req, res) => {
     req.session.destroy()
@@ -302,6 +341,10 @@ module.exports = {
     user,
     blockUser,
     unblockUser,
+    categories,
+    categori,
+    addcategories,
+    addcategory,
     form,
     logout
 }
