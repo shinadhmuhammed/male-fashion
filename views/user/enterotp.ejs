@@ -61,17 +61,80 @@
                 <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="submit" class="btn btn-primary">resend otp</button>
+            <button type="button" class="btn btn-primary" id="resendOTP">Resend OTP</button> <!-- Initially enabled -->
+            <div id="resendMessage" style="color: rgb(174, 0, 0); display: none;">
+                <div id="countdownTimer" style="color: blue;"></div>
+                You can resend OTP in <span id="countdown">1:00</span>
+            </div>
+            <p id="newOtp" style="color: green;"></p>
         </form>
         <% 
-        if(typeof message !== 'undefined'){ 
-            %>
-                <p style="color: rgb(174, 0, 0);"><%= message%> </p>
-            <%
+        if (typeof message !== 'undefined') { 
+        %>
+            <p style="color: rgb(174, 0, 0);"><%= message %></p>
+        <%
         }
-      %>
+        %>
     </div>
+
+    <script>
+        let countdownTime = 59; 
+        let countdownInterval;
+
+        const updateCountdown = () => {
+            const minutes = Math.floor(countdownTime / 60);
+            const seconds = countdownTime % 60;
+            document.getElementById('countdown').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            document.getElementById('countdownTimer').textContent = document.getElementById('countdown').textContent; // Update the countdown timer
+            countdownTime--;
+
+            if (countdownTime < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('resendMessage').style.display = 'none'; // Hide the message
+                document.getElementById('countdownTimer').textContent = ''; // Clear the countdown timer
+                document.getElementById('resendOTP').disabled = false;
+            }
+        };
+
+        document.getElementById('resendOTP').addEventListener('click', function() {
+            if (!document.getElementById('resendMessage').style.display) {
+                alert('You can resend OTP only after 1 minute.');
+            } else {
+                // When "Resend OTP" button is clicked after 1 minute, get the OTP
+                fetch('/resendOtp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById('resendMessage').innerHTML = data.message;
+                    }
+                    if (data.otp) {
+                        document.getElementById('newOtp').textContent = data.otp; 
+                    }
+                    countdownInterval = setInterval(updateCountdown, 1000);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
+        });
+    </script>
 </body>
+    
+
+
+
+    
+
+
+
+
+
+
 </html>
 
 

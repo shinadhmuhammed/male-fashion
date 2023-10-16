@@ -35,6 +35,11 @@ admin_route.get('/category',Auth.loggedadmin,adminController.categories)
 admin_route.get('/categories',Auth.loggedadmin,adminController.categori)
 admin_route.get('/addcategories',Auth.loggedadmin,adminController.addcategories)
 admin_route.post('/addcategory',Auth.loggedadmin,adminController.addcategory)
+admin_route.delete('/deletecategory/:categoryId', Auth.loggedadmin, adminController.deleteCategory);
+admin_route.get('/editcategory/:categoryId', Auth.loggedadmin, adminController.editcategoryform);
+admin_route.post('/editcategory/:categoryId', Auth.loggedadmin, adminController.editcategory);
+
+
 
 
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)

@@ -15,7 +15,7 @@ user_route.post('/register', userController.insertUser)
 
 
 user_route.get('/showOtp/:userID/:otp', isLogedout, userController.showOtp);
-// user_route.get('/resendOtp',isLogedout,userController.resendOtp)
+user_route.post('/resendOtp',isLogedout,userController.resendOtp)
 user_route.post('/otpenter', isLogedout, userController.verifyOtp)
 
 

@@ -7,7 +7,8 @@ const nodemailer=require('nodemailer')
 const {Product}=require('../models/productmodel');
 const {Category}=require('../models/categorymodel')
 const productmodel = require('../models/productmodel');
-const mongoose=require('mongoose')
+const dotenv=require('dotenv')
+dotenv.config();
 
 
 
@@ -48,12 +49,12 @@ const insertUser = async (req, res) => {
     try {
         const { name, email, password, mno } = req.body;
 
-        // Validate the 'name' field
+       
         if (!/^[A-Za-z]+$/.test(name)) {
             return res.render('user/registration', { message: 'Name can only contain alphabetic characters.' });
         }
 
-        // Validate the 'email' field
+        
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.render('user/registration', { message: 'Invalid email format.' });
         }
@@ -76,6 +77,10 @@ const insertUser = async (req, res) => {
             }
 
             const otp = generateOTP();
+            const otpExpiration=Date.now() + 300000
+            req.session.saveOtp=otp;
+            req.session.otpExpiration=otpExpiration
+
             await sendOtpMail(email, otp);
             req.session.saveOtp = otp;
             console.log(otp);
@@ -129,13 +134,13 @@ async function sendOtpMail(email, otp) {
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "muhammedshinad2@gmail.com",
-                pass: "ljzf nkim qeqn cmmb", 
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS, 
             },
         });
 
         const mailOptions = {
-            from: "muhammedshinad2@gmail.com",
+            from: process.env.EMAIL_USER,
             to: email, 
             subject: "OTP Verification",
             text: `Your OTP for verification is: ${otp}`, 
@@ -148,21 +153,49 @@ async function sendOtpMail(email, otp) {
     }
 }
 
+
+
 const verifyOtp = async (req, res) => {
     const enteredOtp = req.body.otp;
-    const savedOtp = req.session.saveOtp; 
+    const savedOtp = req.session.saveOtp;
+    const otpExpiration = req.session.otpExpiration;
     console.log(enteredOtp, savedOtp, "condition");
 
-    if (enteredOtp === savedOtp) {
-        const user = new User({
-            name: nname,
-            email: eemail,
-            password: ppassword,
-            mobile: mobile,
-        });
-        res.render('user/login',{message:'user signup successfully'});
+    if (otpExpiration && Date.now() <= otpExpiration) {
+        if (enteredOtp === savedOtp) {
+            const user = new User({
+                name: nname,
+                email: eemail,
+                password: ppassword,
+                mobile: mobile,
+            });
+            res.render('user/login', { message: 'User signup successfully' });
+        } else {
+            res.render('user/enterotp', { message: 'Invalid OTP, please try again.' });
+        }
     } else {
-        res.render('user/enterotp', { message: 'Invalid OTP, please try again.' });
+        res.render('user/enterotp', { message: 'OTP has expired, please request a new one.' });
+    }
+};
+
+
+
+
+
+const resendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const newOtp = generateOTP(); // Generate a new OTP
+        await sendOtpMail(email, newOtp); // Send the new OTP via email
+
+        // Update the session with the new OTP and expiration time
+        req.session.saveOtp = newOtp;
+        req.session.otpExpiration = Date.now() + 300000; 
+
+        res.json({ message: 'New OTP sent successfully',otp:newOtp });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Failed to generate and send OTP' });
     }
 };
 
@@ -172,8 +205,7 @@ const verifyOtp = async (req, res) => {
 
 
 
-
-/////////////////////////login/////////////////////////////
+//////////////////////////////////////Login/////////////////////////////////////////////////
 
 const loadlogin = async(req,res)=>{
     try{
@@ -200,10 +232,9 @@ const userValid = async (req, res) => {
         const is_blocked = user.is_blocked;
 
         if (is_blocked === true) {
-            res.render('user/login');
+            res.render('user/login',{message:'user is blocked'});
         } else {
             const isMatch = await bcrypt.compare(password, storedPassword); 
-            console.log('Password comparison result:', isMatch);
 
             if (!isMatch) {
                 console.log("Wrong password");
@@ -277,7 +308,7 @@ module.exports = {
     insertUser,
     showOtp,
     verifyOtp,
-    // resendOtp,
+    resendOtp,
     loadlogin,
     loadindex,
     loadshop,

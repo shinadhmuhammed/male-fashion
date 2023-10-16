@@ -107,10 +107,16 @@ const addProduct = async (req, res) => {
             contentType: file.mimetype 
         }));
 
+        const productPrice = parseFloat(req.body.productPrice);
+
+        if (productPrice < 0) {
+            return res.render('admin/addproduct', { error: "Product price cannot be negative" });
+        }
+
         const newProduct = new Product({
             productName: req.body.productName,
             productImage: productImages, 
-            productPrice: req.body.productPrice,
+            productPrice: productPrice,
             productDescription: req.body.productDescription,
             productCategory: req.body.productCategory,
         });
@@ -128,6 +134,7 @@ const addProduct = async (req, res) => {
         res.render('admin/addproduct', { error: "Error adding the product" });
     }
 }
+
 
 
 
@@ -179,15 +186,24 @@ const deleteProduct = async (req, res) => {
         }
 
         product.productName = req.body.productName;
-        product.productPrice = req.body.productPrice;
+        const productPrice = parseFloat(req.body.productPrice);
+
+        if (productPrice < 0) {
+            return res.render('admin/editproduct', {
+                product,
+                error: "Product price cannot be negative",
+            });
+        }
+
+        product.productPrice = productPrice;
         product.productDescription = req.body.productDescription;
         product.productCategory = req.body.productCategory;
 
         if (req.files && req.files.length > 0) {
-            product.productImage = req.files.map(file => ({
+            product.productImage = req.files.map((file) => ({
                 filename: file.originalname,
                 data: file.buffer,
-                contentType: file.mimetype
+                contentType: file.mimetype,
             }));
         }
 
@@ -203,6 +219,7 @@ const deleteProduct = async (req, res) => {
         res.render('admin/editproduct', { productId, error: "Error updating the product" });
     }
 };
+
 
 
 
@@ -229,30 +246,41 @@ const user=async(req,res)=>{
     }
 };
 
+
 const blockUser = async (req, res) => {
     try {
         const id = req.params.userId;
 
-        
         const user = await User.findById(id);
 
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-    
-            
-            user.is_blocked = !user.is_blocked;
-    
-          
-            await user.save();
-    
-            
-            res.redirect("/admin/users");
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-    };
+
+        
+        user.is_blocked = !user.is_blocked;
+
+      
+        await user.save();
+
+        
+        if (user.is_blocked) {
+            
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error destroying session:', err);
+                }
+            });
+        }
+
+        res.redirect("/admin/users");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
 
     const unblockUser = async (req, res) => {
         try {
@@ -280,6 +308,8 @@ const blockUser = async (req, res) => {
     };
 
 
+    
+
     ////////////////////////Category////////////////////////////////
     
     const categories = async (req, res) => {
@@ -295,7 +325,7 @@ const blockUser = async (req, res) => {
 
 
     const categori=async(req,res)=>{
-            res.render('admin/addcategory')
+            res.render('admin/category')
     }
 
     const addcategories=async(req,res)=>{
@@ -318,8 +348,65 @@ const blockUser = async (req, res) => {
 }
 
     
+const deleteCategory = async (req, res) => {
+    const categoryId = req.params.categoryId; 
+    try {
+      const deletedCategory = await Category.findByIdAndRemove(categoryId);
+      if (deletedCategory) {
+        res.status(200).send("Category deleted successfully");
+      } else {
+        res.status(404).send('Category not found');
+      }
+    } catch (error) {
+      console.error('Error deleting the category', error);
+      res.status(500).send("An error occurred while deleting the category");
+    }
+  };
+  
 
-    
+
+  const editcategoryform = async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId;
+      const category = await Category.findById(categoryId);
+  
+      if (!category) {
+        res.status(404).send('Category not found');
+        return;
+      }
+  
+      res.render('admin/category', { category }); 
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      res.status(500).send('An error occurred while fetching the category');
+    }
+  };
+
+
+
+  const editcategory = async (req, res) => {
+    const categoryId = req.params.categoryId;
+  
+    try {
+      const updatedCategory = await Category.findByIdAndUpdate(
+        categoryId,
+        { category: req.body.CategoryName }, 
+        { new: true }
+      );
+  
+      if (updatedCategory) {
+        res.redirect('/admin/categories');
+      } else {
+        res.status(404).send('Category not found');
+      }
+    } catch (error) {
+      console.error('Error editing the category', error);
+      res.status(500).send('An error occurred while editing the category');
+    }
+  };
+
+
+
 
 const logout = (req, res) => {
     req.session.destroy()
@@ -345,6 +432,9 @@ module.exports = {
     categori,
     addcategories,
     addcategory,
+    deleteCategory,
+    editcategoryform,
+    editcategory,
     form,
     logout
 }
