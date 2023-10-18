@@ -28,7 +28,7 @@ user_route.post('/logout',Auth.logouting)
 user_route.get('/home',Auth.isLogged,userController.loadHome)
 user_route.get('/index',Auth.isLogged,userController.loadindex)
 user_route.get('/shop',Auth.isLogged,userController.loadshop)
-user_route.get('/zoom', Auth.isLogged, userController.zoom);
+user_route.get('/zoom',Auth.isLogged,  userController.zoom);
 
 
 

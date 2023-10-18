@@ -185,8 +185,8 @@ const verifyOtp = async (req, res) => {
 const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
-        const newOtp = generateOTP(); // Generate a new OTP
-        await sendOtpMail(eemail, newOtp); // Send the new OTP via email
+        const newOtp = generateOTP();
+        await sendOtpMail(eemail, newOtp); 
         console.log(newOtp)
         // Update the session with the new OTP and expiration time
         req.session.saveOtp = newOtp;
@@ -290,9 +290,11 @@ const loadshop = async (req, res) => {
 
 
 
-const zoom = async (req, res) => {
-    const products = await Product.find();
-    const productImages = products.map(product => product.productImage.map(image => image.filename));
+const zoom= async (req, res) => {
+    const products = await Product.find({_id:req.query.id});
+    const productImages = products.map(product => product.productImage.map(image => image.filename)).flat();
+    
+    console.log(products,productImages)
     res.render("user/zoom", { products, productImages}); 
   };
   

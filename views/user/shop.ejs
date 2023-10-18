@@ -104,7 +104,7 @@
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="./about.html">About Us</a></li>
-                                    <li><a href="./shop-details.html">Shop Details</a></li>
+                                    <li><a href="./shop">Shop Details</a></li>
                                     <li><a href="./shopping-cart.html">Shopping Cart</a></li>
                                     <li><a href="./checkout.html">Check Out</a></li>
                                     <li><a href="./blog-details.html">Blog Details</a></li>
@@ -343,13 +343,13 @@
 
                                 <% if (productImages[index].length > 0) { %>
                                   <div class="product" data-product-id="<%= product.product_id %>">
-                                    <a href="./zoom?id=<%= product.product_id %>"> 
+                                    <a href="#"> 
                                       <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= product.productImage[0].filename %>">
                                         <ul class="product__hover">
                                           <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
                                           <li><a href="#"><img src="/malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
                                           <li>
-                                              <a href="#" ><img src="/malefashion-master/img/icon/search.png" alt="">
+                                              <a href="./zoom?id=<%= product._id %>" ><img src="/malefashion-master/img/icon/search.png" alt="">
                                               </a>
                                           </li>
                                         </ul>
