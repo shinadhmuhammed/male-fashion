@@ -333,31 +333,30 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
+                  
+                  
                     <div class="row">
                         <% if (products.length > 0) { %>
                           <% products.forEach((product, index) => { %>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                               <div class="product__item">
+
                                 <% if (productImages[index].length > 0) { %>
-                                    <% productImages[index].forEach((image, imageIndex) => { %>
-                                        <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= image %>">
-                                            <ul class="product__hover">
-                                                <li><a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a></li>
-                                                <li><a href="#"><img src="malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                                <li>
-                                                    <div class="zoomable-image-container">
-                                                        <a href="#" class="zoomable-image" data-zoom-image="/malefashion-master/zoomed_images/<%= image %>">
-                                                            <img src="/malefashion-master/img/icon/search.png" alt="">
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    <% }); %>
+                                  <div class="product" data-product-id="<%= product.product_id %>">
+                                    <a href="./zoom?id=<%= product.product_id %>"> 
+                                      <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= product.productImage[0].filename %>">
+                                        <ul class="product__hover">
+                                          <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
+                                          <li><a href="#"><img src="/malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                          <li>
+                                              <a href="#" ><img src="/malefashion-master/img/icon/search.png" alt="">
+                                              </a>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </a>
+                                  </div>
                                 <% } %>
-                                
                                 <div class="product__item__text">
                                   <h6><%= product.productName %></h6>
                                   <p><%= product.productDescription %></p>
@@ -389,6 +388,10 @@
                           <p>No products available.</p>
                         <% } %>
                       </div>
+                      
+                      
+                   
+                      
 
                       <div class="row">
                         <div class="col-lg-12">

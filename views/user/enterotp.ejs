@@ -109,12 +109,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.message) {
-                        document.getElementById('resendMessage').innerHTML = data.message;
-                    }
-                    if (data.otp) {
-                        document.getElementById('newOtp').textContent = data.otp; 
-                    }
                     countdownInterval = setInterval(updateCountdown, 1000);
                 })
                 .catch(error => {

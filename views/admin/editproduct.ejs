@@ -11,7 +11,7 @@
             </p>
             <p>
                 <label for="productImage">Product Image:</label>
-                <input type="file" id="productImage" name="productImage" accept="image/*">
+                <input type="file" id="productImage" name="productImage" accept="image/*" multiple>
                 <% if (product.productImage && product.productImage.length > 0) { %>
                     <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" width="100">
                 <% } else { %>

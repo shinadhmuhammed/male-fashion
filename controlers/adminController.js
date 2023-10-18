@@ -74,15 +74,19 @@ const userDashboard = async (req,res)=>{
  /////////////////products////////////////////////
 
 
-const products = async (req, res) => {
+ const products = async (req, res) => {
     try {
         const products = await Product.find({});
-        res.render("admin/product", { products }); 
+        const productImages = products.map(product => product.productImage);
+        console.log('productImages', productImages);
+        res.render("admin/product", { products, productImages });
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while loading the products.");
     }
 }
+
+
 
 
 const form=async(req,res)=>{
@@ -101,6 +105,11 @@ const addProduct = async (req, res) => {
     console.log(req.files);
 
     try {
+        if(!req.files || req.files.length===0){
+            return res.render('admin/addproduct',{error:'please upload atleast one image'})
+        }
+
+
         const productImages = req.files.map(file => ({
             filename: file.originalname, 
             data: file.buffer, 
@@ -314,8 +323,21 @@ const blockUser = async (req, res) => {
     
     const categories = async (req, res) => {
         try {
+          const categories = await Category.find({});
+          res.render('admin/category', { categories: categories }); 
+        } catch (error) {
+          console.error(error);
+          res.status(500).send("Error occurred");
+        }
+      }
+      
+    
+
+
+      const categori = async (req, res) => {
+        try {
             const categories = await Category.find({});
-            res.render('admin/category', { categories: categories }); 
+            res.render('admin/addcategory', { categories });
         } catch (error) {
             console.error(error);
             res.status(500).send("Error occurred");
@@ -323,29 +345,31 @@ const blockUser = async (req, res) => {
     }
     
 
-
-    const categori=async(req,res)=>{
+        const addcategories=async(req,res)=>{
             res.render('admin/category')
-    }
-
-    const addcategories=async(req,res)=>{
-        res.render('admin/addcategory')
-    }
+        }
 
 
-   const addcategory = async (req, res) => {
-    try { 
-
-        const newCategory = new Category({
-            category: req.body.CategoryName 
-        });
-        await newCategory.save();
-        res.redirect('/admin/categories');
-    } catch (error) {
-        console.error('Error adding category:', error);
-        res.status(500).send('Error adding category: ' + error.message);
-    }
-}
+        const addcategory = async (req, res) => {
+            try {
+                const { CategoryName } = req.body;
+        
+                if (!CategoryName) {
+                    return res.status(400).send('Category name is required');
+                }
+        
+                const newCategory = new Category({
+                    category: CategoryName,
+                });
+        
+                await newCategory.save();
+                res.redirect('/admin/category');
+            } catch (error) {
+                console.error('Error adding category:', error);
+                res.status(500).send('Error adding category: ' + error.message);
+            }
+        };
+        
 
     
 const deleteCategory = async (req, res) => {
@@ -367,20 +391,21 @@ const deleteCategory = async (req, res) => {
 
   const editcategoryform = async (req, res) => {
     try {
-      const categoryId = req.params.categoryId;
-      const category = await Category.findById(categoryId);
-  
-      if (!category) {
-        res.status(404).send('Category not found');
-        return;
-      }
-  
-      res.render('admin/category', { category }); 
+        const categoryId = req.params.categoryId;
+        const category = await Category.findById(categoryId);
+
+        if (!category) {
+            res.status(404).send('Category not found');
+            return;
+        }
+
+        res.render('admin/editcategory', { category }); 
     } catch (error) {
-      console.error('Error fetching category:', error);
-      res.status(500).send('An error occurred while fetching the category');
+        console.error('Error fetching category:', error);
+        res.status(500).send('An error occurred while fetching the category');
     }
-  };
+};
+
 
 
 
@@ -395,7 +420,7 @@ const deleteCategory = async (req, res) => {
       );
   
       if (updatedCategory) {
-        res.redirect('/admin/categories');
+       res.redirect('/admin/categories')
       } else {
         res.status(404).send('Category not found');
       }

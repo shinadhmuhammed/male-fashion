@@ -42,6 +42,7 @@ admin_route.post('/editcategory/:categoryId', Auth.loggedadmin, adminController.
 
 
 
+
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)
 
 

@@ -24,6 +24,7 @@ app.use(
 app.use(express.static(path.join(__dirname, './admin')));
 app.use(express.static(path.join(__dirname, './public')));
 
+
 app.use('/', userRoute);
 app.use('/admin', adminroute);
 

@@ -7,17 +7,20 @@
     <title>Edit Category</title>
 </head>
 <body>
-    <div class="row">
-        <div class="col-lg-10 m-auto">
-            <h2>Edit Category</h2>
-            <form method="POST" action="/admin/editcategory/<%= category._id %>">
-                <div class="form-group">
-                    <label for="CategoryName">Category Name:</label>
-                    <input type="text" class="form-control" id="CategoryName" name="CategoryName" value="<%= category.category %>">
-                </div>
-                <button type="submit" class="btn btn-primary">Update</button>
-            </form>
-        </div>
+   <% if (category) { %>
+<div class="row">
+    <div class="col-lg-10 m-auto">
+        <h2>Edit Category</h2>
+        <form method="POST" action="/admin/editcategory/<%= category._id %>">
+            <div class="form-group">
+                <label for="CategoryName">Category Name:</label>
+                <input type="text" class="form-control" id="CategoryName" name="CategoryName" value="<%= category.category %>">
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
     </div>
+</div>
+<% } %>
+
 </body>
 </html>

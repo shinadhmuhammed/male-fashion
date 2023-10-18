@@ -186,8 +186,8 @@ const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
         const newOtp = generateOTP(); // Generate a new OTP
-        await sendOtpMail(email, newOtp); // Send the new OTP via email
-
+        await sendOtpMail(eemail, newOtp); // Send the new OTP via email
+        console.log(newOtp)
         // Update the session with the new OTP and expiration time
         req.session.saveOtp = newOtp;
         req.session.otpExpiration = Date.now() + 300000; 
@@ -288,9 +288,15 @@ const loadshop = async (req, res) => {
     }
 }
 
-const zoom=async(req,res)=>{
-    res.render('user/zoom')
-}
+
+
+const zoom = async (req, res) => {
+    const products = await Product.find();
+    const productImages = products.map(product => product.productImage.map(image => image.filename));
+    res.render("user/zoom", { products, productImages}); 
+  };
+  
+
 
 
 

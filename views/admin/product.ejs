@@ -25,27 +25,30 @@
         <th scope="col">Product Category</th>
       </tr>
     </thead>
+
+    
     <tbody>
-      <% products.forEach((product, index) => { %>
-        <tr>
-          <td><%= product.productName %></td>
-          <td>
-            <% if (product.productImage && product.productImage.length > 0) { %>
-              <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" width="100">
-            <% } else { %>
-             
-            <% } %>
-          </td>
-          <td><%= product.productPrice %></td>
-          <td><%= product.productDescription %></td>
-          <td><%= product.productCategory %></td>
-          <td>
-            <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-danger delete-product" data-productid="<%= product._id %>">Delete</a>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
+  <% products.forEach((product, index) => { %>
+    <tr>
+      <td><%= product.productName %></td>
+      <td>
+        
+       <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" width="100">
+          
+      </td>
+      <td><%= product.productPrice %></td>
+      <td><%= product.productDescription %></td>
+      <td><%= product.productCategory %></td>
+      <td>
+        <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
+        <a href="#" class="btn btn-danger delete-product" data-productid="<%= product._id %>">Delete</a>
+      </td>
+    </tr>
+  <% }) %>
+</tbody>
+
+    
+    
   </table>
 
   

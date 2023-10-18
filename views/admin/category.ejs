@@ -7,33 +7,33 @@
     </ol>
     <h6 class="font-weight-bolder mb-0">Category</h6>
   </nav>
-  
-  <div class="row">
-    <div class="col-lg-10 m-auto">
-        <div class="table-container">
-            <table class="table table-hover mt-4">
-                <thead>
-                    <tr>
-                        <th scope="col">Category Name</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% categories.forEach(category => { %>
-                        <tr>
-                            <td><%= category.category %></td>
-                            <td>
-                                <a href="/admin/editcategory/<%= category._id %>" class="btn btn-warning">Edit</a>
-                                <a href="#" class="btn btn-danger delete-category" data-categoryid="<%= category._id %>">Delete</a>
-                            </td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        <a href="/admin/categories" class="btn btn-primary add-user" id="addUser">Add Category</a>
-    </div>
-</div>
+    
+    <div class="row">
+      <div class="col-lg-10 m-auto">
+          <div class="table-container">
+              <table class="table table-hover mt-4">
+                  <thead>
+                      <tr>
+                          <th scope="col">Category Name</th>
+                          <th scope="col">Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <% categories.forEach(category => { %>
+                          <tr>
+                              <td><%= category.category %></td>
+                              <td>
+                                  <a href="/admin/editcategory/<%= category._id %>" class="btn btn-warning">Edit</a>
+                                  <a href="#" class="btn btn-danger delete-category" data-categoryid="<%= category._id %>">Delete</a>
+                              </td>
+                          </tr>
+                      <% }); %>
+                  </tbody>
+              </table>
+          </div>
+          <a href="/admin/categories" class="btn btn-primary add-user" id="addUser">Add Category</a>
+      </div>
+  </div>
 
 
 
