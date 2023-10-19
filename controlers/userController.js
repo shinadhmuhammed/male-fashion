@@ -63,6 +63,10 @@ const insertUser = async (req, res) => {
             return res.render('user/registration', { message: 'Password must be at least 6 characters long.' });
         }
 
+        if(mno.length !== 10){
+            return res.render('user/registration',{message:'mobile number must have exactly 10 digits'})
+        }
+
         nname = name;
         eemail = email;
         mobile = mno;
@@ -290,12 +294,12 @@ const loadshop = async (req, res) => {
 
 
 
-const zoom= async (req, res) => {
-    const products = await Product.find({_id:req.query.id});
+const shopdetails= async (req, res) => {
+    const products = await Product.find({_id:req.query.id}).populate('productCategory')
     const productImages = products.map(product => product.productImage.map(image => image.filename)).flat();
     
     console.log(products,productImages)
-    res.render("user/zoom", { products, productImages}); 
+    res.render("user/shopdetails", { products, productImages}); 
   };
   
 
@@ -320,7 +324,7 @@ module.exports = {
     loadlogin,
     loadindex,
     loadshop,
-    zoom,
+    shopdetails,
     userValid,
     loadHome,
     logout,

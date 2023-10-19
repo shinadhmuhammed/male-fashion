@@ -14,7 +14,7 @@
 <div class="container">
   <table class="table table-bordered">
     <div class="d-flex justify-content-end">
-      <a href="/admin/form" class="btn btn-primary add-user" id="addUser">Add Product</a>
+      <a href="/admin/addproduct" class="btn btn-primary add-user" id="addUser">Add Product</a>
     </div>
     <thead>
       <tr>
@@ -23,6 +23,7 @@
         <th scope="col">Product Price</th>
         <th scope="col">Product Description</th>
         <th scope="col">Product Category</th>
+        <th scope="col">product Stock</th>
       </tr>
     </thead>
 
@@ -38,7 +39,8 @@
       </td>
       <td><%= product.productPrice %></td>
       <td><%= product.productDescription %></td>
-      <td><%= product.productCategory %></td>
+      <td><%= product.productCategory.category %></td>
+      <td><%= product.productStock %></td>
       <td>
         <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
         <a href="#" class="btn btn-danger delete-product" data-productid="<%= product._id %>">Delete</a>

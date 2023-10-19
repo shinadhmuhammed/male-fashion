@@ -1,6 +1,59 @@
 <%- include('../layout/dashhead') %>
 
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    /* div {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #ffffff;
+    } */
+
+    h3 {
+        text-align: center;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        background-color: #dbdddb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #dbdbdb;
+    }
+</style>
+
+
 <div class="container">
     <h1>Edit Product</h1>
     <form action="/admin/editproduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
@@ -28,9 +81,26 @@
                 <label for="productDescription">Product Description:</label>
                 <textarea id="productDescription" name="productDescription" required><%= product.productDescription %></textarea><br><br>
             </p>
-            <p>
+
+             <p>
                 <label for="productCategory">Product Category:</label>
-                <input type="text" id="productCategory" name="productCategory" value="<%= product.productCategory %>" required><br><br>
+
+                <select id="productCategory" name="productCategory" required>
+                    <% if (category.length > 0) { %>
+                        <% category.forEach(categories => {%>
+                         <option value=<%= categories._id %>><%= categories.category %></option>
+                         <% })%>
+                         <% } else {%>
+                             
+                         <option value="Mens">no categories</option>
+                         <% }%>
+
+                </select>
+              </p>
+
+            <p>
+                <label for="productStock">Product Stock:</label>
+                <input type="number" id="productStock" name="productStock" value="<%= product.productStock %>" required><br><br>
             </p>
             <button type="submit" class="btn btn-primary">Update Product</button>
         </div>

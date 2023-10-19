@@ -210,26 +210,9 @@
                 </li>
               </ul>
             </li>
-
+            
             <button id="logoutButton" type="button">Logout</button>
-            <script>
-              document.getElementById('logoutButton').addEventListener('click', function() {
-                fetch('/logout', {
-                  method: 'POST', 
-                  credentials: 'same-origin' 
-                })
-                .then(function(response) {
-                  if (response.status === 200) {
-                    window.location.href = '/admin/login';
-                  } else {
-                    console.error('Logout failed');
-                  }
-                })
-                .catch(function(error) {
-                  console.error('Logout request failed:', error);
-                });
-              });
-            </script>
+          
             
             
           </ul>
@@ -237,4 +220,21 @@
       </div>
     </nav>
 
-    
+    <script>
+      document.getElementById('logoutButton').addEventListener('click', function() {
+        fetch('/logout', {
+          method: 'POST', 
+          credentials: 'same-origin' 
+        })
+        .then(function(response) {
+          if (response.status === 200) {
+            window.location.href = '/login';
+          } else {
+            console.error('Logout failed');
+          }
+        })
+        .catch(function(error) {
+          console.error('Logout request failed:', error);
+        });
+      });
+    </script>

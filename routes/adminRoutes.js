@@ -16,7 +16,7 @@ admin_route.get('/dashboard', Auth.loggedadmin, adminController.userDashboard)
 
 
 admin_route.get('/products',Auth.loggedadmin,adminController.products)
-admin_route.get('/form',Auth.loggedadmin,adminController.form)
+// admin_route.get('/form',Auth.loggedadmin,adminController.form)
 admin_route.get('/addproduct',Auth.loggedadmin,adminController.addProducts)
 admin_route.post('/addproduct',Auth.loggedadmin,uploadMulter.array('productImage',5),adminController.addProduct);
 admin_route.delete('/deleteproduct/:productId',adminController.deleteProduct)

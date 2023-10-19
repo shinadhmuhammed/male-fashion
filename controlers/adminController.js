@@ -1,6 +1,5 @@
 const { render } = require('ejs');
 const {User} = require('../models/userModel');
-const bcrypt = require('bcrypt')
 const Users=require('../controlers/userController')
 const {Product}=require('../models/productmodel');
 const {Category} = require('../models/categorymodel');
@@ -9,14 +8,10 @@ const storage=multer.memoryStorage();
 const upload=multer({storage})
 
 
-const securepassword = async(password)=>{
-    try{
-        const passwordHash = await bcrypt.hash(password,10)
-        return passwordHash
-    } catch(error){
-        console.log(error.message);
-    }
-}
+let adminEmail="admin@gmail.com"
+let adminPassword="1234"
+
+
 
 
 const loadAdmin = async(req,res)=>{
@@ -28,32 +23,19 @@ const loadAdmin = async(req,res)=>{
 }
 
 
-const adminValid = async(req,res)=>{
-    const { email, password} = req.body;
-  
-    try{
-        const admin = await User.findOne({email})
-    
-        if(!admin){
-            return res.render('admin/adminLogin',{message:"admin not registerd"})
-        }
-        
-        const isMatch = await bcrypt.compare(password,admin.password)
-        if(!isMatch){
-            return res.render('admin/adminLogin',{ message:"password is incorrect" })
-        }
-        if(admin.is_admin === 1){
-            req.session.admin = admin._id
-            res.redirect('/admin/dashboard');
-        }else{
-            res.render('admin/adminLogin',{ message:"your not a admin" })
-        }
-       
-      
-    } catch(error){
-        console.log(error.message);
+
+
+const adminValid=async(req,res)=>{
+    const {email,password}=req.body
+    if(email === adminEmail && password === adminPassword){
+        req.session.admin=true
+        res.redirect('/admin/dashboard')
+    }else{
+        res.render('admin/adminLogin',{message:"you are not a admin"})
     }
 }
+
+
 
 
 const userDashboard = async (req,res)=>{  
@@ -71,14 +53,14 @@ const userDashboard = async (req,res)=>{
     }
 }
 
- /////////////////products////////////////////////
+ ///////////////////////////////////PRODUCTS////////////////////////////////////////////////
 
 
  const products = async (req, res) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.find({}).populate('productCategory');
         const productImages = products.map(product => product.productImage);
-        console.log('productImages', productImages);
+        console.log(products,'productImages', productImages);
         res.render("admin/product", { products, productImages });
     } catch (error) {
         console.error(error);
@@ -95,14 +77,16 @@ const form=async(req,res)=>{
 
 
 const addProducts=async(req,res)=>{
-    res.render('admin/addproduct')
+    const category=await Category.find({})
+    console.log('categoty sdfgdfg',category);
+    res.render('admin/addproduct',{category})
 }
 
 
 
 const addProduct = async (req, res) => {
     console.log(req.body);
-    console.log(req.files);
+    // console.log(req.files);
 
     try {
         if(!req.files || req.files.length===0){
@@ -121,13 +105,14 @@ const addProduct = async (req, res) => {
         if (productPrice < 0) {
             return res.render('admin/addproduct', { error: "Product price cannot be negative" });
         }
-
+        console.log(req.body);
         const newProduct = new Product({
             productName: req.body.productName,
             productImage: productImages, 
             productPrice: productPrice,
             productDescription: req.body.productDescription,
-            productCategory: req.body.productCategory,
+            productCategory: req.body. productCategory,
+            productStock:req.body.productStock
         });
 
         const savedProduct = await newProduct.save();
@@ -169,14 +154,15 @@ const deleteProduct = async (req, res) => {
   
   const editProductForm = async (req, res) => {
     const productId = req.params.productId;
-    const product = await Product.findById(productId);
-  
+    const product = await Product.findById(productId)
+    const category=await Category.find()
+ console.log(category);
     if (!product) {
       res.status(404).send('Product not found');
       return;
     }
   
-    res.render('admin/editproduct', { product });
+    res.render('admin/editproduct', { product,category });
   };
 
 
@@ -187,7 +173,7 @@ const deleteProduct = async (req, res) => {
   const editProduct = async (req, res) => {
     const productId = req.params.productId;
     try {
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId)
 
         if (!product) {
             res.status(404).send('Product not found');
@@ -207,6 +193,8 @@ const deleteProduct = async (req, res) => {
         product.productPrice = productPrice;
         product.productDescription = req.body.productDescription;
         product.productCategory = req.body.productCategory;
+        product.productStock=req.body.productStock;
+
 
         if (req.files && req.files.length > 0) {
             product.productImage = req.files.map((file) => ({
@@ -241,10 +229,9 @@ const user=async(req,res)=>{
         if (query) {
             users = await User.find({
                 name: { $regex: '.*' + query + '.*' },
-                is_admin: 0,
             });
         } else {
-            users = await User.find({ is_admin: 0 });
+            users = await User.find({});
         }
       
         res.render('admin/users', { users, query });
@@ -259,29 +246,19 @@ const user=async(req,res)=>{
 const blockUser = async (req, res) => {
     try {
         const id = req.params.userId;
-
         const user = await User.findById(id);
-
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-        
         user.is_blocked = !user.is_blocked;
-
-      
         await user.save();
-
-        
         if (user.is_blocked) {
-            
             req.session.destroy((err) => {
                 if (err) {
                     console.error('Error destroying session:', err);
                 }
             });
         }
-
         res.redirect("/admin/users");
     } catch (error) {
         console.error(error);
@@ -344,6 +321,10 @@ const blockUser = async (req, res) => {
         }
     }
     
+
+
+
+
 
         const addcategories=async(req,res)=>{
             res.render('admin/category')
@@ -420,7 +401,7 @@ const deleteCategory = async (req, res) => {
       );
   
       if (updatedCategory) {
-       res.redirect('/admin/categories')
+       res.redirect('/admin/category')
       } else {
         res.status(404).send('Category not found');
       }

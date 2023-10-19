@@ -61,7 +61,7 @@
                 <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="button" class="btn btn-primary" id="resendOTP">Resend OTP</button> <!-- Initially enabled -->
+            <button type="button" class="btn btn-primary" id="resendOTP">Resend OTP</button> 
             <div id="resendMessage" style="color: rgb(174, 0, 0); display: none;">
                 <div id="countdownTimer" style="color: blue;"></div>
                 You can resend OTP in <span id="countdown">1:00</span>
@@ -77,6 +77,9 @@
         %>
     </div>
 
+
+
+    
     <script>
         let countdownTime = 59; 
         let countdownInterval;
@@ -100,7 +103,6 @@
             if (!document.getElementById('resendMessage').style.display) {
                 alert('You can resend OTP only after 1 minute.');
             } else {
-                // When "Resend OTP" button is clicked after 1 minute, get the OTP
                 fetch('/resendOtp', {
                     method: 'POST',
                     headers: {
