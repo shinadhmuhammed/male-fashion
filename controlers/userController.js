@@ -6,7 +6,9 @@ const generateOtp=require('otp-generator')
 const nodemailer=require('nodemailer')
 const {Product}=require('../models/productmodel');
 const {Category}=require('../models/categorymodel')
+const Cart = require('../models/cartmodel')
 const productmodel = require('../models/productmodel');
+const { body, validationResult } = require('express-validator');
 const dotenv=require('dotenv')
 dotenv.config();
 
@@ -64,7 +66,7 @@ const insertUser = async (req, res) => {
         }
 
         if(mno.length !== 10){
-            return res.render('user/registration',{message:'mobile number must have exactly 10 digits'})
+            return res.render('user/registration',{message:'mobile number is not valid'})
         }
 
         nname = name;
@@ -97,7 +99,7 @@ const insertUser = async (req, res) => {
                 mobile: mobile,
             });
 
-            await newUser.save();
+            // await newUser.save();
 
             res.redirect(`/showOtp/${eemail}/${otp}`);
         } catch (error) {
@@ -159,21 +161,31 @@ async function sendOtpMail(email, otp) {
 
 
 
+
 const verifyOtp = async (req, res) => {
     const enteredOtp = req.body.otp;
     const savedOtp = req.session.saveOtp;
     const otpExpiration = req.session.otpExpiration;
-    console.log(enteredOtp, savedOtp, "condition");
+    const password = ppassword; 
 
     if (otpExpiration && Date.now() <= otpExpiration) {
         if (enteredOtp === savedOtp) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
             const user = new User({
                 name: nname,
                 email: eemail,
-                password: ppassword,
+                password: hashedPassword, 
                 mobile: mobile,
             });
-            res.render('user/login', { message: 'User signup successfully' });
+
+            try {
+                await user.save(); 
+                res.render('user/login', { message: 'User signup successfully' });
+            } catch (error) {
+                console.log(error.message);
+                res.render('user/enterotp', { message: 'Error saving user data.' });
+            }
         } else {
             res.render('user/enterotp', { message: 'Invalid OTP, please try again.' });
         }
@@ -186,13 +198,13 @@ const verifyOtp = async (req, res) => {
 
 
 
+
 const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
         const newOtp = generateOTP();
         await sendOtpMail(eemail, newOtp); 
         console.log(newOtp)
-        // Update the session with the new OTP and expiration time
         req.session.saveOtp = newOtp;
         req.session.otpExpiration = Date.now() + 300000; 
 
@@ -211,6 +223,8 @@ const resendOtp = async (req, res) => {
 
 //////////////////////////////////////Login/////////////////////////////////////////////////
 
+
+
 const loadlogin = async(req,res)=>{
     try{
         res.render('user/login')
@@ -219,6 +233,10 @@ const loadlogin = async(req,res)=>{
         console.log(error.message);
     }
 }
+
+
+
+
 
 const userValid = async (req, res) => {
     const { email, password } = req.body;
@@ -283,9 +301,8 @@ const loadshop = async (req, res) => {
         const products = await Product.find();
         const categories = await Category.find(); 
         const productImages = products.map(product => product.productImage.map(image => image.filename));
-        res.render("user/shop", { products, productImages, categories }); 
-        
-        console.log('products', products, productImages,Category);
+        const userId=req.session.user
+        res.render("user/shop", { products, productImages, categories,userId }); 
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while loading the shop.");
@@ -294,15 +311,241 @@ const loadshop = async (req, res) => {
 
 
 
+
+const categorySelection = async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId; 
+        console.log(categoryId);
+      
+      const productsInCategory = await Product.find({ productCategory: categoryId }).exec();
+  
+    
+      res.json(productsInCategory);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+
+
+
+
+
+
 const shopdetails= async (req, res) => {
+    const userId=req.session.user
     const products = await Product.find({_id:req.query.id}).populate('productCategory')
-    const productImages = products.map(product => product.productImage.map(image => image.filename)).flat();
+    const productImages = products.map(product => product.productImage.map(image => image.filename)).flat()
     
     console.log(products,productImages)
-    res.render("user/shopdetails", { products, productImages}); 
+    res.render("user/shopdetails", { products,productImages,userId}); 
   };
   
 
+
+
+
+     const shoppingpage=async(req,res)=>{
+         try{
+           const userId=req.session.user
+            const ProductId=req.session.ProductId
+            //  console.log(userId,ProductId)
+            if(!userId){
+                return res.redirect('/login')
+            }
+            const cartItems=await Cart.find({UserId:userId}).populate('ProductId')
+
+            // console.log(cartItems,'bbhonin');
+
+            res.render('user/shoppingcart',{cartItems})
+        }catch(error){
+            console.error('an error occured:',error)
+            res.status(500).json({error:'An error occured while processing the request'})
+        }
+        }
+
+
+
+  
+
+
+        const updateCart = async (req, res) => {
+            try {
+                let { cart, product, size, count } = req.body;
+                const userId=req.session.user
+                const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+        
+                let total = 0;
+                console.log(cartItems);
+                for (const item of cartItems) {
+                    console.log(item.ProductId.productPrice,item.Quantity);
+                    total += item.ProductId.productPrice * item.Quantity;
+                }
+        
+                res.json({ total });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        };
+        
+        
+        
+        
+
+
+
+
+
+
+        const shoppingcart = async (req, res) => {
+        try {
+           const userId = req.session.user;
+         const productId = req.params.productId;
+         const size = req.body.size;
+        console.log(userId,productId,size);
+
+        if (!userId) {
+        res.json(false);
+         } else {
+        const newCart = new Cart({
+          ProductId: productId,
+          UserId: userId,
+          size: size,
+          });
+        await newCart.save();
+  
+          res.json(true);
+         }
+        } catch (error) {
+      console.error("An error occurred:", error);
+      res.status(500).json({ error: "An error occurred while processing your request." });
+    }
+  };
+  
+
+  
+
+
+  
+ 
+  
+
+
+
+
+
+  const removeCartItem = async (req, res) => {
+    const itemId = req.params.itemId;
+    console.log('Item ID:', itemId);
+
+    try {
+        const deletedItem = await Cart.findByIdAndRemove(itemId);
+        console.log('Deleted Item:', deletedItem);
+
+        if (!deletedItem) {
+            return res.status(404).json({ success: false, error: 'Item not found.' });
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error removing item:', err);
+        return res.status(500).json({ success: false, error: 'An error occurred while removing the item.' });
+    }
+};
+
+
+
+  
+
+
+
+const loadcheckoutpage = async (req, res) => {
+    try {
+      const userId = req.session.user;
+      console.log(userId, 'dijksn');
+      const user = await User.findById(userId);
+      const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+  
+      if (!user) {
+        return res.status(404).json({ message: 'user not found' });
+      }
+  
+      const address = user.Address;
+      console.log(address,cartItems, 'dbhjsdsfdfsdfd');
+  
+      res.render('user/checkout', { user, address,cartItems });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+  
+
+  
+  
+    const checkout = async (req, res) => {
+        try {
+          const { name, house, city, state, pincode, delivery_point } = req.body;
+      
+       
+          if (!name || !house || !city || !state || !pincode || !delivery_point) {
+            return res.status(400).json({ message: 'Please fill in all required fields' });
+          }
+      
+          console.log(name, house, city, state, pincode, delivery_point);
+      
+          const userId = req.session.user;
+      
+          const address = {
+            name,
+            house,
+            city,
+            state,
+            pincode,
+            delivery_point,
+          };
+      
+          const user = await User.findByIdAndUpdate(userId, {
+            $push: { Address: address },
+          });
+      
+          if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+          }
+      
+          return res.render('user/checkout', { message: 'Address added successfully' });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+      }
+      
+
+
+
+  
+  const profileView = async (req, res) => {
+    try {
+        const userId = req.session.user; 
+
+        if (!userId) {
+            return res.status(401).send('User data not found in the session.');
+        }
+
+     
+        const userData = await User.findById(userId);
+
+        if (!userData) {
+            return res.status(404).send('User not found in the database.');
+        }
+
+        res.render('user/profile', { userData });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
 
 
@@ -325,8 +568,16 @@ module.exports = {
     loadindex,
     loadshop,
     shopdetails,
+    shoppingpage,
+    shoppingcart,
+    updateCart,
+    removeCartItem,
+    loadcheckoutpage,
+    checkout,
+    profileView,
     userValid,
     loadHome,
+    categorySelection,
     logout,
 }
 

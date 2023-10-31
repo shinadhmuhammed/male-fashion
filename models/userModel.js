@@ -35,7 +35,20 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    otp: {
+    Address: [
+        {
+          name: { type: String, required: true },
+          number: { type: String, required: true },
+          house: { type: String, required: true },
+          city: { type: String, required: true },
+          state: { type: String, required: true },
+          pincode: { type: String, required: true },
+          delivery_point: { type: String, required: true },
+        },
+      ],
+    
+    
+      otp: {
         type: String,
     },
     otpTimestamp: {

@@ -50,7 +50,7 @@
         <div class="offcanvas__nav__option">
             <a href="#" class="search-switch"><img src="malefashion-master/img/icon/search.png" alt=""></a>
             <a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
+            <a href="./shoppingcart"><img src="malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
             <div class="price">$0.00</div>
         </div>
         <div id="mobile-menu-wrap"></div>
@@ -103,15 +103,15 @@
                             <li class="active"><a href="./shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about.html">About Us</a></li>
+                                    <li><a href="./about">About Us</a></li>
                                     <li><a href="./shop">Shop Details</a></li>
-                                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
+                                    <li><a href="./shoppingcart">Shopping Cart</a></li>
+                                    <li><a href="./checkout">Check Out</a></li>
+                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contacts</a></li>
+                            <li><a href="./blog">Blog</a></li>
+                            <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -119,7 +119,7 @@
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="malefashion-master/img/icon/search.png" alt=""></a>
                         <a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="./shoppingcart"><img src="malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
                         <div class="price">0.00</div>
                     </div>
                 </div>
@@ -172,9 +172,14 @@
                                             <div class="shop__sidebar__categories">
                                                 <ul class="nice-scroll">
                                                     <% for (let i = 0; i < categories.length; i++) { %>
-                                                        <li><a href="#"><%= categories[i].category %> (<%= categories[i].count %>)</a></li>
+                                                      <li><a href="#" class="category-link" data-category="<%= categories[i].category %>"><%= categories[i].category %> </a></li>
                                                     <% } %>
-                                                </ul>
+                                                  </ul>
+                                                  
+                                                  <div id="category-content">
+                                                    <!-- This is where the content for the selected category will be displayed -->
+                                                  </div>
+                                                  
                                             </div>
                                             
                                         </div>
@@ -297,7 +302,7 @@
                                     </div>
                                     <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
-                                            <div class="shop__sidebar__tags">
+                                            <!-- <div class="shop__sidebar__tags">
                                                 <a href="#">Product</a>
                                                 <a href="#">Bags</a>
                                                 <a href="#">Shoes</a>
@@ -305,7 +310,7 @@
                                                 <a href="#">Clothing</a>
                                                 <a href="#">Hats</a>
                                                 <a href="#">Accessories</a>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -360,7 +365,9 @@
                                 <div class="product__item__text">
                                   <h6><%= product.productName %></h6>
                                   <p><%= product.productDescription %></p>
-                                  <a href="#" class="add-cart">+ Add To Cart</a>
+                                  <a class="add-cart" value="pr" data-product-id="<%= product._id %>" data-user-id="<%= userId %>">+ Add to Cart</a>
+
+
                                   <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
@@ -490,15 +497,101 @@
        
       
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-    $(document).ready(function() {
-        $('.zoomable-image').elevateZoom({
-            zoomType: "inner",
-            cursor: "crosshair",
-            responsive: true
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButtons = document.querySelectorAll('.add-cart');
+    
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const productId = button.getAttribute('data-product-id');
+                const userId = button.getAttribute('data-user-id');
+    
+                if (!userId || !productId) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'User or product information is missing.'
+                    });
+                    return;
+                }
+    
+                try {
+                    const response = await fetch(`/shoppingcart/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result === true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Product added to the cart successfully.'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to add the product to the cart.'
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to communicate with the server.'
+                        });
+                    }
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.'
+                    });
+                }
+            });
         });
     });
-</script>
+
+
+
+    $(document).ready(function() {
+  // Handle the click event for category links
+  $('.category-link').on('click', function(e) {
+    e.preventDefault();
+
+    // Get the selected category from the data-category attribute
+    var selectedCategory = $(this).data('category');
+
+    // Make an AJAX request to fetch category-specific data
+    $.ajax({
+      url: '/categoryselection', 
+      method: 'GET',
+      data: { category: selectedCategory },
+      success: function(data) {
+        // Update the content with the retrieved data
+        $('#category-content').html(data);
+      },
+      error: function() {
+        // Handle any errors or display a message
+        $('#category-content').html('Error loading category content.');
+      }
+    });
+  });
+});
+
+ 
+
+
+
+
+    </script>
+    
 
 </html>
 

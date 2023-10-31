@@ -16,10 +16,28 @@
     <head>
         
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
+        <style>
+            .add-cart {
+                background-color: rgb(255, 249, 249);
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+                font-size: 16px;
+                transition: background-color 0.3s; 
+            }
+        
+            
+            .add-cart:hover {
+                background-color: #12c118; 
+            }
+        </style>
     </head>
     
  
-</head>
+
 
 <body>
     <!-- Page Preloder -->
@@ -72,15 +90,15 @@
                             <li class="active"><a href="./shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about.html">About Us</a></li>
+                                    <li><a href="./about">About Us</a></li>
                                     <li><a href="./shopdetails">Shop Details</a></li>
-                                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
+                                    <li><a href="./shoppingcart">Shopping Cart</a></li>
+                                    <li><a href="./checkout">Check Out</a></li>
+                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contacts</a></li>
+                            <li><a href="./blog">Blog</a></li>
+                            <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -162,63 +180,36 @@
                                 <span> - 5 Reviews</span>
                             </div>
                             <h3>$<%= products[0].productPrice %></h3>
-                            <!-- <p>Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
-                                cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
-                            with placket.</p> -->
+
                             <div class="product__details__option">
                                 <div class="product__details__option__size">
                                     <span>Size:</span>
                                     <label for="xxl">xxl
-                                        <input type="radio" id="xxl">
+                                        <input type="radio" id="xxl" name="size" value="xxl">
                                     </label>
                                     <label class="active" for="xl">xl
-                                        <input type="radio" id="xl">
+                                        <input type="radio" id="xl" name="size" value="xl">
                                     </label>
                                     <label for="l">l
-                                        <input type="radio" id="l">
+                                        <input type="radio" id="l" name="size" value="l">
                                     </label>
                                     <label for="sm">s
-                                        <input type="radio" id="sm">
+                                        <input type="radio" id="sm" name="size" value="s">
                                     </label>
                                 </div>
-                                <!-- <div class="product__details__option__color">
-                                    <span>Color:</span>
-                                    <label class="c-1" for="sp-1">
-                                        <input type="radio" id="sp-1">
-                                    </label>
-                                    <label class="c-2" for="sp-2">
-                                        <input type="radio" id="sp-2">
-                                    </label>
-                                    <label class="c-3" for="sp-3">
-                                        <input type="radio" id="sp-3">
-                                    </label>
-                                    <label class="c-4" for="sp-4">
-                                        <input type="radio" id="sp-4">
-                                    </label>
-                                    <label class="c-9" for="sp-9">
-                                        <input type="radio" id="sp-9">
-                                    </label>
-                                </div> -->
                             </div>
                             <div class="product__details__cart__option">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </div>
-                                <a href="#" class="primary-btn">add to cart</a>
+                                <a class="add-cart" value="pr" data-product-id="<%= products[0]._id %>" data-user-id="<%= userId %>">+ Add to Cart</a>
                             </div>
                             <div class="product__details__btns__option">
                                 <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
                                 <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
                             </div>
                             <div class="product__details__last__option">
-                                <!-- <h5><span>Guaranteed Safe Checkout</span></h5> -->
-                                <!-- <img src="malefashion-master/img/shop-details/details-payment.png" alt=""> -->
+                               
                                 <ul>
-                                    <!-- <li><span>SKU:</span> 3812912</li> -->
+                                    
                                     <li><span>Categories:</span><%= products[0].productCategory.category %> </li>
-                                    <!-- <li><span>Tag:</span> Clothes, Skin, Body</li> -->
                                 </ul>
                             </div>
                         </div>
@@ -244,10 +235,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tabs-5" role="tabpanel">
                                     <div class="product__details__tab__content">
-                                        <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
-                                            solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
-                                            ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
-                                        pharetras loremos.</p>
+                                        
                                         <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
                                             <p>A Pocket PC is a handheld computer, which features many of the same
@@ -308,10 +296,6 @@
                                 </div>
                                 <div class="tab-pane" id="tabs-7" role="tabpanel">
                                     <div class="product__details__tab__content">
-                                        <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
-                                            solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
-                                            ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
-                                        pharetras loremos.</p>
                                         <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
                                             <p>A Pocket PC is a handheld computer, which features many of the same
@@ -357,13 +341,16 @@
                     <h3 class="related-title">Related Product</h3>
                 </div>
             </div>
+            
+
+            
             <div class="row">
                 <% if (products.length > 0) { %>
                 <% products.forEach((product, index) => { %>
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="product__item">
                         <% if (productImages[index].length > 0) { %> 
-                        <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= productImages[0] %>">
+                        <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= product.productImage[1].filename %>">
                             <span class="label">New</span>
                             <ul class="product__hover">
                                 <li><a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a></li>
@@ -374,12 +361,11 @@
                         <% } %>
                     </div>
                 </div>
-                <% }) %>
-                <% } %>
+           
             </div>
             
-                        <div class="product__item__text">
-                           
+            
+                   <div class="product__item__text"> 
                             <a href="#" class="add-cart">+ Add To Cart</a>
                             <div class="rating">
                                 <i class="fa fa-star-o"></i>
@@ -388,7 +374,7 @@
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <h5>$67.24</h5>
+                            <h5> $<%= product.productPrice %></h5>
                             <div class="product__color__select">
                                 <label for="pc-1">
                                     <input type="radio" id="pc-1">
@@ -406,6 +392,9 @@
                 
             </div>
         </div>
+        
+            <% }) %>
+            <% } %>
     </section>
     <!-- Related Section End -->
 
@@ -491,6 +480,7 @@
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script> 
 <script>
@@ -499,6 +489,89 @@
             type: 'image',
         });
     });
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButtons = document.querySelectorAll('.add-cart');
+    
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const productId = button.getAttribute('data-product-id');
+                const userId = button.getAttribute('data-user-id');
+                const sizeRadios = document.querySelectorAll('input[name="size"]');
+                let selectedsize = ''
+                for (const radio of sizeRadios) {
+                    if (radio.checked) {
+                        selectedsize=radio.value
+                        console.log(selectedsize);
+                    } else {
+                       
+                        console.log(`The radio button with value ${radio.value} is not checked`);
+                    }
+                }
+                if ( !selectedsize) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: ' size is missing.'
+                    });
+                    return;
+                }
+                
+                const data={
+                    productId,
+                    userId,
+                    size:selectedsize
+                }
+                console.log(productId,userId,data);
+                try {
+                    console.log(data,JSON.stringify(data));
+                    const response = await fetch(`/shoppingcart/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body:JSON.stringify(data)
+                    });
+                    
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result === true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Product added to the cart successfully.'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to add the product to the cart.'
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to communicate with the server.'
+                        });
+                    }
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.'
+                    });
+                }
+            });
+        });
+    });
+  
+    
 </script>
 
 <%- include('../layout/footer') %>

@@ -5,12 +5,14 @@ const session = require('express-session');
 const nocache = require('nocache');
 const path = require('path');
 const otpGenerator = require('otp-generator');
+
 const morgan = require('morgan');
 const userRoute = require('./routes/userRoutes');
 const adminroute = require('./routes/adminRoutes');
 
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(express.json());
 app.use(nocache());
 app.use(express.urlencoded({ extended: true }));
 app.use(

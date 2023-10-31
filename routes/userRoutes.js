@@ -27,8 +27,18 @@ user_route.post('/logout',Auth.logouting)
 
 user_route.get('/home',Auth.isLogged,userController.loadHome)
 user_route.get('/index',Auth.isLogged,userController.loadindex)
-user_route.get('/shop',Auth.isLogged,userController.loadshop)
+user_route.get('/shop',userController.loadshop)
 user_route.get('/shopdetails',Auth.isLogged,  userController.shopdetails);
+user_route.get('/profile',userController.profileView)
+user_route.get('/categoryselection/:categoryId',userController.categorySelection)
+
+
+user_route.get('/shoppingcart',userController.shoppingpage);
+user_route.post('/shoppingcart/:productId',userController.shoppingcart);
+user_route.post('/cartupdation',userController.updateCart)
+user_route.get('/checkout',userController.loadcheckoutpage)
+user_route.post('/checkout',userController.checkout)
+user_route.delete('/removeCartItem/:itemId',userController.removeCartItem)
 
 
 
