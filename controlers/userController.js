@@ -6,9 +6,8 @@ const generateOtp=require('otp-generator')
 const nodemailer=require('nodemailer')
 const {Product}=require('../models/productmodel');
 const {Category}=require('../models/categorymodel')
+const {Order}=require('../models/ordermodel')
 const Cart = require('../models/cartmodel')
-const productmodel = require('../models/productmodel');
-const { body, validationResult } = require('express-validator');
 const dotenv=require('dotenv')
 dotenv.config();
 
@@ -357,8 +356,12 @@ const shopdetails= async (req, res) => {
             const cartItems=await Cart.find({UserId:userId}).populate('ProductId')
 
             // console.log(cartItems,'bbhonin');
+            let totalSum = 0;
+            cartItems.forEach((item) => {
+              totalSum += item.ProductId.productPrice* item.Quantity;
+            });
 
-            res.render('user/shoppingcart',{cartItems})
+            res.render('user/shoppingcart',{cartItems,totalSum})
         }catch(error){
             console.error('an error occured:',error)
             res.status(500).json({error:'An error occured while processing the request'})
@@ -372,18 +375,28 @@ const shopdetails= async (req, res) => {
 
         const updateCart = async (req, res) => {
             try {
-                let { cart, product, size, count } = req.body;
+                let {productId, count } = req.body;
                 const userId=req.session.user
-                const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
-        
-                let total = 0;
-                console.log(cartItems);
-                for (const item of cartItems) {
-                    console.log(item.ProductId.productPrice,item.Quantity);
-                    total += item.ProductId.productPrice * item.Quantity;
+                const product = await Product.find({_id:productId})
+                const cartItem = await Cart.findOne({ UserId: userId, 'ProductId': productId})
+                
+                
+                count ? cartItem.Quantity = cartItem.Quantity + 1:cartItem.Quantity = cartItem.Quantity - 1;
+
+                if(cartItem.Quantity>=1){
+                    if(cartItem.Quantity <= product[0].productStock){
+                        await cartItem.save();
+                    }
                 }
-        
-                res.json({ total });
+                
+
+                const cartItems=await Cart.find({UserId:userId}).populate('ProductId')
+                let totalSum = 0;
+                cartItems.forEach((item) => {
+                  totalSum += item.ProductId.productPrice* item.Quantity;
+                });
+                    console.log(totalSum);
+                res.json({ totalSum });
             } catch (error) {
                 console.error(error);
                 res.status(500).json({ error: "Internal Server Error" });
@@ -467,6 +480,7 @@ const loadcheckoutpage = async (req, res) => {
       console.log(userId, 'dijksn');
       const user = await User.findById(userId);
       const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+      req.session.address=user.Address
   
       if (!user) {
         return res.status(404).json({ message: 'user not found' });
@@ -524,28 +538,77 @@ const loadcheckoutpage = async (req, res) => {
       
 
 
+      const order = async (req, res) => {
+        try {
+          const userId = req.session.user;
+          const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+          const userAddress = userId.address
+          
+          console.log('jjjjjj', userId, cartItems, userAddress);
+      
+          const newOrder = new Order({
+            userId: userId,
+            products: cartItems,
+            address: userAddress, 
+          });
+      
+          await newOrder.save();
+          res.send('Order placed successfully');
+        } catch (error) {
+          console.error(error);
+          res.status(500).send('Error placing the order');
+        }
+      };
+      
+      
+      
+      
 
   
-  const profileView = async (req, res) => {
-    try {
-        const userId = req.session.user; 
 
-        if (!userId) {
-            return res.status(401).send('User data not found in the session.');
+
+      const profileView = async (req, res) => {
+        try {
+            const userId = req.session.user;
+    
+            if (!userId) {
+                return res.status(401).send('User data not found in the session.');
+            }
+    
+            const userData = await User.findById(userId);
+    
+            if (!userData) {
+                return res.status(404).send('User not found in the database.');
+            }
+    
+            const address = userData.Address; 
+    
+            console.log(address, userId, 'fhbasj');
+            res.render('user/profile', { userData, address });
+        } catch (error) {
+            res.status(500).send(error.message);
         }
+    };
+    
 
-     
-        const userData = await User.findById(userId);
+    const deleteAddress = async (req, res) => {
+        try {
+            const id = req.query.id;
+            console.log('id',id)
+            const userData = await User.findByIdAndUpdate(
+                { _id: req.session.userData._id },
+                { $pull: { Address: { _id: id } } }
+            );
 
-        if (!userData) {
-            return res.status(404).send('User not found in the database.');
+            res.redirect('/profile');
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while deleting the address' });
         }
-
-        res.render('user/profile', { userData });
-    } catch (error) {
-        res.status(500).send(error.message);
     }
-};
+    
+
+
+
 
 
 
@@ -575,8 +638,10 @@ module.exports = {
     loadcheckoutpage,
     checkout,
     profileView,
+    deleteAddress,
     userValid,
     loadHome,
+    order,
     categorySelection,
     logout,
 }

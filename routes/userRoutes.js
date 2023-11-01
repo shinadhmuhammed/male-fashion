@@ -38,7 +38,10 @@ user_route.post('/shoppingcart/:productId',userController.shoppingcart);
 user_route.post('/cartupdation',userController.updateCart)
 user_route.get('/checkout',userController.loadcheckoutpage)
 user_route.post('/checkout',userController.checkout)
+user_route.post('/order', userController.order); 
 user_route.delete('/removeCartItem/:itemId',userController.removeCartItem)
+user_route.get('/deleteaddress',userController.deleteAddress)
+
 
 
 

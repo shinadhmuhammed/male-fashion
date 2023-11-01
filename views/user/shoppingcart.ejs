@@ -182,12 +182,14 @@
 
                                         <td class="pro-qty-container">
                                             <button class="pro-qty-button"
-                                                onclick="changeQuantity('<%= item._id %>','<%= item.ProductId._id %>','<%- item.size %>',-1)"> - </button>
-                                            <p class="pro-qty-count" id=" <%= item.productId %>"><%= item.count %></p>
+                                                onclick="changeQuantity('<%= item.ProductId._id %>',false)"> - </button>
+                                            <input class="pro-qty-count" id=" <%= item.productId %>" min=1 max="<%= item.ProductId.productStock %>" value="<%= item.Quantity %>"> 
                                             <button class="pro-qty-button"
-                                                onclick="changeQuantity('<%= item._id %>','<%= item.ProductId._id %>','<%- item.size %>',1)">+</button>
+                                                onclick="changeQuantity('<%= item.ProductId._id %>',true)">+</button>
                                         </td>
                                         
+
+                                      
 
 
                                         <td class="size__item">
@@ -229,7 +231,7 @@
                         <h6>Cart total</h6>
                         <ul>
                             <!-- <li>Subtotal <span>$ 169.50</span></li> -->
-                            <li>Total <span id="totalvalue">Calculating...</span></li>
+                            <li>Total <span id="totalvalue">$ <%= totalSum %></span></li>
 
                         </ul>
                         <a href="./checkout" class="primary-btn">Proceed to checkout</a>
@@ -330,9 +332,7 @@
 <script>
 
 
-        function changeQuantity(cart,product,size,count){
-            console.log(cart,'jdyfyfuyjvhv',product,'bmkl',size,count);
-            let parsedCount = parseInt(count);
+        function changeQuantity(productId,count){
         
 
             fetch('/cartupdation', {
@@ -341,16 +341,14 @@
                 'content-type': 'application/json'
             },
             body: JSON.stringify({
-                cart,
-                product,
-                size,
-                count: parsedCount,
+                productId,
+                count,
             })
         })
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            document.getElementById('totalvalue').textContent = `$${data.total}`;
+            document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
         });
     }
         
