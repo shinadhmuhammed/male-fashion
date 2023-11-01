@@ -1,0 +1,47 @@
+<!-- edit-address.ejs -->
+<%- include('../layout/header') %>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">Edit Address:</div>
+        <div class="card-body">
+            <form action="/update-address/<%= address._id %>" method="post">
+                <input type="hidden" name="id" value="<%= address._id %>">
+                <div class="form-group">
+                    <label for="delivery_point">Delivery Point:</label>
+                    <input type="text" id="delivery_point" name="delivery_point" class="form-control" value="<%= address.delivery_point %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" value="<%= address.name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="delivery_point">Mobile number</label>
+                    <input type="text" id="number" name="number" class="form-control" value="<%= address.number %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="delivery_point">House</label>
+                    <input type="text" id="house" name="house" class="form-control" value="<%= address.house %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="delivery_point">City</label>
+                    <input type="text" id="city" name="city" class="form-control" value="<%= address.city %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="delivery_point">State</label>
+                    <input type="text" id="state" name="state" class="form-control" value="<%= address.state %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="delivery_point">Pincode</label>
+                    <input type="text" id="pincode" name="pincode" class="form-control" value="<%= address.pincode %>" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Address</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../layout/footer') %>

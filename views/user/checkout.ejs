@@ -181,19 +181,23 @@ input[type="number"] {
     
                         <h6 class="checkout__title">Your Address</h6>
     
-                        <!-- Add a button to toggle the address form section -->
+                       
                         <button id="showAddressBtn">Add Address</button>
     
-                        <!-- Address form section initially hidden -->
+                      
                         <div id="addressForm" style="display: none;">
-                            <!-- Address form here -->
                             <form action="/checkout" method="post">
                                 <div class="user-address">
                                     <div class="address-item">
                                         <label for="name">Name:</label>
                                         <input type="text" id="name" name="name" value="">
                                     </div>
-    
+                                    
+                                    <div class="address-item">
+                                        <label for="number">Mobile Number:</label>
+                                        <input type="text" id="number" name="number" value="">
+                                    </div>
+
                                     <div class="address-item">
                                         <label for="house">House:</label>
                                         <input type="text" id="house" name="house" value="">
@@ -229,6 +233,7 @@ input[type="number"] {
                             <% address.forEach(function(addr, index) { %>
                                 <div class="user-address">
                                     <p><strong>Name:</strong> <%= addr.name %></p>
+                                    <p><strong>Number</strong> <%= addr.number %></p>
                                     <p><strong>House:</strong> <%= addr.house %></p>
                                     <p><strong>City:</strong> <%= addr.city %></p>
                                     <p><strong>State:</strong> <%= addr.state %></p>
@@ -248,7 +253,6 @@ input[type="number"] {
 
                     <div class="col-lg-4 col-md-6">
                      <section class="checkout__order">
-                            <form action="/order" method="post" id="order-form">
                                 <h4 class="order__title">Your order</h4>
                                 <div class="checkout__order__products">
                                     Product
@@ -264,17 +268,24 @@ input[type="number"] {
                                     <% }); %>
                                 </ul>
                                 <ul class="checkout__total__all">
-                                    <li>Subtotal <span>$<%=  %></span></li> 
-                                    <li>Total <span>$<%= %></span></li> 
+                                    <li>Total <span>$<%= totalSum %> </span></li> 
                                 </ul>
-                                <div class="checkout__input__checkbox">
-                                    <label for="payment">
-                                        Cash On Delivery
-                                        <input type="checkbox" id="payment">
-                                        <span class="checkmark"></span>
-                                    </label>
+
+
+                                <div class="payment-method">
+                                    <div class="form-check">
+                                        <input onclick="enableButton()" class="form-check-input"
+                                            type="radio" name="payment" id="COD" value="1">
+                                        <label class="form-check-label" for="payment1">
+                                            Cash On Delivery
+                                        </label>
+
+
                                 </div>
-                                <button type="submit" class="site-btn">PLACE ORDER</button>
+                                <button class="btn" onclick="CheckplaceOrder()"
+                                 value="Place order" id="placeOrderButton">Place Order
+                                </button>
+                                    </div>
                             </form>
                         </section>
                     </div>
@@ -374,14 +385,73 @@ input[type="number"] {
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
 <script>
-    $(document).ready(function() {
+
+async function CheckplaceOrder() {
+    const selectedAddressRadioButtons = document.getElementsByName("selectedAddress");
+
+    let selectedAddressId = null;
+    for (let i = 0; i < selectedAddressRadioButtons.length; i++) {
+        if (selectedAddressRadioButtons[i].checked) {
+            selectedAddressId = selectedAddressRadioButtons[i].value;
+            break; 
+        }
+    }
+
+    if (selectedAddressId === null) {
+        Swal.fire({
+            text: "Please select an address!",
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 1000,
+        });
+        return;
+    }
+    
+
+   
+
+    const response = await fetch('/order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            selectedAddressId,
+            cartItems,
+        }),
+    });
+
+    if (response.status === 200) {
+        Swal.fire({
+            text: "Order placed successfully!",
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1000,
+        });
+    } else {
+        Swal.fire({
+            text: "Failed to place the order!",
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 1000,
+        });
+    }
+}
+
+
+
+
+$(document).ready(function() {
         $('#showAddressBtn').click(function() {
             $('#userAddress').toggle();
             $('#addressForm').toggle();
         });
     });
 </script>
+
+
 
 
 

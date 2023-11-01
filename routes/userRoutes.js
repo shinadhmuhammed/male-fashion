@@ -40,7 +40,11 @@ user_route.get('/checkout',userController.loadcheckoutpage)
 user_route.post('/checkout',userController.checkout)
 user_route.post('/order', userController.order); 
 user_route.delete('/removeCartItem/:itemId',userController.removeCartItem)
+user_route.get('/edit-address/:id', userController.editAddress);
+user_route.post('/update-address/:id',userController.updateAddress)
 user_route.get('/deleteaddress',userController.deleteAddress)
+user_route.get('/changepassword', userController.loadChangePassword);
+user_route.post('/changepassword',userController.changepassword)
 
 
 

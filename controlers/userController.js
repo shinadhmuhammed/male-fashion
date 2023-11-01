@@ -480,6 +480,10 @@ const loadcheckoutpage = async (req, res) => {
       console.log(userId, 'dijksn');
       const user = await User.findById(userId);
       const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+      let totalSum = 0;
+                cartItems.forEach((item) => {
+                  totalSum += item.ProductId.productPrice* item.Quantity;
+                });
       req.session.address=user.Address
   
       if (!user) {
@@ -487,9 +491,9 @@ const loadcheckoutpage = async (req, res) => {
       }
   
       const address = user.Address;
-      console.log(address,cartItems, 'dbhjsdsfdfsdfd');
+    //   console.log(address,cartItems, 'dbhjsdsfdfsdfd');
   
-      res.render('user/checkout', { user, address,cartItems });
+      res.render('user/checkout', { user, address,cartItems,totalSum });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });
@@ -501,19 +505,20 @@ const loadcheckoutpage = async (req, res) => {
   
     const checkout = async (req, res) => {
         try {
-          const { name, house, city, state, pincode, delivery_point } = req.body;
+          const { name, number,house, city, state, pincode, delivery_point } = req.body;
       
        
-          if (!name || !house || !city || !state || !pincode || !delivery_point) {
+          if (!name || !number|| !house || !city || !state || !pincode || !delivery_point) {
             return res.status(400).json({ message: 'Please fill in all required fields' });
           }
       
-          console.log(name, house, city, state, pincode, delivery_point);
+        //   console.log(name, house, city, state, pincode, delivery_point);
       
           const userId = req.session.user;
       
           const address = {
             name,
+            number,
             house,
             city,
             state,
@@ -529,7 +534,7 @@ const loadcheckoutpage = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
           }
       
-          return res.render('user/checkout', { message: 'Address added successfully' });
+          return res.render('user/checkout', { message: 'Address added successfully',address });
         } catch (error) {
           console.error(error);
           res.status(500).json({ error: 'Internal server error' });
@@ -542,9 +547,10 @@ const loadcheckoutpage = async (req, res) => {
         try {
           const userId = req.session.user;
           const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
-          const userAddress = userId.address
+          const user = await User.findById(userId); 
+          const userAddress = user.Address;
           
-          console.log('jjjjjj', userId, cartItems, userAddress);
+          console.log('jjjjjj', userId, cartItems, userAddress,'kkkkkkkkkkkkk');
       
           const newOrder = new Order({
             userId: userId,
@@ -558,7 +564,8 @@ const loadcheckoutpage = async (req, res) => {
           console.error(error);
           res.status(500).send('Error placing the order');
         }
-      };
+    };
+    
       
       
       
@@ -582,8 +589,8 @@ const loadcheckoutpage = async (req, res) => {
             }
     
             const address = userData.Address; 
+         
     
-            console.log(address, userId, 'fhbasj');
             res.render('user/profile', { userData, address });
         } catch (error) {
             res.status(500).send(error.message);
@@ -591,22 +598,136 @@ const loadcheckoutpage = async (req, res) => {
     };
     
 
+
+    const editAddress = async (req, res) => {
+        try {
+          const userId = req.session.user
+          const addressId = req.params.id;
+      
+        
+          const user = await User.findById(userId);
+      
+          if (!user) {
+            return res.status(404).send('User not found');
+          }
+      
+     
+          const address = user.Address.id(addressId);
+      
+          if (!address) {
+            return res.status(404).send('Address not found');
+          }
+      
+          res.render('user/editadress', { address });
+        } catch (error) {
+          res.status(500).send(error.message);
+        }
+      };
+      
+      
+
+      const updateAddress = async (req, res) => {
+        try {
+          const addressId = req.params.id;
+          console.log(addressId,'gyhbnjhuihjnkujn');
+          const { delivery_point, name, number, house, city, state, pincode } = req.body;
+      
+         
+          const user = await User.findById(req.session.user);
+          if (!user) {
+            return res.status(404).send('User not found');
+          }
+      
+          const address = user.Address.id(addressId);
+      
+          if (!address) {
+            return res.status(404).send('Address not found');
+          }
+      
+          address.delivery_point = delivery_point;
+          address.name = name;
+          address.number = number;
+          address.house = house;
+          address.city = city;
+          address.state = state;
+          address.pincode = pincode;
+      
+          await user.save(); 
+          res.redirect('/profile');
+        } catch (error) {
+          res.status(500).send(error.message);
+        }
+      };
+      
+      
+    
+
+
+
+
     const deleteAddress = async (req, res) => {
         try {
             const id = req.query.id;
-            console.log('id',id)
+            console.log('id', id);
+
+            const userId = req.session.user;
+    
             const userData = await User.findByIdAndUpdate(
-                { _id: req.session.userData._id },
+                { _id: userId },
                 { $pull: { Address: { _id: id } } }
             );
-
-            res.redirect('/profile');
+            if (userData) {
+                res.redirect('/profile');
+            } else {
+                res.status(404).json({ error: 'Address not found or not deleted.' });
+            }
         } catch (error) {
+            console.error(error);
             res.status(500).json({ error: 'An error occurred while deleting the address' });
         }
     }
     
+    
+    
+    const loadChangePassword = (req, res) => {
+        const message = req.query.message; 
+        res.render('user/changepassword',{message});
+    };
 
+
+
+
+        const changepassword=async(req,res)=>{
+            try{
+                const userId=req.session.user;
+                const {currentPassword,newPassword,confirmPassword}=req.body;
+                console.log(currentPassword,newPassword,confirmPassword,'kkkkkkkkkkkkkkkkkkkkk');
+                if(newPassword !== confirmPassword){
+                    return res.render('user/changepassword',{message:'new password and confirmation password do not match'})
+                }
+                const user=await User.findById(userId)
+
+                if(!user){
+                    return res.status(400).send('user not found in the database')
+                }
+                
+             const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+                if (!isMatch) {
+            return res.render('user/changepassword', { message: 'Current password is incorrect' });
+                }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        res.render('user/changepassword',{message:'password change successfully'});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+        
 
 
 
@@ -638,7 +759,11 @@ module.exports = {
     loadcheckoutpage,
     checkout,
     profileView,
+    editAddress,
+    updateAddress,
     deleteAddress,
+    changepassword,
+    loadChangePassword,
     userValid,
     loadHome,
     order,

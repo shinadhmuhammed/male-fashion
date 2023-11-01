@@ -11,6 +11,14 @@
             margin: 0 auto; 
             text-align: center;
         }
+
+        .reset-password-link {
+    text-decoration: none; 
+    color: #007BFF; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
     </style>
 </head>
 <body>
@@ -47,14 +55,14 @@
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="./about.html">About Us</a></li>
-                                    <li><a href="./shop-details.html">Shop Details</a></li>
-                                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
+                                    <li><a href="./shop-details">Shop Details</a></li>
+                                    <li><a href="./shopping-cart">Shopping Cart</a></li>
+                                    <li><a href="./checkout">Check Out</a></li>
+                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contacts</a></li>
+                            <li><a href="./blog">Blog</a></li>
+                            <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -72,12 +80,21 @@
         <img src="/malefashion-master/images/myprofile.jpeg" alt="Profile Picture">
         <h4 id="name"><strong>NAME:</strong> <%= userData.name %></h4>
         <h4 id="email"><strong>EMAIL:</strong> <%= userData.email %></h4>
-        <!-- <p id="address" class="address"><strong>ADDRESS:</strong> <%= userData.Address[3] %></p> -->
     </div>
    
-    <!-- <a href="/order" class="genric-btn w-100 primary circle">My orders</a> <br><br>
-<a href="/address" class="genric-btn w-100 primary circle">Manage Address</a> <br><br>
-<a href="/forgetPassword" class="genric-btn  w-100 primary circle">Reset Password</a> <br><br> -->
+ 
+    
+    <div class="container">
+        <div class="card mb-4">
+            <div class="card-header">
+                <a href="/changepassword" class="reset-password-link">Reset Password</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
 <div class="container">
     <div class="card mb-4">
       <div class="card-header"> Address :</div>
@@ -97,7 +114,7 @@
                                   <p><%=item.house%></p>
                                   <p><%=item.city%>,<%=item.state%></p>
                                   <p><%=item.pincode%> </p>
-                                  <a class="btn btn-success" href="/edit-address?id=<%=item._id%>">Edit</a>
+                                  <a class="btn btn-success" href="/edit-address/<%= item._id %>">Edit</a>
                                   <a class="btn btn-danger" href="/deleteaddress?id=<%=item._id%>"
                                       onclick="return confirm('Are You Sure ?')">DELETE</a>
                               </div>
@@ -109,6 +126,10 @@
           </div>
       </div>
       </div>
+
+
+
+    
 
 
 

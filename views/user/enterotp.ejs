@@ -79,61 +79,56 @@
 
 
 
-    
     <script>
-        let countdownTime = 59; 
+        let countdownTime = 60; 
         let countdownInterval;
-
+        let isResending = false; 
+    
         const updateCountdown = () => {
             const minutes = Math.floor(countdownTime / 60);
             const seconds = countdownTime % 60;
             document.getElementById('countdown').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            document.getElementById('countdownTimer').textContent = document.getElementById('countdown').textContent; // Update the countdown timer
             countdownTime--;
-
+    
             if (countdownTime < 0) {
                 clearInterval(countdownInterval);
                 document.getElementById('resendMessage').style.display = 'none'; // Hide the message
-                document.getElementById('countdownTimer').textContent = ''; // Clear the countdown timer
-                document.getElementById('resendOTP').disabled = false;
+                document.getElementById('countdown').textContent = '1:00'; // Reset the countdown timer
+                document.getElementById('resendOTP').disabled = false; // Re-enable the button
+                isResending = false; // Resending is now allowed
             }
         };
-
-        document.getElementById('resendOTP').addEventListener('click', function() {
-            if (!document.getElementById('resendMessage').style.display) {
+    
+        document.getElementById('resendOTP').addEventListener('click', function () {
+            if (isResending) {
                 alert('You can resend OTP only after 1 minute.');
             } else {
+                isResending = true;
+                document.getElementById('resendOTP').disabled = true;
+                document.getElementById('resendMessage').style.display = 'block'; // Show the message
+                document.getElementById('countdown').textContent = '1:00'; // Set initial countdown value
+    
                 fetch('/resendOtp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    countdownInterval = setInterval(updateCountdown, 1000);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        countdownTime = 60;
+                        countdownInterval = setInterval(updateCountdown, 1000);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        isResending = false;
+                        document.getElementById('resendOTP').disabled = false;
+                        document.getElementById('resendMessage').style.display = 'none'; // Hide the message on error
+                    });
             }
         });
     </script>
-</body>
     
-
-
-
-    
-
-
-
-
-
-
-</html>
-
-
 
    
 </body>
