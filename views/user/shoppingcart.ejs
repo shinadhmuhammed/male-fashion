@@ -181,12 +181,11 @@
 
 
                                         <td class="pro-qty-container">
-                                            <button class="pro-qty-button"
-                                                onclick="changeQuantity('<%= item.ProductId._id %>',false)"> - </button>
-                                            <input class="pro-qty-count" id=" <%= item.productId %>" min=1 max="<%= item.ProductId.productStock %>" value="<%= item.Quantity %>"> 
-                                            <button class="pro-qty-button"
-                                                onclick="changeQuantity('<%= item.ProductId._id %>',true)">+</button>
+                                            <button class="pro-qty-button" onclick="changeQuantity('<%= item.ProductId._id %>', -1)"> - </button>
+                                            <input class="pro-qty-count" id="<%= item.ProductId._id %>" min="1" max="<%= item.ProductId.productStock %>" value="<%= item.Quantity %>"> 
+                                            <button class="pro-qty-button" onclick="changeQuantity('<%= item.ProductId._id %>', 1)"> + </button>
                                         </td>
+                                        
                                         
 
                                       
@@ -331,17 +330,34 @@
 <script>
 
 
-        function changeQuantity(productId,count){
-        
+function changeQuantity(productId, increment) {
 
-            fetch('/cartupdation', {
+    var inputElement = document.getElementById(productId);
+
+  
+    var currentValue = parseInt(inputElement.value);
+
+  
+    var newValue = currentValue + increment;
+
+   
+    var max = parseInt(inputElement.getAttribute("max"));
+
+    if (newValue >= 1 && newValue <= max) {
+        inputElement.value = newValue;
+
+        if (newValue === max) {
+            alert("Product stock is reached.");
+        }
+
+        fetch('/cartupdation', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
             },
             body: JSON.stringify({
                 productId,
-                count,
+                count: increment
             })
         })
         .then(response => response.json())
@@ -350,9 +366,7 @@
             document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
         });
     }
-        
-      
-
+}
 
 
 

@@ -343,7 +343,7 @@ const shopdetails= async (req, res) => {
   
 
 
-
+///////////////////////////////cart////////////////////////////////////////////////////
 
      const shoppingpage=async(req,res)=>{
          try{
@@ -372,36 +372,38 @@ const shopdetails= async (req, res) => {
 
   
 
-
         const updateCart = async (req, res) => {
             try {
-                let {productId, count } = req.body;
-                const userId=req.session.user
-                const product = await Product.find({_id:productId})
-                const cartItem = await Cart.findOne({ UserId: userId, 'ProductId': productId})
-                
-                
-                count ? cartItem.Quantity = cartItem.Quantity + 1:cartItem.Quantity = cartItem.Quantity - 1;
-
-                if(cartItem.Quantity>=1){
-                    if(cartItem.Quantity <= product[0].productStock){
-                        await cartItem.save();
+                const { productId, count } = req.body;
+                const userId = req.session.user;
+                const product = await Product.find({ _id: productId });
+                const cartItem = await Cart.findOne({ UserId: userId, ProductId: productId });
+        
+                if (count > 0) {
+                    if (cartItem.Quantity < product[0].productStock) {
+                        cartItem.Quantity += 1;
+                    }
+                } else {
+                    if (cartItem.Quantity > 1) {
+                        cartItem.Quantity -= 1;
                     }
                 }
-                
-
-                const cartItems=await Cart.find({UserId:userId}).populate('ProductId')
+        
+                await cartItem.save();
+        
+                const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
                 let totalSum = 0;
                 cartItems.forEach((item) => {
-                  totalSum += item.ProductId.productPrice* item.Quantity;
+                    totalSum += item.ProductId.productPrice * item.Quantity;
                 });
-                    console.log(totalSum);
+                console.log(totalSum);
                 res.json({ totalSum });
             } catch (error) {
                 console.error(error);
                 res.status(500).json({ error: "Internal Server Error" });
             }
         };
+        
         
         
         
@@ -471,7 +473,7 @@ const shopdetails= async (req, res) => {
 
 
   
-
+//////////////////////////////////////checkout///////////////////////////////////////////////////
 
 
 const loadcheckoutpage = async (req, res) => {
@@ -546,16 +548,29 @@ const loadcheckoutpage = async (req, res) => {
       const order = async (req, res) => {
         try {
           const userId = req.session.user;
-          const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
-          const user = await User.findById(userId); 
+          const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
+          const user = await User.findById(userId);
           const userAddress = user.Address;
-          
-          console.log('jjjjjj', userId, cartItems, userAddress,'kkkkkkkkkkkkk');
+          const paymentMethod = req.body.paymentMethod;  
+      
+          const products = cartItems.map((cartItem) => ({
+            productId: cartItem.ProductId._id,
+            productName: cartItem.ProductId.productName,
+            productPrice: cartItem.ProductId.productPrice,
+            quantity: cartItem.Quantity,
+          }));
+      
+          let totalSum = 0;
+          cartItems.forEach((item) => {
+            totalSum += item.ProductId.productPrice * item.Quantity;
+          });
       
           const newOrder = new Order({
             userId: userId,
-            products: cartItems,
-            address: userAddress, 
+            products: products,
+            address: userAddress,
+            total: totalSum,
+            paymentMethod, 
           });
       
           await newOrder.save();
@@ -564,33 +579,65 @@ const loadcheckoutpage = async (req, res) => {
           console.error(error);
           res.status(500).send('Error placing the order');
         }
-    };
-    
+      };
+      
+      
+      
+      const getOrder = async (req, res) => {
+        const userId = req.session.user;
+        try {
+          const orders = await Order.find({ userId: userId }).lean(); 
+          res.render('user/myorder', { orders });
+        } catch (error) {
+          console.error(error);
+          res.status(500).send('Error fetching orders');
+        }
+      };
+      
+
+
+      const cancelOrder = async (req, res) => {
+        const orderId = req.params.orderId;
+        console.log(orderId, 'jkkkkkkkkkkkkkkkkkkkkkkkkkk');
+        try {
+          const order = await Order.findById(orderId);
+          console.log('Found order:', order);
+      
+          if (order) {
+            order.cancelled = true;
+            console.log('Updated order:', order);
+      
+            await order.save();
+            console.log('Order saved successfully');
+            res.status(200).send('Order cancelled successfully');
+          } else {
+            res.status(404).send('Order not found');
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).send('Error cancelling the order');
+        }
+      };
+      
       
       
       
       
 
-  
+  ////////////////////////////////////userProfile////////////////////////////////////////////////////
 
 
       const profileView = async (req, res) => {
         try {
             const userId = req.session.user;
-    
             if (!userId) {
                 return res.status(401).send('User data not found in the session.');
             }
-    
             const userData = await User.findById(userId);
-    
             if (!userData) {
                 return res.status(404).send('User not found in the database.');
             }
-    
             const address = userData.Address; 
-         
-    
             res.render('user/profile', { userData, address });
         } catch (error) {
             res.status(500).send(error.message);
@@ -603,21 +650,15 @@ const loadcheckoutpage = async (req, res) => {
         try {
           const userId = req.session.user
           const addressId = req.params.id;
-      
-        
           const user = await User.findById(userId);
-      
           if (!user) {
             return res.status(404).send('User not found');
           }
-      
-     
           const address = user.Address.id(addressId);
       
           if (!address) {
             return res.status(404).send('Address not found');
           }
-      
           res.render('user/editadress', { address });
         } catch (error) {
           res.status(500).send(error.message);
@@ -697,36 +738,36 @@ const loadcheckoutpage = async (req, res) => {
 
 
 
-        const changepassword=async(req,res)=>{
-            try{
-                const userId=req.session.user;
-                const {currentPassword,newPassword,confirmPassword}=req.body;
-                console.log(currentPassword,newPassword,confirmPassword,'kkkkkkkkkkkkkkkkkkkkk');
-                if(newPassword !== confirmPassword){
-                    return res.render('user/changepassword',{message:'new password and confirmation password do not match'})
-                }
-                const user=await User.findById(userId)
+     const changepassword=async(req,res)=>{
+        try{
+            const userId=req.session.user;
+            const {currentPassword,newPassword,confirmPassword}=req.body;
+            console.log(currentPassword,newPassword,confirmPassword,'kkkkkkkkkkkkkkkkkkkkk');
+            if(newPassword !== confirmPassword){
+                return res.render('user/changepassword',{message:'new password and confirmation password do not match'})
+            }
+            const user=await User.findById(userId)
 
-                if(!user){
-                    return res.status(400).send('user not found in the database')
-                }
+            if(!user){
+                return res.status(400).send('user not found in the database')
+            }
                 
-             const isMatch = await bcrypt.compare(currentPassword, user.password);
+            const isMatch = await bcrypt.compare(currentPassword, user.password);
 
-                if (!isMatch) {
+            if (!isMatch) {
             return res.render('user/changepassword', { message: 'Current password is incorrect' });
                 }
 
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedPassword;
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            user.password = hashedPassword;
 
-        await user.save();
+            await user.save();
 
-        res.render('user/changepassword',{message:'password change successfully'});
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-};
+            res.render('user/changepassword',{message:'password change successfully'});
+            } catch (error) {
+            res.status(500).send(error.message);
+            }
+            };
         
 
 
@@ -767,6 +808,8 @@ module.exports = {
     userValid,
     loadHome,
     order,
+    cancelOrder,
+    getOrder,
     categorySelection,
     logout,
 }

@@ -47,7 +47,8 @@ user_route.get('/changepassword', userController.loadChangePassword);
 user_route.post('/changepassword',userController.changepassword)
 
 
-
+user_route.get('/myorder',userController.getOrder)
+user_route.post('/cancelOrder/:orderId', userController.cancelOrder);
 
 module.exports = user_route
 

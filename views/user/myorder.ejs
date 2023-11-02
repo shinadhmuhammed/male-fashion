@@ -1,0 +1,162 @@
+<%- include('../layout/header') %>
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+ <style>
+   
+    .red-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px; 
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.no-orders-message {
+  font-weight: bold;
+  color: #555;
+  margin-top: 20px;
+}
+h3 {
+  text-align: center;
+  margin-top: 70px; 
+}
+ </style>
+</head>
+<body>
+    <h3 style="text-align: center;">My Orders</h3>
+  
+    <% if (orders.length > 0) { %>
+      <table>
+        <tr>
+          <th>Product Name</th>
+          <th>Product Price</th>
+          <th>Product Quantity</th>
+          <th>Total Amount</th>
+          <th>Date</th>
+          <th>Payment Method</th>
+          <th>Actions</th> 
+        </tr>
+        <% orders.forEach((order) => { %>
+          <tr>
+            <td><%= order.products[0].productName %></td>
+            <td><%= order.products[0].productPrice %></td>
+            <td><%= order.products[0].quantity %></td>
+            <td><%= order.total %></td>
+            <td><%= order.date %></td>
+            <td><%= order.paymentMethod %></td>
+            <td>
+                <button class="red-button" <% if (order.cancelled) { %>disabled<% } else { %>onclick="cancelOrder('<%= order._id %>')"<% } %>
+                    ><% if (order.cancelled) { %>Cancelled<% } else { %>Cancel<% } %></button>
+                  
+            </td>
+          </tr>
+        <% }); %>
+      </table>
+    <% } else { %>
+      <p class="no-orders-message">You have no orders yet.</p>
+    <% } %>
+  </body>
+  
+      
+      
+      
+
+    <a href="/">Back to Home</a>
+</body>
+<script>
+    function cancelOrder(orderId) {
+      console.log(orderId, 'kkkkkkkkkkkkkkklllllllllllllll');
+      fetch(`/cancelOrder/${orderId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            const cancelButton = document.querySelector(`button[onclick="cancelOrder('${orderId}')"]`);
+            cancelButton.textContent = 'Cancelled';
+            cancelButton.classList.add('cancelled-button');
+            console.log('Order successfully canceled');
+          } else {
+            console.error('Error cancelling the order');
+          }
+        })
+        .catch((error) => {
+          console.error('Error cancelling the order:', error);
+        });
+    }
+    </script>
+    
+    
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include('../layout/footer') %>

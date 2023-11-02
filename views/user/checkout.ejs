@@ -272,19 +272,34 @@ input[type="number"] {
                                 </ul>
 
 
+                               
+
+                              
                                 <div class="payment-method">
                                     <div class="form-check">
-                                        <input onclick="enableButton()" class="form-check-input"
-                                            type="radio" name="payment" id="COD" value="1">
-                                        <label class="form-check-label" for="payment1">
+                                        <input
+                                            onclick="toggleCashOnDelivery(this)"
+                                            class="form-check-input"
+                                            type="checkbox" 
+                                            name="payment"
+                                            id="COD"
+                                        />
+                                        <label class="form-check-label" for="COD">
                                             Cash On Delivery
                                         </label>
-
-
+                                    </div>
                                 </div>
-                                <button class="btn" onclick="CheckplaceOrder()"
-                                 value="Place order" id="placeOrderButton">Place Order
+                                <button
+                                    class="btn"
+                                    onclick="CheckplaceOrder()"
+                                    value="Place order"
+                                    id="placeOrderButton"
+                                    disabled 
+                                >
+                                    Place Order
                                 </button>
+                                
+                                
                                     </div>
                             </form>
                         </section>
@@ -388,6 +403,16 @@ input[type="number"] {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
 <script>
 
+function toggleCashOnDelivery(element) {
+        var placeOrderButton = document.getElementById("placeOrderButton");
+        
+        if (element.checked) {
+            placeOrderButton.removeAttribute("disabled");
+        } else {
+            placeOrderButton.setAttribute("disabled", "disabled");
+        }
+    }
+
 async function CheckplaceOrder() {
     const selectedAddressRadioButtons = document.getElementsByName("selectedAddress");
 
@@ -409,7 +434,7 @@ async function CheckplaceOrder() {
         return;
     }
     
-
+    const paymentMethod = document.getElementById("COD").checked ? "Cash On Delivery" : null;
    
 
     const response = await fetch('/order', {
@@ -420,6 +445,7 @@ async function CheckplaceOrder() {
         body: JSON.stringify({
             selectedAddressId,
             cartItems,
+            paymentMethod,
         }),
     });
 

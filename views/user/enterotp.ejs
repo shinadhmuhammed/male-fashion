@@ -92,10 +92,10 @@
     
             if (countdownTime < 0) {
                 clearInterval(countdownInterval);
-                document.getElementById('resendMessage').style.display = 'none'; // Hide the message
-                document.getElementById('countdown').textContent = '1:00'; // Reset the countdown timer
-                document.getElementById('resendOTP').disabled = false; // Re-enable the button
-                isResending = false; // Resending is now allowed
+                document.getElementById('resendMessage').style.display = 'none'; 
+                document.getElementById('countdown').textContent = '1:00';
+                document.getElementById('resendOTP').disabled = false; 
+                isResending = false; 
             }
         };
     
