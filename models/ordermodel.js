@@ -57,6 +57,12 @@ cancelled: {
   type: Boolean,
   default: false,
 },
+status: {
+  type: String,
+  enum: ['Pending', 'Shipped', 'Delivered'], 
+  required: true,
+  default: 'Pending',
+}
 });
 
 module.exports = {

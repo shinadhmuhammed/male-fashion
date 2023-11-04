@@ -40,8 +40,9 @@ admin_route.get('/editcategory/:categoryId', Auth.loggedadmin, adminController.e
 admin_route.post('/editcategory/:categoryId', Auth.loggedadmin, adminController.editcategory);
 
 
-
-
+admin_route.get('/orders',Auth.loggedadmin,adminController.order)
+admin_route.post('/orders/:orderId', Auth.loggedadmin, adminController.orderShipping);
+admin_route.post('/orders/cancel/:orderId',Auth.loggedadmin,adminController.cancelOrder)
 
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)
 

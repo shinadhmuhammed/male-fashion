@@ -46,11 +46,16 @@ h3 {
   text-align: center;
   margin-top: 70px; 
 }
+.status-box {
+    background-color: green; 
+    color: white;
+    padding: 5px 10px; 
+    border-radius: 5px; 
+  }
  </style>
 </head>
 <body>
     <h3 style="text-align: center;">My Orders</h3>
-  
     <% if (orders.length > 0) { %>
       <table>
         <tr>
@@ -60,7 +65,8 @@ h3 {
           <th>Total Amount</th>
           <th>Date</th>
           <th>Payment Method</th>
-          <th>Actions</th> 
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
         <% orders.forEach((order) => { %>
           <tr>
@@ -70,10 +76,10 @@ h3 {
             <td><%= order.total %></td>
             <td><%= order.date %></td>
             <td><%= order.paymentMethod %></td>
-            <td>
-                <button class="red-button" <% if (order.cancelled) { %>disabled<% } else { %>onclick="cancelOrder('<%= order._id %>')"<% } %>
-                    ><% if (order.cancelled) { %>Cancelled<% } else { %>Cancel<% } %></button>
-                  
+            <td><span class="status-box"><%= order.status %></span></td>
+           
+             <td> <button class="red-button" <% if (order.cancelled) { %>disabled<% } else { %>onclick="cancelOrder('<%= order._id %>')"<% } %>
+                ><% if (order.cancelled) { %>Cancelled<% } else { %>Cancel<% } %></button>
             </td>
           </tr>
         <% }); %>
@@ -81,7 +87,8 @@ h3 {
     <% } else { %>
       <p class="no-orders-message">You have no orders yet.</p>
     <% } %>
-  </body>
+    </body>
+    
   
       
       
@@ -89,6 +96,7 @@ h3 {
 
     <a href="/">Back to Home</a>
 </body>
+
 <script>
     function cancelOrder(orderId) {
       console.log(orderId, 'kkkkkkkkkkkkkkklllllllllllllll');

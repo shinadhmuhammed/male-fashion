@@ -30,7 +30,7 @@ user_route.get('/index',Auth.isLogged,userController.loadindex)
 user_route.get('/shop',userController.loadshop)
 user_route.get('/shopdetails',Auth.isLogged,  userController.shopdetails);
 user_route.get('/profile',userController.profileView)
-user_route.get('/categoryselection/:categoryId',userController.categorySelection)
+user_route.get('/categoryselection/:categoryName', userController.categorySelection);
 
 
 user_route.get('/shoppingcart',userController.shoppingpage);

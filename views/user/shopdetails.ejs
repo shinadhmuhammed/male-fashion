@@ -223,10 +223,10 @@
                                     <a class="nav-link active" data-toggle="tab" href="#tabs-5"
                                     role="tab">Description</a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Customer
                                     Previews(5)</a>
-                                </li>
+                                </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-7" role="tab">Additional
                                     information</a>
@@ -333,70 +333,6 @@
     </section>
     <!-- Shop Details Section End -->
 
-    <!-- Related Section Begin -->
-    <section class="related spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 class="related-title">Related Product</h3>
-                </div>
-            </div>
-            
-
-            
-            <div class="row">
-                <% if (products.length > 0) { %>
-                <% products.forEach((product, index) => { %>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="product__item">
-                        <% if (productImages[index].length > 0) { %> 
-                        <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= product.productImage[1].filename %>">
-                            <span class="label">New</span>
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="malefashion-master/img/icon/search.png" alt=""></a></li>
-                            </ul>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-           
-            </div>
-            
-            
-                   <div class="product__item__text"> 
-                            <a href="#" class="add-cart">+ Add To Cart</a>
-                            <div class="rating">
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
-                            <h5> $<%= product.productPrice %></h5>
-                            <div class="product__color__select">
-                                <label for="pc-1">
-                                    <input type="radio" id="pc-1">
-                                </label>
-                                <label class="active black" for="pc-2">
-                                    <input type="radio" id="pc-2">
-                                </label>
-                                <label class="grey" for="pc-3">
-                                    <input type="radio" id="pc-3">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-            <% }) %>
-            <% } %>
-    </section>
-    <!-- Related Section End -->
 
     <!-- Footer Section Begin -->
     <footer class="footer">
@@ -538,38 +474,44 @@
                     
 
                     if (response.ok) {
-                        const result = await response.json();
-                        if (result === true) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: 'Product added to the cart successfully.'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to add the product to the cart.'
-                            });
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Failed to communicate with the server.'
-                        });
-                    }
-                } catch (error) {
-                    console.error('An error occurred:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred. Please try again.'
-                    });
-                }
-            });
+        const result = await response.json();
+        if (result.message === 'Product added to the cart successfully.') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Product added to the cart successfully.'
         });
-    });
+        } else if (result.message === 'Product is already in the cart.') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Info',
+            text: 'Product is already in the cart.'
+        });
+        } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to add the product to the cart.'
+        });
+        }
+        } else {
+         Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to communicate with the server.'
+        });
+        }
+        } catch (error) {
+        console.error('An error occurred:', error);
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred. Please try again.'
+        });
+        }
+         });
+        });
+        });
   
     
 </script>

@@ -3,6 +3,7 @@ const {User} = require('../models/userModel');
 const Users=require('../controlers/userController')
 const {Product}=require('../models/productmodel');
 const {Category} = require('../models/categorymodel');
+const {Order}=require('../models/ordermodel')
 const multer=require('multer')
 const storage=multer.memoryStorage();
 const upload=multer({storage})
@@ -414,6 +415,63 @@ const deleteCategory = async (req, res) => {
 
 
 
+//////////////////////////////////////ORDERS///////////////////////////////////////////////////////
+
+const order=async(req,res)=>{
+    try{
+        const orders=await Order.find({})
+        console.log(orders,'kkkkkkkkkkkkkkkkkk');
+        res.render('admin/order',{orders})
+    }catch(error){
+        console.error(error);
+        res.status(500).send('Error fetching orders')
+    }
+}
+
+
+
+const orderShipping = async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      const order = await Order.findById(orderId);
+
+      if (order.status === 'Shipped') {
+        order.status = 'Delivered';
+      } else {
+        order.status = 'Shipped';
+      }
+
+      await order.save();
+      
+      const [orders, deliveredOrders] = await Promise.all([Order.find(), Order.find({ status: 'Delivered' })])
+
+      res.render('admin/order', { deliveredOrders, orders, order });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating the status' });
+    }
+};
+
+
+
+const cancelOrder = async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      const order = await Order.findById(orderId);
+      order.cancelled = true;
+      await order.save();
+      res.redirect('/admin/orders');
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error cancelling the order' });
+    }
+  };
+  
+  
+
+
+
+
 const logout = (req, res) => {
     req.session.destroy()
     res.redirect('/admin/login')
@@ -442,5 +500,8 @@ module.exports = {
     editcategoryform,
     editcategory,
     form,
+    order,
+    orderShipping,
+    cancelOrder,
     logout
 }

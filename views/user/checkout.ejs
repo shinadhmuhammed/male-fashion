@@ -169,145 +169,126 @@ input[type="number"] {
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
         <div class="container">
-            <div class="checkout__form">
-                <div class="row">
-                    <div class="col-lg-8 col-md-6">
-                        <h6 class="coupon__code">
-                            <span class="icon_tag_alt"></span>
-                            Have a coupon?
-                            <a href="#">Click here</a> to enter your code
-                        </h6>
-                        <h6 class="checkout__title">Billing Details</h6>
+            <div class="row">
+                <div class="col-lg-8 col-md-6">
+                    <h6 class="coupon__code">
+                        <span class="icon_tag_alt"></span>
+                        Have a coupon?
+                        <a href="#">Click here</a> to enter your code
+                    </h6>
+                    <h6 class="checkout__title">Billing Details</h6>
     
-                        <h6 class="checkout__title">Your Address</h6>
+                    <h6 class="checkout__title">Your Address</h6>
     
-                       
-                        <button id="showAddressBtn">Add Address</button>
+                    <button id="showAddressBtn">Add Address</button>
     
-                      
-                        <div id="addressForm" style="display: none;">
-                            <form action="/checkout" method="post">
-                                <div class="user-address">
-                                    <div class="address-item">
-                                        <label for="name">Name:</label>
-                                        <input type="text" id="name" name="name" value="">
-                                    </div>
-                                    
-                                    <div class="address-item">
-                                        <label for="number">Mobile Number:</label>
-                                        <input type="text" id="number" name="number" value="">
-                                    </div>
-
-                                    <div class="address-item">
-                                        <label for="house">House:</label>
-                                        <input type="text" id="house" name="house" value="">
-                                    </div>
-    
-                                    <div class="address-item">
-                                        <label for="city">City:</label>
-                                        <input type="text" id="city" name="city" value="">
-                                    </div>
-    
-                                    <div class="address-item">
-                                        <label for="state">State:</label>
-                                        <input type="text" id="state" name="state" value="">
-                                    </div>
-    
-                                    <div class="address-item">
-                                        <label for="pincode">Pincode:</label>
-                                        <input type="number" id="pincode" name="pincode" value="">
-                                    </div>
-    
-                                    <div class="address-item">
-                                        <label for="delivery_point">Delivery Point:</label>
-                                        <input type="text" id="delivery_point" name="delivery_point" value="">
-                                    </div>
-    
-                                    <button type="submit" class="site-btn">Submit Address</button>
+                    <div id="addressForm" style="display: none;">
+                        <form action="/checkout" method="post">
+                            <div class="user-address">
+                                <div class="address-item">
+                                    <label for="name">Name:</label>
+                                    <input type="text" id="name" name="name" required pattern="[A-Za-z ]+" title="Name must contain alphabetic characters">
                                 </div>
-                            </form>
+                        
+                                <div class="address-item">
+                                    <label for="number">Mobile Number:</label>
+                                    <input type="tel" id="number" name="number" required pattern="[0-9]{10}" title="Mobile Number must be 10 digits">
+                                </div>
+    
+                                <div class="address-item">
+                                    <label for="house">House:</label>
+                                    <input type="text" id="house" name="house" value="" required>
+                                </div>
+    
+                                <div class="address-item">
+                                    <label for="city">City:</label> 
+                                    <input type="text" id="city" name="city" value="" required>
+                                </div>
+    
+                                <div class="address-item">
+                                    <label for="state">State:</label>
+                                    <input type="text" id="state" name="state" value="" required>
+                                </div>
+    
+                                <div class="address-item">
+                                    <label for="pincode">Pincode:</label>
+                                    <input type="text" id="pincode" name="pincode" required pattern="\d{6}" title="PIN code must be 6 digits">
+                                </div>
+                                
+                                <div class="address-item">
+                                    <label for="delivery_point">Delivery Point:</label>
+                                    <input type="text" id="delivery_point" name="delivery_point" value="" required>
+                                </div>
+    
+                                <button type="submit" class="site-btn">Submit Address</button>
+                            </div>
+                        </form>
+                    </div>
+    
+                    <div id="userAddresses">
+                        <% address.forEach(function(addr, index) { %>
+                            <div class="user-address">
+                                <p><strong>Name:</strong> <%= addr.name %></p>
+                                <p><strong>Number:</strong> <%= addr.number %></p>
+                                <p><strong>House:</strong> <%= addr.house %></p>
+                                <p><strong>City:</strong> <%= addr.city %></p>
+                                <p><strong>State:</strong> <%= addr.state %></p>
+                                <p><strong>Pincode:</strong> <%= addr.pincode %></p>
+                                <p><strong>Delivery Point:</strong> <%= addr.delivery_point %></p>
+                                <input type="radio" name="selectedAddress" value="<%= addr._id %>">
+                            </div>
+                        <% }); %>
+                        <input type="hidden" id="selectedAddressId" name="selectedAddressId" value="">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <section class="checkout__order">
+                        <h4 class="order__title">Your order</h4>
+                        <div class="checkout__order__products">
+                            Product
+                            <span>Total</span>
                         </div>
-    
-                    
-                        <div id="userAddresses">
-                            <% address.forEach(function(addr, index) { %>
-                                <div class="user-address">
-                                    <p><strong>Name:</strong> <%= addr.name %></p>
-                                    <p><strong>Number</strong> <%= addr.number %></p>
-                                    <p><strong>House:</strong> <%= addr.house %></p>
-                                    <p><strong>City:</strong> <%= addr.city %></p>
-                                    <p><strong>State:</strong> <%= addr.state %></p>
-                                    <p><strong>Pincode:</strong> <%= addr.pincode %></p>
-                                    <p><strong>Delivery Point:</strong> <%= addr.delivery_point %></p>
-                                    <input type="radio" name="selectedAddress" value="<%= index %>"> 
-                                </div>
+                        <ul class="checkout__total__products">
+                            <input type="hidden" name="cartItems" id="cartItems" value="">
+                            <% cartItems.forEach(function(item) { %>
+                                <li>
+                                    <%= item.ProductId.productName %> 
+                                    <span>$ <%= item.ProductId.productPrice %></span> 
+                                </li>
                             <% }); %>
+                        </ul>
+                        <ul class="checkout__total__all">
+                            <li>Total <span>$<%= totalSum %> </span></li> 
+                        </ul>
+                    </section>
+                    <section class="payment-method">
+                        <div class="form-check">
+                            <input
+                                onclick="toggleCashOnDelivery(this)"
+                                class="form-check-input"
+                                type="checkbox"
+                                name="payment"
+                                id="COD"
+                            />
+                            <label class="form-check-label" for="COD">
+                                Cash On Delivery
+                            </label>
                         </div>
-                    </div>
+                        <button
+                            class="btn"
+                            onclick="CheckplaceOrder()"
+                            value="Place order"
+                            id="placeOrderButton"
+                            disabled
+                        >
+                            Place Order
+                        </button>
+                    </section>
                 </div>
             </div>
         </div>
     </section>
     
-
-
-                    <div class="col-lg-4 col-md-6">
-                     <section class="checkout__order">
-                                <h4 class="order__title">Your order</h4>
-                                <div class="checkout__order__products">
-                                    Product
-                                    <span>Total</span>
-                                </div>
-                                <ul class="checkout__total__products">
-                                    <input type="hidden" name="cartItems" id="cartItems" value="">
-                                    <% cartItems.forEach(function(item) { %>
-                                        <li>
-                                            <%= item.ProductId.productName %> 
-                                            <span>$ <%= item.ProductId.productPrice %></span> 
-                                        </li>
-                                    <% }); %>
-                                </ul>
-                                <ul class="checkout__total__all">
-                                    <li>Total <span>$<%= totalSum %> </span></li> 
-                                </ul>
-
-
-                               
-
-                              
-                                <div class="payment-method">
-                                    <div class="form-check">
-                                        <input
-                                            onclick="toggleCashOnDelivery(this)"
-                                            class="form-check-input"
-                                            type="checkbox" 
-                                            name="payment"
-                                            id="COD"
-                                        />
-                                        <label class="form-check-label" for="COD">
-                                            Cash On Delivery
-                                        </label>
-                                    </div>
-                                </div>
-                                <button
-                                    class="btn"
-                                    onclick="CheckplaceOrder()"
-                                    value="Place order"
-                                    id="placeOrderButton"
-                                    disabled 
-                                >
-                                    Place Order
-                                </button>
-                                
-                                
-                                    </div>
-                            </form>
-                        </section>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     
     
     
@@ -404,27 +385,31 @@ input[type="number"] {
 <script>
 
 function toggleCashOnDelivery(element) {
-        var placeOrderButton = document.getElementById("placeOrderButton");
-        
-        if (element.checked) {
-            placeOrderButton.removeAttribute("disabled");
-        } else {
-            placeOrderButton.setAttribute("disabled", "disabled");
-        }
-    }
+    var placeOrderButton = document.getElementById("placeOrderButton");
 
-async function CheckplaceOrder() {
+    if (element.checked) {
+        placeOrderButton.removeAttribute("disabled");
+    } else {
+        placeOrderButton.setAttribute("disabled", "disabled");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
     const selectedAddressRadioButtons = document.getElementsByName("selectedAddress");
+    const selectedAddressIdInput = document.getElementById("selectedAddressId");
 
-    let selectedAddressId = null;
     for (let i = 0; i < selectedAddressRadioButtons.length; i++) {
-        if (selectedAddressRadioButtons[i].checked) {
-            selectedAddressId = selectedAddressRadioButtons[i].value;
-            break; 
-        }
+        selectedAddressRadioButtons[i].addEventListener("change", function() {
+            if (this.checked) {
+                selectedAddressIdInput.value = this.value;
+            }
+        });
     }
+    });
+    async function CheckplaceOrder() {
+    const selectedAddressId = document.getElementById("selectedAddressId").value;
 
-    if (selectedAddressId === null) {
+    if (selectedAddressId === "") {
         Swal.fire({
             text: "Please select an address!",
             icon: 'error',
@@ -433,9 +418,8 @@ async function CheckplaceOrder() {
         });
         return;
     }
-    
+
     const paymentMethod = document.getElementById("COD").checked ? "Cash On Delivery" : null;
-   
 
     const response = await fetch('/order', {
         method: 'POST',
@@ -465,6 +449,7 @@ async function CheckplaceOrder() {
         });
     }
 }
+
 
 
 

@@ -313,18 +313,30 @@ const loadshop = async (req, res) => {
 
 const categorySelection = async (req, res) => {
     try {
-      const categoryId = req.params.categoryId; 
-        console.log(categoryId);
-      
-      const productsInCategory = await Product.find({ productCategory: categoryId }).exec();
+      const categoryName = req.params.categoryName;
   
-    
-      res.json(productsInCategory);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
+      const category = await Category.findOne({ category: categoryName }).exec();
+  
+      if (!category) {
+        return res.status(404).json({ error: 'Category not found' });
+      }
+  
+      const products = await Product.find({ productCategory: category._id }).exec();
+  
+      const categoryDetails = {
+        category: category,
+        products: products,
+      };
+  
+      return res.json(categoryDetails);
+    } catch (err) {
+      console.error('Error fetching category details:', err);
+      return res.status(500).json({ error: 'Internal server error' });
     }
   };
+  
+  
+
 
 
 
@@ -413,31 +425,32 @@ const shopdetails= async (req, res) => {
 
 
 
-
         const shoppingcart = async (req, res) => {
-        try {
-           const userId = req.session.user;
-         const productId = req.params.productId;
-         const size = req.body.size;
-        console.log(userId,productId,size);
-
-        if (!userId) {
-        res.json(false);
-         } else {
-        const newCart = new Cart({
-          ProductId: productId,
-          UserId: userId,
-          size: size,
-          });
-        await newCart.save();
-  
-          res.json(true);
-         }
-        } catch (error) {
-      console.error("An error occurred:", error);
-      res.status(500).json({ error: "An error occurred while processing your request." });
-    }
-  };
+            try {
+                const userId = req.session.user;
+                const productId = req.params.productId;
+                const size = req.body.size;
+        
+                
+                const existingCartItem = await Cart.findOne({ ProductId: productId, UserId: userId });
+        
+                if (existingCartItem) {
+                    res.json({ message: 'Product is already in the cart.' });
+                } else {
+                    const newCart = new Cart({
+                        ProductId: productId,
+                        UserId: userId,
+                        size: size,
+                    });
+                    await newCart.save();
+                    res.json({ message: 'Product added to the cart successfully.' });
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+                res.status(500).json({ error: "An error occurred while processing your request." });
+            }
+        };
+        
   
 
   
@@ -503,22 +516,12 @@ const loadcheckoutpage = async (req, res) => {
   }
   
 
-  
-  
-    const checkout = async (req, res) => {
-        try {
-          const { name, number,house, city, state, pincode, delivery_point } = req.body;
-      
-       
-          if (!name || !number|| !house || !city || !state || !pincode || !delivery_point) {
-            return res.status(400).json({ message: 'Please fill in all required fields' });
-          }
-      
-        //   console.log(name, house, city, state, pincode, delivery_point);
-      
-          const userId = req.session.user;
-      
-          const address = {
+  const checkout = async (req, res) => {
+    try {
+        const { name, number, house, city, state, pincode, delivery_point } = req.body;
+        const userId = req.session.user;
+
+        const address = {
             name,
             number,
             house,
@@ -526,61 +529,82 @@ const loadcheckoutpage = async (req, res) => {
             state,
             pincode,
             delivery_point,
-          };
-      
-          const user = await User.findByIdAndUpdate(userId, {
-            $push: { Address: address },
-          });
-      
-          if (!user) {
+        };
+
+        const user = await User.findById(userId);
+
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
-          }
-      
-          return res.render('user/checkout', { message: 'Address added successfully',address });
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: 'Internal server error' });
         }
-      }
+
+        if (!user.Address) {
+            user.Address = [];
+        }
+
+        const cartItems = await Cart.find({ UserId: userId }).populate('ProductId');
+        user.Address.push(address);
+
+        const updatedUser = await user.save();
+
+        let totalSum = 0;
+        cartItems.forEach((item) => {
+            totalSum += item.ProductId.productPrice * item.Quantity;
+        });
+
+        return res.render('user/checkout', { message: 'Address added successfully', address: updatedUser.Address, cartItems, totalSum });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
       
 
 
       const order = async (req, res) => {
         try {
-          const userId = req.session.user;
-          const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
-          const user = await User.findById(userId);
-          const userAddress = user.Address;
-          const paymentMethod = req.body.paymentMethod;  
+            const userId = req.session.user;
+            const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
+            const selectedAddressId = req.body.selectedAddressId; 
+            const user = await User.findById(userId);
+            
       
-          const products = cartItems.map((cartItem) => ({
-            productId: cartItem.ProductId._id,
-            productName: cartItem.ProductId.productName,
-            productPrice: cartItem.ProductId.productPrice,
-            quantity: cartItem.Quantity,
-          }));
-      
-          let totalSum = 0;
-          cartItems.forEach((item) => {
-            totalSum += item.ProductId.productPrice * item.Quantity;
-          });
-      
-          const newOrder = new Order({
-            userId: userId,
-            products: products,
-            address: userAddress,
-            total: totalSum,
-            paymentMethod, 
-          });
-      
-          await newOrder.save();
-          res.send('Order placed successfully');
+            const selectedAddress = user.Address.find(addr => addr._id.toString() === selectedAddressId);
+            
+            if (!selectedAddress) {
+                return res.status(400).send('Selected address not found.');
+            }
+            
+            const products = cartItems.map((cartItem) => ({
+                productId: cartItem.ProductId._id,
+                productName: cartItem.ProductId.productName,
+                productPrice: cartItem.ProductId.productPrice,
+                quantity: cartItem.Quantity,
+            }));
+    
+            let totalSum = 0;
+            cartItems.forEach((item) => {
+                totalSum += item.ProductId.productPrice * item.Quantity;
+            });
+    
+            const newOrder = new Order({
+                userId: userId,
+                products: products,
+                address: selectedAddress, 
+                total: totalSum,
+                paymentMethod: req.body.paymentMethod,
+            });
+    
+            await newOrder.save();
+            res.status(200).send('Order placed successfully');
         } catch (error) {
-          console.error(error);
-          res.status(500).send('Error placing the order');
+            console.error(error);
+            res.status(500).send('Error placing the order');
         }
-      };
-      
+    };
+    
+    
       
       
       const getOrder = async (req, res) => {
