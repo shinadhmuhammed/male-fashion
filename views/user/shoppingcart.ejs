@@ -16,14 +16,8 @@
     rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
     <style>
         table {
             width: 100%;
@@ -34,6 +28,7 @@
             text-align: left;
             padding: 20px;
         }
+
     </style>
 </head>
 
@@ -160,7 +155,6 @@
                                     <th>Product</th>
                                     <th>Quantity</th>
                                     <th>Size</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,7 +193,9 @@
                                         </td>
 
                                         <td class="cart__close">
-                                            <button class="deleteItemButton" data-item-id="<%= item._id %>">X</button>
+                                            <button class="deleteItemButton" data-item-id="<%= item._id %>">
+                                                <i class="fas fa-trash-alt delete-icon"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 <% }); %>
@@ -326,6 +322,8 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
 <script>
 
 
@@ -373,25 +371,37 @@ function changeQuantity(productId, increment) {
 
 
 
-
-   $(document).ready(function () {
+$(document).ready(function () {
     $('.deleteItemButton').on('click', function () {
-        var itemId = $(this).data('item-id');
+      var itemId = $(this).data('item-id');
 
-        $.ajax({
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
             url: `/removeCartItem/${itemId}`,
             method: 'DELETE',
             contentType: 'application/json',
             success: function (data) {
-                console.log('Item deleted');
-                location.reload(); 
+              console.log('Item deleted');
+              location.reload();
             },
             error: function (error) {
-                console.error('Failed to delete item', error);
+              console.error('Failed to delete item', error);
             },
-        });
+          });
+        }
+      });
     });
-});
+  });
+
 
 
 

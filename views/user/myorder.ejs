@@ -1,130 +1,156 @@
 <%- include('../layout/header') %>
-
-
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
- <style>
-   
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    .status-box {
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: #fff;
+    }
+
     .red-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
+      background-color: #d9534f;
+      border: none;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 20px; 
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.no-orders-message {
-  font-weight: bold;
-  color: #555;
-  margin-top: 20px;
-}
-h3 {
-  text-align: center;
-  margin-top: 70px; 
-}
-.status-box {
-    background-color: green; 
-    color: white;
-    padding: 5px 10px; 
-    border-radius: 5px; 
-  }
- </style>
+    .no-orders-message {
+      font-size: 18px;
+      color: #777;
+    }
+  </style>
+  <title>My Orders</title>
 </head>
+
 <body>
-    <h3 style="text-align: center;">My Orders</h3>
+  <div class="container">
+    <h3 class="text-center mt-3">My Orders</h3>
     <% if (orders.length > 0) { %>
-      <table>
-        <tr>
-          <th>Product Name</th>
-          <th>Product Price</th>
-          <th>Product Quantity</th>
-          <th>Total Amount</th>
-          <th>Date</th>
-          <th>Payment Method</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-        <% orders.forEach((order) => { %>
+      <table class="table">
+        <thead>
           <tr>
-            <td><%= order.products[0].productName %></td>
-            <td><%= order.products[0].productPrice %></td>
-            <td><%= order.products[0].quantity %></td>
-            <td><%= order.total %></td>
-            <td><%= order.date %></td>
-            <td><%= order.paymentMethod %></td>
-            <td><span class="status-box"><%= order.status %></span></td>
-           
-             <td> <button class="red-button" <% if (order.cancelled) { %>disabled<% } else { %>onclick="cancelOrder('<%= order._id %>')"<% } %>
-                ><% if (order.cancelled) { %>Cancelled<% } else { %>Cancel<% } %></button>
-            </td>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Product Quantity</th>
+            <th>Total Amount</th>
+            <th>Date</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
-        <% }); %>
+        </thead>
+        <tbody>
+          <% for (let i = orders.length - 1; i >= 0; i--) { %>
+            <% const order = orders[i]; %>
+            <% order.products.forEach((product) => { %>
+              <tr>
+                <td><%= product.productName %></td>
+                <td><%= product.productPrice %></td>
+                <td><%= product.quantity %></td>
+                <td><%= product.quantity * product.productPrice %></td>
+                <td><%= order.date.toLocaleDateString() %></td>
+                <td><%= order.paymentMethod %></td>
+                <td><span class="badge badge-info"><%= order.status %></span></td>
+  
+                <td>
+                  <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)">
+                    <% if (order.cancelled) { %>
+                      Cancelled. Will be returned in 4 days.
+                    <% } else { %>Cancel<% } %>
+                  </button>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
       </table>
     <% } else { %>
       <p class="no-orders-message">You have no orders yet.</p>
     <% } %>
-    </body>
-    
+    <a href="/" class="btn btn-primary">Back to Home</a>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+
   
-      
-      
-      
 
-    <a href="/">Back to Home</a>
-</body>
 
-<script>
-    function cancelOrder(orderId) {
-      console.log(orderId, 'kkkkkkkkkkkkkkklllllllllllllll');
-      fetch(`/cancelOrder/${orderId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            const cancelButton = document.querySelector(`button[onclick="cancelOrder('${orderId}')"]`);
-            cancelButton.textContent = 'Cancelled';
-            cancelButton.classList.add('cancelled-button');
-            console.log('Order successfully canceled');
-          } else {
-            console.error('Error cancelling the order');
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+    <script>
+      const cancelledOrders = JSON.parse(localStorage.getItem('cancelledOrders')) || {};
+  
+      function cancelOrder(orderId, button) {
+        if (cancelledOrders[orderId]) {
+          return;
+        }
+  
+       
+        Swal.fire({
+          title: 'Reason for Cancellation',
+          input: 'text',
+          inputAttributes: {
+            autocapitalize: 'off'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Submit',
+          showLoaderOnConfirm: true,
+          preConfirm: (reason) => {
+            if (reason.trim() === '') {
+              Swal.showValidationMessage('Please enter a reason');
+            }
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const reason = result.value;
+            const cancellationDate = new Date().toLocaleDateString();
+            fetch(`/cancelOrder/${orderId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ reason, cancellationDate }),
+            })
+              .then((response) => {
+                if (response.ok) {
+                  button.textContent = `Cancelled . Will be returned in 4 days.`;
+                  button.classList.add('cancelled-button');
+                  cancelledOrders[orderId] = cancellationDate;
+                  localStorage.setItem('cancelledOrders', JSON.stringify(cancelledOrders));
+                  console.log('Order successfully canceled');
+                } else {
+                  console.error('Error cancelling the order');
+                }
+              })
+              .catch((error) => {
+                console.error('Error cancelling the order:', error);
+              });
           }
-        })
-        .catch((error) => {
-          console.error('Error cancelling the order:', error);
         });
-    }
+      }
     </script>
-    
-    
-
-
+  
+  
+</body>
 </html>
 
 

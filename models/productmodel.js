@@ -27,10 +27,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // isListed: {
-    //     type: Boolean,
-    //     default: true, 
-    // },
+    isListed: {
+        type: Boolean,
+        default: true, 
+    },
 });
 
 module.exports = {

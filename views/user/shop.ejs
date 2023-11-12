@@ -119,7 +119,7 @@
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="malefashion-master/img/icon/search.png" alt=""></a>
                         <a href="#"><img src="malefashion-master/img/icon/heart.png" alt=""></a>
-                        <a href="./shoppingcart"><img src="malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="./shoppingcart"><img src="malefashion-master/img/icon/cart.png" alt=""> <span></span></a>
                         <div class="price">0.00</div>
                     </div>
                 </div>
@@ -181,96 +181,9 @@
                                     </div>
                                 </div>
 
-
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFour">Size</a>
-                                    </div>
-                                    <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__size">
-                                                <label for="xs">xs
-                                                    <input type="radio" id="xs">
-                                                </label>
-                                                <label for="sm">s
-                                                    <input type="radio" id="sm">
-                                                </label>
-                                                <label for="md">m
-                                                    <input type="radio" id="md">
-                                                </label>
-                                                <label for="xl">xl
-                                                    <input type="radio" id="xl">
-                                                </label>
-                                                <label for="2xl">2xl
-                                                    <input type="radio" id="2xl">
-                                                </label>
-                                                <label for="xxl">xxl
-                                                    <input type="radio" id="xxl">
-                                                </label>
-                                                <label for="3xl">3xl
-                                                    <input type="radio" id="3xl">
-                                                </label>
-                                                <label for="4xl">4xl
-                                                    <input type="radio" id="4xl">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
-                                    </div>
-                                    <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__color">
-                                                <label class="c-1" for="sp-1">
-                                                    <input type="radio" id="sp-1">
-                                                </label>
-                                                <label class="c-2" for="sp-2">
-                                                    <input type="radio" id="sp-2">
-                                                </label>
-                                                <label class="c-3" for="sp-3">
-                                                    <input type="radio" id="sp-3">
-                                                </label>
-                                                <label class="c-4" for="sp-4">
-                                                    <input type="radio" id="sp-4">
-                                                </label>
-                                                <label class="c-5" for="sp-5">
-                                                    <input type="radio" id="sp-5">
-                                                </label>
-                                                <label class="c-6" for="sp-6">
-                                                    <input type="radio" id="sp-6">
-                                                </label>
-                                                <label class="c-7" for="sp-7">
-                                                    <input type="radio" id="sp-7">
-                                                </label>
-                                                <label class="c-8" for="sp-8">
-                                                    <input type="radio" id="sp-8">
-                                                </label>
-                                                <label class="c-9" for="sp-9">
-                                                    <input type="radio" id="sp-9">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="card">
                                     <div class="card-heading">
                                         <!-- <a data-toggle="collapse" data-target="#collapseSix">Tags</a> -->
-                                    </div>
-                                    <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <!-- <div class="shop__sidebar__tags">
-                                                <a href="#">Product</a>
-                                                <a href="#">Bags</a>
-                                                <a href="#">Shoes</a>
-                                                <a href="#">Fashion</a>
-                                                <a href="#">Clothing</a>
-                                                <a href="#">Hats</a>
-                                                <a href="#">Accessories</a>
-                                            </div> -->
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -285,16 +198,19 @@
                                     <p>Showing 1–8 of 26 results</p>
                                 </div>
                             </div>
-                            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+
+                            <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__right">
                                     <p>Sort by Price:</p>
-                                    <select>
-                                        <option value="">Low To High</option>
-                                        <option value="">$0 - $55</option>
-                                        <option value="">$55 - $100</option>
+                                    <select id="sortSelect">
+                                        <!-- <option value="default">Default</option> -->
+                                        <option value="lowToHigh">Low to High</option>
+                                        <option value="highToLow">High to Low</option>
                                     </select>
+                                    <button id="sortButton">Apply</button>
                                 </div>
-                            </div> -->
+                            </div>
+                            
                         </div>
                     </div>
                   
@@ -311,7 +227,7 @@
                                         <div class="product__item__pic set-bg" data-setbg="/malefashion-master/images/<%= product.productImage[0].filename %>">
                                           <ul class="product__hover">
                                             <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
-                                            <li><a href="#"><img src="/malefashion-master/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+    
                                             <li>
                                               <a href="./shopdetails?id=<%= product._id %>"><img src="/malefashion-master/img/icon/search.png" alt=""></a>
                                             </li>
@@ -323,7 +239,7 @@
                                   <div class="product__item__text">
                                     <h6><%= product.productName %></h6>
                                     <p><%= product.productDescription %></p>
-                                    <a class="add-cart" value="pr" data-product-id="<%= product._id %>" data-user-id="<%= userId %>">+ Add to Cart</a>
+                                    <!-- <a class="add-cart" value="pr" data-product-id="<%= product._id %>" data-user-id="<%= userId %>">+ Add to Cart</a> -->
                                     <div class="rating">
                                       <i class="fa fa-star-o"></i>
                                       <i class="fa fa-star-o"></i>
@@ -332,17 +248,6 @@
                                       <i class="fa fa-star-o"></i>
                                     </div>
                                     <h5>$<%= product.productPrice %></h5>
-                                    <div class="product__color__select">
-                                      <label for="pc-4">
-                                        <input type="radio" id="pc-4">
-                                      </label>
-                                      <label class="active black" for="pc-5">
-                                        <input type="radio" id="pc-5">
-                                      </label>
-                                      <label class="grey" for="pc-6">
-                                        <input type="radio" id="pc-6">
-                                      </label>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -453,18 +358,22 @@
 
        
        
-      
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const addToCartButtons = document.querySelectorAll('.add-cart');
-    
+   document.addEventListener('DOMContentLoaded', function () {
+    const addToCartButtons = document.querySelectorAll('.add-cart');
+    const categoryLinks = document.querySelectorAll(".category-link");
+    const sortSelect = document.getElementById('sortSelect');
+    const sortButton = document.getElementById('sortButton'); 
+    const productsContainer = document.getElementById("products-container");
+
         addToCartButtons.forEach(button => {
-            button.addEventListener('click', async function() {
+            button.addEventListener('click', async function () {
                 const productId = button.getAttribute('data-product-id');
                 const userId = button.getAttribute('data-user-id');
-    
+
                 if (!userId || !productId) {
                     Swal.fire({
                         icon: 'error',
@@ -473,7 +382,7 @@
                     });
                     return;
                 }
-    
+
                 try {
                     const response = await fetch(`/shoppingcart/${productId}`, {
                         method: 'POST',
@@ -481,35 +390,35 @@
                             'Content-Type': 'application/json',
                         },
                     });
-    
+
                     if (response.ok) {
-                    const result = await response.json();
-                    if (result.message === 'Product added to the cart successfully.') {
-                     Swal.fire({
-                     icon: 'success',
-                    title: 'Success',
-                    text: 'Product added to the cart successfully.'
-                     });
-                    } else if (result.message === 'Product is already in the cart.') {
-                     Swal.fire({
-                    icon: 'info',
-                    title: 'Info',
-                    text: 'Product is already in the cart.'
-                     });
+                        const result = await response.json();
+                        if (result.message === 'Product added to the cart successfully.') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Product added to the cart successfully.'
+                            });
+                        } else if (result.message === 'Product is already in the cart.') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Info',
+                                text: 'Product is already in the cart.'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to add the product to the cart.'
+                            });
+                        }
                     } else {
-                    Swal.fire({
-                 icon: 'error',
-                 title: 'Error',
-                 text: 'Failed to add the product to the cart.'
-                });
-                 }
-                } else {
-                Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to communicate with the server.'
-                 });
-                }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to communicate with the server.'
+                        });
+                    }
                 } catch (error) {
                     console.error('An error occurred:', error);
                     Swal.fire({
@@ -517,83 +426,106 @@
                         title: 'Error',
                         text: 'An error occurred. Please try again.'
                     });
-                    }
-                    });
-                     });
-                    });
-
-    
-    document.addEventListener("DOMContentLoaded", function () {
-    const categoryLinks = document.querySelectorAll(".category-link");
-
-    categoryLinks.forEach((link) => {
-        link.addEventListener("click", function (event) {
+                }
+            });
+        });
+        categoryLinks.forEach(link => {
+        link.addEventListener("click", async function (event) {
             event.preventDefault();
-
             const selectedCategory = this.getAttribute("data-category");
-            fetch(`/categorySelection/${selectedCategory}`)
-                .then((response) => response.json())
-                .then((categoryDetails) => {
-                    const productsContainer = document.getElementById("products-container");
-                    productsContainer.innerHTML = "";
 
-                    categoryDetails.products.forEach((product) => {
-                        const productElement = createProductElement(product);
-                        productsContainer.appendChild(productElement);
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error fetching products:", error);
-                });
+            try {
+                const response = await fetch(`/categorySelection/${selectedCategory}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const categoryDetails = await response.json();
+                renderProducts(categoryDetails.products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
         });
     });
 
-    function createProductElement(product) {
-    const productElement = document.createElement("div");
-    productElement.className = "col-lg-4 col-md-6 col-sm-6";
 
-    productElement.innerHTML = `
+
+    sortButton.addEventListener('click', function () { 
+        const selectedOption = sortSelect.value;
+        console.log('Selected Option:', selectedOption);
+        fetchAndRenderSortedProducts(selectedOption);
+    });
+
+    sortSelect.addEventListener('change', function () {
+        const selectedOption = sortSelect.value;
+        console.log('Selected Option:', selectedOption);
+    });
+
+    
+
+    async function fetchAndRenderSortedProducts(option) {
+        try {
+            const response = await fetch(`/sortProducts/${option}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const sortedProducts = await response.json();
+            console.log('Sorted Products:', sortedProducts);
+            renderProducts(sortedProducts);
+        } catch (error) {
+            console.error('Error fetching and displaying sorted products:', error);
+        }
+    }
+
+    function renderProducts(products) {
+        productsContainer.innerHTML = '';
+
+        products.forEach(product => {
+            const productElement = createProductElement(product);
+            productsContainer.appendChild(productElement);
+        });
+    }
+
+
+
+   
+    function createProductElement(product) {
+        const productElement = document.createElement("div");
+        productElement.className = "col-lg-4 col-md-6 col-sm-6";
+
+        productElement.innerHTML = `
         <div class="product__item">
             <div class="product" data-product-id="${product.product_id}">
                 <a href="#">
-                        <img src="/malefashion-master/images/${product.productImage[0].filename}" alt="${product.productName}">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
-                            <li><a href="#"><img src="/malefashion-master/img/icon/compare.png" alt=""> </a></li>
-                            <li><a href="./shopdetails?id=${product._id}"><img src="/malefashion-master/img/icon/search.png" alt=""></a></li>
-                        </ul>
-                    </div>
-                </a>
+                    <img src="/malefashion-master/images/${product.productImage[0].filename}" alt="${product.productName}">
+                    <ul class="product__hover">
+                        <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
+                        <li><a href="./shopdetails?id=${product._id}"><img src="/malefashion-master/img/icon/search.png" alt=""></a></li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+        <div class="product__item__text">
+            <h6>${product.productName}</h6>
+            <div class="rating">
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
             </div>
-            <div class="product__item__text">
-                <h6>${product.productName}</h6>
-                <div class="rating">
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <h5>$${product.productPrice}</h5>
-                <div class="product__color__select">
-                    <label for="pc-4">
-                        <input type="radio" id="pc-4">
-                    </label>
-                    <label class="active black" for="pc-5">
-                        <input type="radio" id="pc-5">
-                    </label>
-                    <label class="grey" for="pc-6">
-                        <input type="radio" id="pc-6">
-                    </label>
-                </div>
+            <h5>$${product.productPrice}</h5>
+            <div class="product__color__select">
             </div>
         </div>
+    </div>
     `;
-    return productElement;
-}
+        return productElement;
+    }
 });
-    </script>
-    
+</script>
+
 
 </html>
 

@@ -31,6 +31,7 @@ user_route.get('/shop',userController.loadshop)
 user_route.get('/shopdetails',Auth.isLogged,  userController.shopdetails);
 user_route.get('/profile',userController.profileView)
 user_route.get('/categoryselection/:categoryName', userController.categorySelection);
+user_route.get('/sortProducts/:option',userController.sortProducts)
 
 
 user_route.get('/shoppingcart',userController.shoppingpage);
@@ -45,7 +46,8 @@ user_route.post('/update-address/:id',userController.updateAddress)
 user_route.get('/deleteaddress',userController.deleteAddress)
 user_route.get('/changepassword', userController.loadChangePassword);
 user_route.post('/changepassword',userController.changepassword)
-
+user_route.post('/razorpayorder',userController.razorPay)
+user_route.post('/getTotalAmount',userController.totalAmount)
 
 user_route.get('/myorder',userController.getOrder)
 user_route.post('/cancelOrder/:orderId', userController.cancelOrder);

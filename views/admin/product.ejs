@@ -10,51 +10,74 @@
 </nav>
 
 
-
-<div class="container">
-  <table class="table table-bordered">
-    <div class="d-flex justify-content-end">
-      <a href="/admin/addproduct" class="btn btn-primary add-user" id="addUser">Add Product</a>
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card my-4">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+          <div class="bg-gradient-secondary shadow-primary border-radius-lg pt-4 pb-3">
+            <h6 class="text-white text-capitalize ps-3">Product table</h6>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <a href="/admin/addproduct" class="btn btn-info add-user" id="addProduct">Add Product</a>
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Image</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Stock</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% products.forEach((product, index) => { %>
+                <tr>
+                  <td>
+                    <%= product.productName %>
+                  </td>
+                  <td>
+                    <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" class="avatar avatar-sm me-3 border-radius-lg" alt="product-image" width="100">
+                  </td>
+                  <td>
+                    <%= product.productPrice %>
+                  </td>
+                  <td>
+                    <%= product.productDescription %>
+                  </td>
+                  <td>
+                    <%= product.productCategory.category %>
+                  </td>
+                  <td>
+                    <%= product.productStock %>
+                  </td>
+                  <td>
+                    <% if (product.isListed) { %>
+                    <button class="btn btn-success toggle-listing" data-productid="<%= product._id %>">Unlist</button>
+                    <% } else { %>
+                    <button class="btn btn-warning toggle-listing" data-productid="<%= product._id %>">List</button>
+                    <% } %>
+                  </td>
+                  <td>
+                    <a href="/admin/editproduct/<%= product._id %>" class="btn btn-dark">Edit</a>
+                    <a href="#" class="btn btn-danger delete-product" data-productid="<%= product._id %>">Delete</a>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-    <thead>
-      <tr>
-        <th scope="col">Product Name</th>
-        <th scope="col">Product Image</th>
-        <th scope="col">Product Price</th>
-        <th scope="col">Product Description</th>
-        <th scope="col">Product Category</th>
-        <th scope="col">product Stock</th>
-      </tr>
-    </thead>
-
-    
-    <tbody>
-  <% products.forEach((product, index) => { %>
-    <tr>
-      <td><%= product.productName %></td>
-      <td>
-        
-       <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" width="100">
-          
-      </td>
-      <td><%= product.productPrice %></td>
-      <td><%= product.productDescription %></td>
-      <td><%= product.productCategory.category %></td>
-      <td><%= product.productStock %></td>
-      <td>
-        <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
-        <a href="#" class="btn btn-danger delete-product" data-productid="<%= product._id %>">Delete</a>
-      </td>
-    </tr>
-  <% }) %>
-</tbody>
-
-    
-    
-  </table>
-
-  
+  </div>
 </div>
+
 
 
 
@@ -63,6 +86,36 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+
+$(document).ready(function () {
+    $('.toggle-listing').on('click', function (event) {
+      event.preventDefault();
+
+     
+      const productId = $(this).data('productid');
+      const isListed = $(this).hasClass('btn-success');
+
+      $.ajax({
+        type: 'POST',
+        url: `/admin/listingproduct/${productId}`, 
+        data: { isListed:!isListed },
+        success: function (response) {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.error('Error listing the product:', error);
+        }
+      });
+    });
+  });
+
+
+
+
+
+
+
  $(document).ready(function() {
   $(".delete-product").on("click", function(event) {
     event.preventDefault(); 

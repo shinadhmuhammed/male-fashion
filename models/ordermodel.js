@@ -43,8 +43,8 @@ const OrderSchema = new mongoose.Schema({
   ],
   date: {
     type: Date,
-    default: Date.now,
-},
+    default: () => new Date().setHours(0, 0, 0, 0), 
+  },
 paymentMethod: {  
   type: String,
   required: true,

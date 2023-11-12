@@ -8,32 +8,44 @@
     <h6 class="font-weight-bolder mb-0">Category</h6>
   </nav>
     
+  <div class="container-fluid py-4">
     <div class="row">
       <div class="col-lg-10 m-auto">
-          <div class="table-container">
-              <table class="table table-hover mt-4">
-                  <thead>
-                      <tr>
-                          <th scope="col">Category Name</th>
-                          <th scope="col">Action</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <% categories.forEach(category => { %>
-                          <tr>
-                              <td><%= category.category %></td>
-                              <td>
-                                  <a href="/admin/editcategory/<%= category._id %>" class="btn btn-primary">Edit</a>
-                                  <a href="#" class="btn btn-danger delete-category" data-categoryid="<%= category._id %>">Delete</a>
-                              </td>
-                          </tr>
-                      <% }); %>
-                  </tbody>
-              </table>
+        <div class="card my-4">
+          <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div class="bg-gradient-secondary shadow-primary border-radius-lg pt-4 pb-3">
+              <h6 class="text-white text-capitalize ps-3">Categories table</h6>
+            </div>
           </div>
-          <a href="/admin/categories" class="btn btn-primary add-user" id="addUser">Add Category</a>
+          <div class="card-body px-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table table-hover mt-4">
+                <thead>
+                  <tr>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% categories.forEach(category => { %>
+                  <tr>
+                    <td><%= category.category %></td>
+                    <td>
+                      <a href="/admin/editcategory/<%= category._id %>" class="btn btn-primary">Edit</a>
+                      <a href="#" class="btn btn-danger delete-category" data-categoryid="<%= category._id %>">Delete</a>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <a href="/admin/categories" class="btn btn-secondary add-user" id="addUser">Add Category</a>
       </div>
+    </div>
   </div>
+  
 
 
 

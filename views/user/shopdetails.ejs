@@ -203,7 +203,6 @@
                             </div>
                             <div class="product__details__btns__option">
                                 <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                                <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
                             </div>
                             <div class="product__details__last__option">
                                
@@ -474,26 +473,26 @@
                     
 
                     if (response.ok) {
-        const result = await response.json();
-        if (result.message === 'Product added to the cart successfully.') {
-        Swal.fire({
+            const result = await response.json();
+            if (result.message === 'Product added to the cart successfully.') {
+         Swal.fire({
             icon: 'success',
             title: 'Success',
             text: 'Product added to the cart successfully.'
-        });
-        } else if (result.message === 'Product is already in the cart.') {
-        Swal.fire({
+          });
+         } else if (result.message === 'Product is already in the cart.') {
+         Swal.fire({
             icon: 'info',
             title: 'Info',
             text: 'Product is already in the cart.'
-        });
-        } else {
-        Swal.fire({
+         });
+         } else {
+         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'Failed to add the product to the cart.'
-        });
-        }
+         });
+            }
         } else {
          Swal.fire({
         icon: 'error',

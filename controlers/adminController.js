@@ -6,6 +6,7 @@ const {Category} = require('../models/categorymodel');
 const {Order}=require('../models/ordermodel')
 const multer=require('multer')
 const storage=multer.memoryStorage();
+const PDFDocument = require('pdfkit');
 const upload=multer({storage})
 
 
@@ -107,15 +108,16 @@ const addProduct = async (req, res) => {
             return res.render('admin/addproduct', { error: "Product price cannot be negative" });
         }
         console.log(req.body);
+        const isListed = req.body.isListed === 'on'; 
         const newProduct = new Product({
             productName: req.body.productName,
-            productImage: productImages, 
+            productImage: productImages,
             productPrice: productPrice,
             productDescription: req.body.productDescription,
-            productCategory: req.body. productCategory,
-            productStock:req.body.productStock
+            productCategory: req.body.productCategory,
+            productStock: req.body.productStock,
+            isListed: isListed, 
         });
-
         const savedProduct = await newProduct.save();
         if (savedProduct) {
             console.log('Product saved successfully:', savedProduct);
@@ -220,8 +222,26 @@ const deleteProduct = async (req, res) => {
 
 
 
+const listProduct=async(req,res)=>{
+    const productId=req.params.productId
+    const isListed=req.body.isListed;
+    try {
+        const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+        }
+    
+        product.isListed = isListed; 
+        await product.save();
+        res.status(200).json({ message: "Product listing status updated" });
+      } catch (error) {
+        console.error("Error toggling product listing:", error);
+        res.status(500).json({ message: "Error updating product listing status" });
+      }
+    };
 
-////////////////USERS///////////////////////////
+
+/////////////////////////////////////////////USERS/////////////////////////////////////////////////////
 
 const user=async(req,res)=>{
     const {query}=req.query;
@@ -254,13 +274,8 @@ const blockUser = async (req, res) => {
         user.is_blocked = !user.is_blocked;
         await user.save();
         if (user.is_blocked) {
-            req.session.destroy((err) => {
-                if (err) {
-                    console.error('Error destroying session:', err);
-                }
-            });
+            res.redirect("/admin/users");
         }
-        res.redirect("/admin/users");
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -466,7 +481,145 @@ const cancelOrder = async (req, res) => {
       res.status(500).json({ message: 'Error cancelling the order' });
     }
   };
+
+
+
+
+  ////////////////////////////////DASHBOARD///////////////////////////////////////////
+  const getSalesData = async (req, res) => {
+    try {
+      const dailySalesData = await Order.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+            total: { $sum: '$total' },
+          },
+        },
+        { $sort: { '_id': 1 } },
+      ]);
   
+      const weeklySalesData = await Order.aggregate([
+        {
+          $group: {
+            _id: { $week: '$date' },
+            total: { $sum: '$total' },
+          },
+        },
+        { $sort: { '_id': 1 } },
+      ]);
+  
+      const yearlySalesData = await Order.aggregate([
+        {
+          $group: {
+            _id: { $year: '$date' },
+            total: { $sum: '$total' },
+          },
+        },
+        { $sort: { '_id': 1 } },
+      ]);
+  
+      const dailyLabels = dailySalesData.map(day => day._id);
+      const dailySales = dailySalesData.map(day => day.total);
+  
+      const weeklyLabels = weeklySalesData.map(week => `Week ${week._id}`);
+      const weeklySales = weeklySalesData.map(week => week.total);
+  
+      const yearlyLabels = yearlySalesData.map(year => `Year ${year._id}`);
+      const yearlySales = yearlySalesData.map(year => year.total);
+  
+      res.json({ dailyLabels, dailySales, weeklyLabels, weeklySales, yearlyLabels, yearlySales });
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
+
+  const totalUsers=async(req,res)=>{
+    try {
+      const totalUsers = await User.countDocuments();
+      res.json({ totalUsers });
+    } catch (error) {
+      console.error('Error fetching total users:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+
+
+
+
+  const generateReport = async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      const orders = await Order.find({
+        date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+      });
+  
+      const doc = new PDFDocument();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=orders-report.pdf`);
+  
+      doc.pipe(res);
+      doc.fontSize(16).text('Orders Report', { align: 'center' });
+  
+      orders.forEach((order, index) => {
+        doc.moveDown().fontSize(14).text(`Order ${index + 1} Details:`);
+  
+        doc.text(`Order ID: ${order._id}`);
+        doc.text(`Date: ${order.date}`);
+        doc.text(`Total: $${order.total.toFixed(2)}`);
+  
+        doc.moveDown().fontSize(12).text('Products:');
+  
+        order.products.forEach(product => {
+          doc.text(`- ${product.productName}, Quantity: ${product.quantity}, Price: $${product.productPrice.toFixed(2)}`);
+        });
+  
+        doc.moveDown().fontSize(12).text('Delivery Address:');
+  
+        const address = order.address[0]; 
+        doc.text(`Name: ${address.name}`);
+        doc.text(`Number: ${address.number}`);
+        doc.text(`House: ${address.house}`);
+        doc.text(`City: ${address.city}`);
+        doc.text(`State: ${address.state}`);
+        doc.text(`Pincode: ${address.pincode}`);
+        doc.text(`Delivery Point: ${address.delivery_point}`);
+  
+        doc.moveDown(); // Add space between orders
+      });
+  
+      doc.end();
+    } catch (error) {
+      console.error('Error generating orders report:', error);
+      res.status(500).send('Internal Server Error: ' + error.message);
+    }
+  };
+
+
+
+    const totalRevenue=async(req,res)=>{
+      try {
+        const totalRevenue = await Order.aggregate([
+          {
+            $group: {
+              _id: null,
+              total: { $sum: '$total' } 
+            }
+          }
+        ]);
+        
+        res.json({
+          totalRevenue: totalRevenue.length > 0 ? totalRevenue[0].total : 0
+        });
+      } catch (error) {
+        console.error('Error fetching total revenue:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    }
   
 
 
@@ -489,6 +642,7 @@ module.exports = {
     deleteProduct,
     editProductForm,
     editProduct,
+    listProduct,
     user,
     blockUser,
     unblockUser,
@@ -503,5 +657,9 @@ module.exports = {
     order,
     orderShipping,
     cancelOrder,
+    getSalesData,
+    totalUsers,
+    generateReport,
+    totalRevenue,
     logout
 }

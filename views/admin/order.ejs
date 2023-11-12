@@ -2,42 +2,6 @@
 <%- include('../layout/header') %>
   <html>
   <head>
-   <style>
-    
-    table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 30px;
-}
-
-table, th, td {
-  border: 1px solid #ccc; 
-}
-
-th, td {
-  padding: 10px;
-  text-align: left;
-}
-
-.red-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.green-button {
-  background-color: green;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-
-  
-   </style>
   </head>
   <body>
     <nav aria-label="breadcrumb">
@@ -47,66 +11,72 @@ th, td {
       </ol>
       <h6 class="font-weight-bolder mb-0">Orders</h6>
     </nav>
-  
-    <div class="row">
-      <div class="col-12">
-        <div class="card my-4">
-          <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-            <div class="bg-gradient-secondary shadow-primary border-radius-lg pt-4 pb-3">
-              <h6 class="text-white text-capitalize ps-3">Pending Orders</h6>
-            </div>
-          </div>
-     
-          <% if (orders.length > 0) { %>
-            <table>
-              <tr>
-                <th>Serial Number</th>
-                <th>OrderId</th>
-                <th>Product Price</th>
-                <th>Product Quantity</th>
-                <th>Total Amount</th>
-                <th>Date</th>
-                <th>Payment Method</th>
-                <th>Actions</th>
-              </tr>
-              <% orders.forEach((order, index) => { %>
-                <tr>
-                  <td><%= index + 1 %></td> 
-                  <td><%= order._id %></td>
-                  <td><%= order.products[0].productPrice %></td>
-                  <td><%= order.products[0].quantity %></td>
-                  <td><%= order.total %></td>
-                  <td><%= order.date %></td>
-                  <td><%= order.paymentMethod %></td>
-                  <td>
-                    <% if (!order.cancelled) { %>
-                      <form action="/admin/orders/cancel/<%= order._id %>" method="POST">
-                        <button class="red-button" type="submit">Cancel</button>
-                      </form>
-                    <% } else { %>
-                      <span>Cancelled</span>
-                    <% } %>
-                    <form action="/admin/orders/<%= order._id %>" method="POST">
-                      <button class="<%= order.status === 'Shipped' ? 'green-button' : 'red-button' %>" type="submit">
-                        <% if (order.status === 'Shipped') { %>
-                          Ready to Deliver
-                        <% } else if (order.status === 'Delivered') { %>
-                          Delivered
-                        <% } else { %>
-                          Ready to Ship
-                        <% } %>
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-              <% }); %>
-            </table>
-          <% } else { %>
-            <p class="no-orders-message">You have no orders yet.</p>
-          <% } %>
-          </body>
-          
-            </table>
 
-      
-           
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-secondary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Pending Orders</h6>
+              </div>
+            </div>
+    
+            <% if (orders.length > 0) { %>
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Serial Number</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">OrderId</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Price</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Quantity</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Amount</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Method</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% orders.forEach((order, index) => { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= order._id %></td>
+                    <td><%= order.products[0].productPrice %></td>
+                    <td><%= order.products[0].quantity %></td>
+                    <td><%= order.total %></td>
+                    <td><%= order.date.toLocaleDateString() %></td>
+                    <td><%= order.paymentMethod %></td>
+                    <td>
+                      <% if (!order.cancelled) { %>
+                      <form action="/admin/orders/cancel/<%= order._id %>" method="POST">
+                        <button class="btn btn-danger" type="submit">Cancel</button>
+                      </form>
+                      <% } else { %>
+                      <span class="text-danger">Cancelled</span>
+                      <% } %>
+                      <form action="/admin/orders/<%= order._id %>" method="POST">
+                        <button class="btn <%= order.status === 'Shipped' ? 'btn-success' : (order.status === 'Delivered' ? 'btn-success' : 'btn-primary') %>" type="submit">
+                          <% if (order.status === 'Shipped') { %>
+                          Ready to Deliver
+                          <% } else if (order.status === 'Delivered') { %>
+                          Delivered
+                          <% } else { %>
+                          Ready to Ship
+                          <% } %>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <% } else { %>
+            <p class="no-orders-message">You have no orders yet.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    

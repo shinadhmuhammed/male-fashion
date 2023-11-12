@@ -8,8 +8,19 @@ const {Product}=require('../models/productmodel');
 const {Category}=require('../models/categorymodel')
 const {Order}=require('../models/ordermodel')
 const Cart = require('../models/cartmodel')
-const dotenv=require('dotenv')
+const Razorpay = require('razorpay');
+const dotenv = require('dotenv');
 dotenv.config();
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+
+
+
+var instance = new Razorpay({
+  key_id: RAZORPAY_ID_KEY,
+  key_secret: RAZORPAY_SECRET_KEY,
+});
+
+
 
 
 
@@ -45,69 +56,45 @@ let mobile
 
 
 
-
 const insertUser = async (req, res) => {
+    const { name, email, password, mno } = req.body;
+
+    nname = name;
+    eemail = email;
+    mobile = mno;
+    ppassword = password;
     try {
-        const { name, email, password, mno } = req.body;
+        const spassword = await securepassword(password);
 
-       
-        if (!/^[A-Za-z]+$/.test(name)) {
-            return res.render('user/registration', { message: 'Name can only contain alphabetic characters.' });
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.render('user/registration', { message: 'User with this email already exists.' });
         }
 
-        
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            return res.render('user/registration', { message: 'Invalid email format.' });
-        }
+        const otp = generateOTP();
+        const otpExpiration = Date.now() + 300000;
+        req.session.saveOtp = otp;
+        req.session.otpExpiration = otpExpiration;
 
-        if (password.length < 6) {
-            return res.render('user/registration', { message: 'Password must be at least 6 characters long.' });
-        }
+        await sendOtpMail(email, otp);
+        req.session.saveOtp = otp;
+        console.log(otp);
 
-        if(mno.length !== 10){
-            return res.render('user/registration',{message:'mobile number is not valid'})
-        }
+        const newUser = new User({
+            name: nname,
+            email: eemail,
+            password: spassword,
+            mobile: mobile,
+        });
 
-        nname = name;
-        eemail = email;
-        mobile = mno;
-        ppassword=password
-        try {
-            
-            const spassword = await securepassword(password);
+        // await newUser.save();
 
-            const existingUser = await User.findOne({ email });
-            if (existingUser) {
-                return res.render('user/registration', { message: 'User with this email already exists.' });
-            }
-
-            const otp = generateOTP();
-            const otpExpiration=Date.now() + 300000
-            req.session.saveOtp=otp;
-            req.session.otpExpiration=otpExpiration
-
-            await sendOtpMail(email, otp);
-            req.session.saveOtp = otp;
-            console.log(otp);
-
-            
-            const newUser = new User({
-                name: nname,
-                email: eemail,
-                password: spassword, 
-                mobile: mobile,
-            });
-
-            // await newUser.save();
-
-            res.redirect(`/showOtp/${eemail}/${otp}`);
-        } catch (error) {
-            console.log(error.message);
-        }
+        res.redirect(`/showOtp/${eemail}/${otp}`);
     } catch (error) {
         console.log(error.message);
     }
 };
+
 
 
 
@@ -161,7 +148,7 @@ async function sendOtpMail(email, otp) {
 
 
 
-const verifyOtp = async (req, res) => {
+    const verifyOtp = async (req, res) => {
     const enteredOtp = req.body.otp;
     const savedOtp = req.session.saveOtp;
     const otpExpiration = req.session.otpExpiration;
@@ -171,11 +158,11 @@ const verifyOtp = async (req, res) => {
         if (enteredOtp === savedOtp) {
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const user = new User({
-                name: nname,
-                email: eemail,
-                password: hashedPassword, 
-                mobile: mobile,
+        const user = new User({
+            name: nname,
+            email: eemail,
+            password: hashedPassword, 
+            mobile: mobile,
             });
 
             try {
@@ -188,10 +175,10 @@ const verifyOtp = async (req, res) => {
         } else {
             res.render('user/enterotp', { message: 'Invalid OTP, please try again.' });
         }
-    } else {
+        } else {
         res.render('user/enterotp', { message: 'OTP has expired, please request a new one.' });
-    }
-};
+        }
+        };
 
 
 
@@ -278,7 +265,7 @@ const userValid = async (req, res) => {
 
 
 
-//////////////////Home page/////////////////////////
+/////////////////////////////////////////////HOME PAGE/////////////////////////////////////////
 
 const loadHome = async (req, res) => {
     try {
@@ -297,11 +284,13 @@ const loadindex=async(req,res)=>{
 
 const loadshop = async (req, res) => {
     try {
-        const products = await Product.find();
-        const categories = await Category.find(); 
+        const products = await Product.find({ isListed: true });
+
+        const categories = await Category.find();
         const productImages = products.map(product => product.productImage.map(image => image.filename));
-        const userId=req.session.user
-        res.render("user/shop", { products, productImages, categories,userId }); 
+        const userId = req.session.user;
+
+        res.render("user/shop", { products, productImages, categories, userId });
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while loading the shop.");
@@ -334,9 +323,28 @@ const categorySelection = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
-  
-  
 
+  
+  const sortProducts = async (req, res) => {
+    try {
+        const option = req.params.option;
+        let sortedProducts;
+
+        if (option === 'lowToHigh') {
+            sortedProducts = await Product.find().sort({ productPrice: 1 }).lean();
+        } else if (option === 'highToLow') {
+            sortedProducts = await Product.find().sort({ productPrice: -1 }).lean();
+        } else {
+            return res.status(400).json({ error: 'Invalid sorting option' });
+        }
+
+        res.json(sortedProducts);
+        console.log(sortedProducts,'kkkkkkkkkkkkk');
+    } catch (error) {
+        console.error('Error sorting the products', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 
 
@@ -367,7 +375,6 @@ const shopdetails= async (req, res) => {
             }
             const cartItems=await Cart.find({UserId:userId}).populate('ProductId')
 
-            // console.log(cartItems,'bbhonin');
             let totalSum = 0;
             cartItems.forEach((item) => {
               totalSum += item.ProductId.productPrice* item.Quantity;
@@ -430,9 +437,7 @@ const shopdetails= async (req, res) => {
                 const userId = req.session.user;
                 const productId = req.params.productId;
                 const size = req.body.size;
-        
-                
-                const existingCartItem = await Cart.findOne({ ProductId: productId, UserId: userId });
+                const existingCartItem = await Cart.findOne({ ProductId: productId, UserId: userId, size: size });
         
                 if (existingCartItem) {
                     res.json({ message: 'Product is already in the cart.' });
@@ -451,16 +456,10 @@ const shopdetails= async (req, res) => {
             }
         };
         
+        
   
 
   
-
-
-  
- 
-  
-
-
 
 
 
@@ -560,50 +559,51 @@ const loadcheckoutpage = async (req, res) => {
 
 
       
+const calculateTotalAmount = (cartItems) => {
+    let totalSum = 0;
+    cartItems.forEach((item) => {
+        totalSum += item.ProductId.productPrice * item.Quantity;
+    });
+    return totalSum;
+};
 
-
-      const order = async (req, res) => {
-        try {
-            const userId = req.session.user;
-            const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
-            const selectedAddressId = req.body.selectedAddressId; 
-            const user = await User.findById(userId);
-            
-      
-            const selectedAddress = user.Address.find(addr => addr._id.toString() === selectedAddressId);
-            
-            if (!selectedAddress) {
-                return res.status(400).send('Selected address not found.');
-            }
-            
-            const products = cartItems.map((cartItem) => ({
-                productId: cartItem.ProductId._id,
-                productName: cartItem.ProductId.productName,
-                productPrice: cartItem.ProductId.productPrice,
-                quantity: cartItem.Quantity,
-            }));
-    
-            let totalSum = 0;
-            cartItems.forEach((item) => {
-                totalSum += item.ProductId.productPrice * item.Quantity;
-            });
-    
-            const newOrder = new Order({
-                userId: userId,
-                products: products,
-                address: selectedAddress, 
-                total: totalSum,
-                paymentMethod: req.body.paymentMethod,
-            });
-    
-            await newOrder.save();
-            res.status(200).send('Order placed successfully');
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Error placing the order');
+        const order = async (req, res) => {
+          try {
+        const userId = req.session.user;
+        const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
+        const selectedAddressId = req.body.selectedAddressId; 
+        const user = await User.findById(userId);
+        
+        const selectedAddress = user.Address.find(addr => addr._id.toString() === selectedAddressId);
+        
+        if (!selectedAddress) {
+            return res.status(400).send('Selected address not found.');
         }
-    };
-    
+        
+        const products = cartItems.map((cartItem) => ({
+            productId: cartItem.ProductId._id,
+            productName: cartItem.ProductId.productName,
+            productPrice: cartItem.ProductId.productPrice,
+            quantity: cartItem.Quantity,
+        }));
+
+        const totalSum = calculateTotalAmount(cartItems);
+
+        const newOrder = new Order({
+            userId: userId,
+            products: products,
+            address: selectedAddress, 
+            total: totalSum,
+            paymentMethod: req.body.paymentMethod,
+        });
+
+        await newOrder.save();
+        res.status(200).send('Order placed successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error placing the order');
+    }
+};
     
       
       
@@ -629,6 +629,7 @@ const loadcheckoutpage = async (req, res) => {
       
           if (order) {
             order.cancelled = true;
+            order.cancellation = new Date(); 
             console.log('Updated order:', order);
       
             await order.save();
@@ -795,8 +796,63 @@ const loadcheckoutpage = async (req, res) => {
         
 
 
+            const razorPay = async (req, res) => {
+                try {
+                    const selectedAddressId = req.body.selectedAddressId;
+                    const paymentMethod = req.body.paymentMethod;
+            
+                    if (!selectedAddressId || !paymentMethod) {
+                        throw new Error('Invalid data received for Razorpay payment');
+                    }
+            
+                    const userId = req.session.user;
+                    const cartItems = await Cart.find({ UserId: userId }).populate('ProductId').lean();
+                    const totalAmount = calculateTotalAmount(cartItems);
+            
+                    const orderData = {
+                        amount: totalAmount * 100, 
+                        currency: "INR",
+                        receipt: req.body.orderId,
+                        notes: {
+                            key1: "value3",
+                            key2: "value2"
+                        }
+                    };
+            
+                    const razorpayOrder = await instance.orders.create(orderData);
+                    res.json({ orderId: razorpayOrder.id, razorpayOrder, amount: totalAmount });
+                } catch (error) {
+                    console.error('Error in razorPay function:', error);
+                    res.status(500).json({ error: 'Internal server error' });
+                }
+            };
+            
 
-
+            
+            const totalAmount = async (req, res) => {
+                try {
+                    const selectedAddressId = req.body.selectedAddressId;
+            
+                    const user = await User.findById(req.session.user);
+                    const selectedAddress = user.Address.find(addr => addr._id.toString() === selectedAddressId);
+            
+                    if (!selectedAddress) {
+                        return res.status(400).json({ error: 'Selected address not found.' });
+                    }
+            
+                    const cartItems = await Cart.find({ UserId: req.session.user }).populate('ProductId');
+                    let totalAmount = 0;
+            
+                    for (const cartItem of cartItems) {
+                        totalAmount += cartItem.ProductId.productPrice * cartItem.Quantity;
+                    }
+                    res.json({ totalAmount });
+                } catch (error) {
+                    console.error('Error in totalAmount function:', error);
+                    res.status(500).json({ error: 'Internal server error' });
+                }
+            };
+            
 
 
 
@@ -835,6 +891,9 @@ module.exports = {
     cancelOrder,
     getOrder,
     categorySelection,
+    sortProducts,
+    razorPay,
+    totalAmount,
     logout,
 }
 
