@@ -1,0 +1,37 @@
+<%- include('../layout/dashhead') %>
+<%- include('../layout/header') %>
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+      <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+      <li class="breadcrumb-item text-sm text-dark active" aria-current="page">dashboard</li>
+    </ol>
+    <h6 class="font-weight-bolder mb-0">Coupon</h6>
+  </nav>
+
+
+
+  <div class="card-body px-0 pb-2">
+    <div class="table-responsive p-0">
+      <table class="table table-hover mt-4">
+        <thead>
+          <tr>
+            <th scope="col">Coupen Code</th>
+            <th scope="col">Discount Price</th>
+            <th scope="col">minimum Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% coupons.forEach(coupon => { %>
+            <tr>
+              <td><%= coupon.couponCode %></td>
+              <td><%= coupon.discountPrice %></td>
+              <td><%= coupon.minimumPrice %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+        </table>
+
+      <a href="/admin/addCoupon" class="btn btn-info add-user">Add Coupon</a>

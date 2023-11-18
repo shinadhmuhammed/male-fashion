@@ -1,5 +1,5 @@
 <%- include('../layout/dashhead') %>
-  
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,15 +10,6 @@
         body {
             font-family: Arial, sans-serif;
         }
-
-        /* div {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #ffffff;
-        } */
 
         h3 {
             text-align: center;
@@ -51,60 +42,168 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #45a049;
         }
+
+        img {
+            max-width: 100px;
+            margin-right: 10px;
+        }
+
+        #uploadedImages {
+            margin-top: 10px;
+        }
+
+        .cropped-image {
+            max-width: 50%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+            padding: 5px;
+        }
     </style>
+ 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 </head>
 <body>
-<div>
-    <h3>Add a New Product</h3>
-    <form action="/admin/addproduct" method="POST" enctype="multipart/form-data">
+    <div>
+        <h3>Add a New Product</h3>
+        <form action="/admin/addproduct" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
 
-        <p>
-            <label for="productCategory">Product Category:</label>
+            <p>
+                <label for="productCategory">Product Category:</label>
+                <select id="productCategory" name="productCategory" required>
+                    <% if (category.length > 0) { %>
+                        <% category.forEach(categories => {%>
+                            <option value=<%= categories._id %>><%= categories.category %></option>
+                        <% })%>
+                    <% } else { %>
+                        <option value="Mens">no categories</option>
+                    <% } %>
+                </select>
+            </p>
 
-            <select id="productCategory" name="productCategory" required>
-                <% if (category.length > 0) { %>
-                    <% category.forEach(categories => {%>
-                     <option value=<%= categories._id %>><%= categories.category %></option>
-                     <% })%>
-                     <% } else {%>
-                         
-                     <option value="Mens">no categories</option>
-                     <% }%>
+            <p>
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" required>
+            </p>
 
-            </select>
-
-          </p>
-
-        <p><label for="productName">Product Name:</label>
-            <input type="text" id="productName" name="productName" required></p>
-
-        <p><label for="productImage">Product Image:</label>
-            <input type="file" id="productImage" name="productImage" accept="image/*" multiple></p>
-
-        <p><label for="productPrice">Product Price:</label>
-            <input type="number" id="productPrice" name="productPrice" step="0.01" required min="0"></p>
-
-        <p><label for="productDescription">Product Description:</label>
-            <textarea id="productDescription" name="productDescription" required></textarea></p>
+            <p>
+                <label for="productImages">Product Images:</label>
+                <input type="file" id="productImages" name="productImages" accept="image/*" onchange="previewAndCropImage(event)" multiple>
+                <div id="imagePreview"></div>
+                <input type="hidden" id="croppedImage" name="croppedImage">
+            </p>
 
           
-        <p>   <label for="productStock">Product stock:</label>
-                <input type="number" id="productStock" name="productStock" required ></p>
-            
-                <p>
-                    <label for="isListed">List Product:</label>
-                    <input type="checkbox" id="isListed" name="isListed" checked>
-                </p>
+            <div id="croppedImageDisplay"></div>
 
-        <p><button type="submit">Add Product</button></p>
-    </form>
-</div>
+         
+            <button type="button" id="okButton" onclick="displayCroppedImage()">submit</button>
+
+            <p>
+                <label for="productPrice">Product Price:</label>
+                <input type="number" id="productPrice" name="productPrice" step="0.01" required min="0">
+            </p>
+
+            <p>
+                <label for="productDescription">Product Description:</label>
+                <textarea id="productDescription" name="productDescription" required></textarea>
+            </p>
+
+            <p>
+                <label for="productStock">Product stock:</label>
+                <input type="number" id="productStock" name="productStock" required>
+            </p>
+
+            <p>
+                <label for="isListed">List Product:</label>
+                <input type="checkbox" id="isListed" name="isListed" checked>
+            </p>
+
+           
+            <p><button type="submit">Add Product</button></p>
+        </form>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <script>
+        let croppers = [];  
+        function previewAndCropImage(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            const files = event.target.files;
+
+            if (files && files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'cropped-image';  
+                        preview.appendChild(img);
+
+                        // Initialize Cropper.js for each image
+                        const cropper = new Cropper(img, {
+                            aspectRatio: 1,
+                            viewMode: 2,
+                            crop(event) {
+                                // Update the hidden input with the cropped image data
+                                const canvas = cropper.getCroppedCanvas();
+                                const croppedData = canvas.toDataURL('image/jpeg');
+                                document.getElementById('croppedImage').value = croppedData;
+                            }
+                        });
+
+                        // Push the cropper to the array
+                        croppers.push(cropper);
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+
+              
+                document.getElementById('okButton').style.display = 'block';
+            }
+        }
+
+        function validateForm() {
+            const files = document.getElementById('productImages').files;
+
+            if (!files || files.length === 0) {
+                alert('Please select at least one image before submitting.');
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayCroppedImage() {
+            const croppedImageDisplay = document.getElementById('croppedImageDisplay');
+            croppedImageDisplay.innerHTML = '';
+
+            for (let i = 0; i < croppers.length; i++) {
+                const cropper = croppers[i];
+                const canvas = cropper.getCroppedCanvas();
+                const croppedData = canvas.toDataURL('image/jpeg');
+
+              
+                const croppedImage = document.createElement('img');
+                croppedImage.src = croppedData;
+                croppedImage.className = 'cropped-image'; 
+                croppedImage.style.maxWidth = '50%';  
+                croppedImageDisplay.appendChild(croppedImage);
+            }
+
+            document.getElementById('okButton').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
-
-

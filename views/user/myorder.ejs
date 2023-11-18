@@ -3,34 +3,7 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <style>
-    body {
-      padding: 20px;
-    }
 
-    .status-box {
-      padding: 5px 10px;
-      border-radius: 5px;
-      color: #fff;
-    }
-
-    .red-button {
-      background-color: #d9534f;
-      border: none;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .no-orders-message {
-      font-size: 18px;
-      color: #777;
-    }
-  </style>
   <title>My Orders</title>
 </head>
 
@@ -49,9 +22,14 @@
             <th>Payment Method</th>
             <th>Status</th>
             <th>Actions</th>
+            <!-- Add a new column for the "Show Address" button -->
+            <th>Show Address</th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <h4>Your current wallet balance: <span id="wallet-amount"><%= Math.abs(wallet) %></span></h4>
+          </tr>
           <% for (let i = orders.length - 1; i >= 0; i--) { %>
             <% const order = orders[i]; %>
             <% order.products.forEach((product) => { %>
@@ -63,12 +41,21 @@
                 <td><%= order.date.toLocaleDateString() %></td>
                 <td><%= order.paymentMethod %></td>
                 <td><span class="badge badge-info"><%= order.status %></span></td>
-  
                 <td>
-                  <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)">
+                  <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)"
+                    <% if (order.cancelled) { %>disabled<% } %>>
                     <% if (order.cancelled) { %>
-                      Cancelled. Will be returned in 4 days.
+                      <% if (order.returnExpiry) { %>
+                        Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
+                      <% } else { %>
+                        Cancelled. Return date not available.
+                      <% } %>
                     <% } else { %>Cancel<% } %>
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
+                    Show Address
                   </button>
                 </td>
               </tr>
@@ -82,115 +69,32 @@
     <a href="/" class="btn btn-primary">Back to Home</a>
   </div>
 
-
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+  <script>
+    function showAddressAlert(name, number, house, city, state, pincode, deliveryPoint) {
+    const addressString = `
+      Name: ${name}
+      Number: ${number}
+      House: ${house}
+      City: ${city}
+      State: ${state}
+      Pincode: ${pincode}
+      Delivery Point: ${deliveryPoint}
+    `;
 
+    Swal.fire({
+      title: 'Address',
+      html: addressString,
+    });
+  }
+  </script>
 
-  
-
-
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
-    <script>
-      const cancelledOrders = JSON.parse(localStorage.getItem('cancelledOrders')) || {};
-  
-      function cancelOrder(orderId, button) {
-        if (cancelledOrders[orderId]) {
-          return;
-        }
-  
-       
-        Swal.fire({
-          title: 'Reason for Cancellation',
-          input: 'text',
-          inputAttributes: {
-            autocapitalize: 'off'
-          },
-          showCancelButton: true,
-          confirmButtonText: 'Submit',
-          showLoaderOnConfirm: true,
-          preConfirm: (reason) => {
-            if (reason.trim() === '') {
-              Swal.showValidationMessage('Please enter a reason');
-            }
-          },
-          allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const reason = result.value;
-            const cancellationDate = new Date().toLocaleDateString();
-            fetch(`/cancelOrder/${orderId}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ reason, cancellationDate }),
-            })
-              .then((response) => {
-                if (response.ok) {
-                  button.textContent = `Cancelled . Will be returned in 4 days.`;
-                  button.classList.add('cancelled-button');
-                  cancelledOrders[orderId] = cancellationDate;
-                  localStorage.setItem('cancelledOrders', JSON.stringify(cancelledOrders));
-                  console.log('Order successfully canceled');
-                } else {
-                  console.error('Error cancelling the order');
-                }
-              })
-              .catch((error) => {
-                console.error('Error cancelling the order:', error);
-              });
-          }
-        });
-      }
-    </script>
-  
-  
 </body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <%- include('../layout/footer') %>
+</html>

@@ -17,7 +17,7 @@ admin_route.get('/dashboard', Auth.loggedadmin, adminController.userDashboard)
 
 admin_route.get('/products',Auth.loggedadmin,adminController.products)
 admin_route.get('/addproduct',Auth.loggedadmin,adminController.addProducts)
-admin_route.post('/addproduct',Auth.loggedadmin,uploadMulter.array('productImage',5),adminController.addProduct);
+admin_route.post('/addproduct', Auth.loggedadmin, uploadMulter.array('productImages', 5), adminController.addProduct);
 admin_route.delete('/deleteproduct/:productId',adminController.deleteProduct)
 admin_route.get('/editproduct/:productId',Auth.loggedadmin,adminController.editProductForm)
 admin_route.post('/editproduct/:productId', Auth.loggedadmin, uploadMulter.array('productImage', 5), adminController.editProduct);
@@ -51,31 +51,20 @@ admin_route.get('/dashboard/sales-data', adminController.getSalesData);
 admin_route.get('/dashboard/total-users',adminController.totalUsers)
 admin_route.get('/dashboard/orders-report', Auth.loggedadmin, adminController.generateReport);
 admin_route.get('/dashboard/total-revenue',Auth.loggedadmin,adminController.totalRevenue)
-
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)
 
 
 
 
+admin_route.get('/coupon',adminController.coupon)
+admin_route.get('/addCoupon',adminController.couponCode)
+admin_route.post('/addcoupon',adminController.addCoupon)
 
 
 
-
-
-
-
-
-
-
-// admin_route.post('/createUser', Auth.loggedadmin, adminController.createUser)
-
-// admin_route.get('/dashboard/createUser', Auth.loggedadmin, adminController.loadCreateUser)
-
-// admin_route.get('/logoutAdmin',Auth.logouting)
-
-
-
-
+admin_route.get('/banner',adminController.banner)
+admin_route.get('/addbanner',adminController.addBanner)
+admin_route.post('/addbanner', Auth.loggedadmin, uploadMulter.single('bannerImage'), adminController.createBanner);
 
 
 module.exports = admin_route;

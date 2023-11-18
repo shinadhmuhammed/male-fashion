@@ -6,42 +6,6 @@
 
 
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
-        </div>
-       
-
-        <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="/malefashion-master/img/icon/search.png" alt=""></a>
-            <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
         <div class="container">
@@ -59,14 +23,11 @@
                             <li><a href="/shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about">About Us</a></li>
-                                    <li><a href="./shop-details">Shop Details</a></li>
-                                    <li><a href="./shopping-cart">Shopping Cart</a></li>
+                                    <li><a href="./shop">Shop Details</a></li>
+                                    <li><a href="./shoppingcart">Shopping Cart</a></li>
                                     <li><a href="./checkout">Check Out</a></li>
-                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog">Blog</a></li>
                             <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
@@ -74,7 +35,7 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
                         <div class="nav-icons">
-                            <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
+                            <a href="./wishlist"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
                             <a href="./shoppingcart"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span></span></a>
                             <a href="./profile"><img src="/malefashion-master/images/profile.png" alt=""></a>
                         </div>
@@ -93,50 +54,31 @@
     <!-- Hero Section Begin -->
     <section class="hero">
         <div class="hero__slider owl-carousel">
-            <div class="hero__items set-bg" data-setbg="/malefashion-master/images/hero-1.jpg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-5 col-lg-7 col-md-8">
-                            <div class="hero__text">
-                                <h6>Summer Collection</h6>
-                                <h2>Fall - Winter Collections 2030</h2>
-                                <p>A specialist label creating luxury essentials. Ethically crafted with an unwavering
-                                commitment to exceptional quality.</p>
-                                <a href="./shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                <div class="hero__social">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
+            <% banners.forEach((banner) => { %>
+                <div class="hero__items set-bg" data-setbg="/malefashion-master/images/<%= banner.bannerImage.filename %>">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-5 col-lg-7 col-md-8">
+                                <div class="hero__text">
+                                    <h6><%= banner.title %></h6>
+                                    <h2><%= banner.description %></h2>
+                                    <p>Coupon Code: <%= banner.couponCode %></p>
+                                    <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                    <div class="hero__social">
+                                        <a href="#"><i class="fa fa-facebook"></i></a>
+                                        <a href="#"><i class="fa fa-twitter"></i></a>
+                                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                                        <a href="#"><i class="fa fa-instagram"></i></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="hero__items set-bg" data-setbg="malefashion-master/images/hero-2.jpg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-5 col-lg-7 col-md-8">
-                            <div class="hero__text">
-                                <h6>Summer Collection</h6>
-                                <h2>Fall - Winter Collections 2030</h2>
-                                <p>A specialist label creating luxury essentials. Ethically crafted with an unwavering
-                                commitment to exceptional quality.</p>
-                                <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                <div class="hero__social">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <% }) %>
         </div>
     </section>
+    
     <!-- Hero Section End -->
 
     <!-- Banner Section Begin -->

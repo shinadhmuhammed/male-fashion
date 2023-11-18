@@ -62,7 +62,10 @@ status: {
   enum: ['Pending', 'Shipped', 'Delivered'], 
   required: true,
   default: 'Pending',
-}
+},
+returnExpiry: {
+  type: Date,
+},
 });
 
 module.exports = {

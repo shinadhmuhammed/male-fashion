@@ -9,21 +9,11 @@
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Male-Fashion | Template</title>
+    <title>Male-Fashion </title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
     rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <style>
 
@@ -65,6 +55,62 @@ input[type="number"] {
     margin-right: 10px;
 }
 
+.checkout__order {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.order__title {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.checkout__order__products {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-price {
+    color: #666;
+}
+
+.quantity {
+    margin-left: 20px;
+}
+
+.cart__total {
+    margin-top: 20px;
+}
+
+.total-summary {
+    margin-top: 10px;
+}
+
 
 </style>
 <body>
@@ -73,35 +119,7 @@ input[type="number"] {
         <div class="loader"></div>
     </div>
 
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
-        </div>
-        <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-            <a href="#"><img src="img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
+  
 
     <!-- Header Section Begin -->
     
@@ -119,14 +137,11 @@ input[type="number"] {
                             <li class="active"><a href="./shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about">About Us</a></li>
                                     <li><a href="./shop-details">Shop Details</a></li>
                                     <li><a href="./shopping-cart">Shopping Cart</a></li>
                                     <li><a href="./checkout">Check Out</a></li>
-                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog">Blog</a></li>
                             <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
@@ -171,13 +186,15 @@ input[type="number"] {
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-6">
-                    <h6 class="coupon__code">
-                        <span class="icon_tag_alt"></span>
-                        Have a coupon?
-                        <a href="#">Click here</a> to enter your code
-                    </h6>
                     <h6 class="checkout__title">Billing Details</h6>
-    
+                
+                    <div class="cart__discount">
+                        <h6>Discount codes</h6>
+                        <form id="couponForm">
+                            <input type="text" id="couponCode" placeholder="Coupon code">
+                            <button type="submit">Apply</button>
+                        </form>
+                    </div>
                     <h6 class="checkout__title">Your Address</h6>
     
                     <button id="showAddressBtn">Add Address</button>
@@ -224,6 +241,7 @@ input[type="number"] {
                             </div>
                         </form>
                     </div>
+
     
                     <div id="userAddresses">
                         <% address.forEach(function(addr, index) { %>
@@ -242,66 +260,88 @@ input[type="number"] {
                     </div>
                 </div>
                 
+
+                               
+               
                 <div class="col-lg-4 col-md-6">
                     <section class="checkout__order">
                         <h4 class="order__title">Your order</h4>
                         <div class="checkout__order__products">
-                            Product
-                            <span>Total</span>
+                            <div class="product-header">
+                                <span class="product-name">Product</span>
+                                <span class="product-total">Total</span>
+                            </div>
+                            <ul class="checkout__total__products">
+                                <input type="hidden" name="cartItems" id="cartItems" value="">
+                                <% cartItems.forEach(function(item) { %>
+                                    <li class="product-item">
+                                        <div class="product-details">
+                                            <span class="product-name"><%= item.ProductId.productName %></span>
+                                            <span>Quantity: <%= item.Quantity %></span>
+                                            <div>
+                                                <span class="product-price">$<%= item.ProductId.productPrice %></span>
+                                            </div>
+                                        </div>
+                                        <div class="quantity"></div>
+                                    </li>
+                                <% }); %>
+                            </ul>
                         </div>
-                        <ul class="checkout__total__products">
-                            <input type="hidden" name="cartItems" id="cartItems" value="">
-                            <% cartItems.forEach(function(item) { %>
-                                <li>
-                                    <%= item.ProductId.productName %> 
-                                    <span>$ <%= item.ProductId.productPrice %></span> 
-                                </li>
-                            <% }); %>
-                        </ul>
-                        <ul class="checkout__total__all">
-                            <li>Total <span>$<%= totalSum %> </span></li> 
-                        </ul>
-                    </section>
-                    <section class="payment-method">
-                        <div class="form-check">
-                            <input
-                                onclick="togglePaymentMethod(this)"
-                                class="form-check-input"
-                                type="radio"
-                                name="paymentMethod"
-                                value="COD"
-                                id="COD"
-                            />
-                            <label class="form-check-label" for="COD">
-                                Cash On Delivery
-                            </label>
+                
+                        <div class="cart__total">
+                            <div id="discountDetails" style="display: none;">
+                                <p><strong>Offer Price:</strong> <span id="offerPrice" class="bold-text" style="color: red"></span></p>
+                                <p><strong>Discount:</strong> <span id="discountPrice" class="bold-text" style="color: red;"></span></p>
+                            </div>
+                
+                            <div class="total-summary">
+                                <h6>Cart total</h6>
+                                <ul>
+                                    <li>Total <span id="totalvalue">$<span id="displayTotal"><%= totalSum %></span></span></li>
+                                </ul>
+                            </div>
+                
+                            <section class="payment-method">
+                                <div class="form-check">
+                                    <input
+                                        onclick="togglePaymentMethod(this)"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="COD"
+                                        id="COD"
+                                    />
+                                    <label class="form-check-label" for="COD">
+                                        Cash On Delivery
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        onclick="togglePaymentMethod(this)"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="Razorpay"
+                                        id="Razorpay"
+                                    />
+                                    <label class="form-check-label" for="Razorpay">
+                                        Pay Online (Razorpay)
+                                    </label>
+                                </div>
+                                <button
+                                    class="btn"
+                                    onclick="CheckplaceOrder()"
+                                    value="Place order"
+                                    id="placeOrderButton"
+                                    disabled
+                                >
+                                    Place Order
+                                </button>
+                            </section>
                         </div>
-                        <div class="form-check">
-                            <input
-                                onclick="togglePaymentMethod(this)"
-                                class="form-check-input"
-                                type="radio"
-                                name="paymentMethod"
-                                value="Razorpay"
-                                id="Razorpay"
-                            />
-                            <label class="form-check-label" for="Razorpay">
-                                Pay Online (Razorpay)
-                            </label>
-                        </div>
-                        <button
-                            class="btn"
-                            onclick="CheckplaceOrder()"
-                            value="Place order"
-                            id="placeOrderButton"
-                            disabled
-                        >
-                            Place Order
-                        </button>
                     </section>
                 </div>
                 
-    
     
     
     
@@ -420,6 +460,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+
 async function CheckplaceOrder() {
     const selectedAddressId = document.getElementById("selectedAddressId").value;
     console.log("Selected Address ID: ", selectedAddressId);
@@ -447,11 +489,14 @@ async function CheckplaceOrder() {
 
     const paymentMethod = paymentMethodRadio.value;
     console.log("Payment Method: ", paymentMethod);
+    
+    const couponCode = document.getElementById('couponCode').value;
+    console.log('Coupon Code:', couponCode);
 
     try {
-        if (paymentMethod === "COD") {
+        if (paymentMethod === 'COD') {
             await handleCashOnDelivery(selectedAddressId, paymentMethod);
-        } else if (paymentMethod === "Razorpay") {
+        } else if (paymentMethod === 'Razorpay') {
             const totalAmountResponse = await fetch('/getTotalAmount', {
                 method: 'POST',
                 headers: {
@@ -467,21 +512,33 @@ async function CheckplaceOrder() {
             }
 
             const totalAmountData = await totalAmountResponse.json();
-            const amount = totalAmountData.totalAmount;
+            let amount = totalAmountData.totalAmount;
+
+            // Fetch discount information from the DOM
+            const discountDetails = {
+                offerPrice: parseFloat(document.getElementById('offerPrice').textContent.replace('$', '')),
+                discountPrice: parseFloat(document.getElementById('discountPrice').textContent.replace('$', '')),
+            };
+
+            // If a valid coupon is applied, adjust the total amount
+            if (discountDetails.discountPrice > 0) {
+                amount -= discountDetails.discountPrice;
+            }
 
             const razorpayOrderResponse = await fetch('/razorpayorder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount,
-                    selectedAddressId,
-                    paymentMethod,
-                }),
-            });
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        amount,
+        selectedAddressId,
+        paymentMethod,
+        couponCode, 
+    }),
+});
 
-            if (!razorpayOrderResponse.ok) {
+        if (!razorpayOrderResponse.ok) {
                 throw new Error(`Failed to fetch Razorpay order. Status: ${razorpayOrderResponse.status}`);
             }
 
@@ -493,13 +550,17 @@ async function CheckplaceOrder() {
     } catch (error) {
         console.error(error);
         Swal.fire({
-            text: "Error processing the order!",
-            icon: "error",
+            text: 'Error processing the order!',
+            icon: 'error',
             showConfirmButton: false,
             timer: 1000,
         });
     }
 }
+
+
+
+
 
 async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
     try {
@@ -549,7 +610,9 @@ async function loadRazorpayScript() {
     });
 }
 
-async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder) {
+
+
+async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder, originalAmount) {
     try {
         const response = await fetch('/order', {
             method: 'POST',
@@ -560,6 +623,7 @@ async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrd
                 selectedAddressId,
                 paymentMethod,
                 razorpayOrder,
+                originalAmount, 
             }),
         });
 
@@ -589,6 +653,7 @@ async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrd
     }
 }
 
+
 async function handleRazorpay(amount, orderId, selectedAddressId, paymentMethod, razorpayOrder) {
     console.log(selectedAddressId, paymentMethod, 'kkkkkkkkkkkkkkkkkkkkkkk');
     try {
@@ -604,8 +669,7 @@ async function handleRazorpay(amount, orderId, selectedAddressId, paymentMethod,
             handler: function (response) {
                 console.log(response);
 
-                // After successful payment, call the function to handle the order
-                handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder);
+                handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder, amount);
             },
             prefill: {
                 name: 'Customer Name',
@@ -631,6 +695,53 @@ async function handleRazorpay(amount, orderId, selectedAddressId, paymentMethod,
 }
 
 
+function calculateOfferPrice(originalPrice, discountPrice) {
+    return originalPrice - discountPrice;
+}
+
+document.getElementById('couponForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const couponCode = document.getElementById('couponCode').value;
+    console.log('Submitting coupon code:', couponCode);
+
+    fetch('/coupon-validate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Coupon validation response:', data);
+
+        if (data.valid) {
+            const offerPrice = calculateOfferPrice(data.totalSum, data.coupon.discountPrice);
+            const discountPrice = data.coupon.discountPrice;
+
+            document.getElementById('offerPrice').textContent = `$${offerPrice}`;
+            document.getElementById('discountPrice').textContent = `$${discountPrice}`;
+
+            const totalWithDiscount = data.totalSum - discountPrice;
+            document.getElementById('totalvalue').textContent = `$${totalWithDiscount}`;
+
+            document.getElementById('discountDetails').style.display = 'block';
+        } else {
+            document.getElementById('offerPrice').textContent = '';
+            document.getElementById('discountPrice').textContent = '';
+
+
+            document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
+            alert(data.message ? data.message : 'Invalid coupon code. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error applying coupon:', error);
+
+        alert('An error occurred while applying the coupon. Please try again later.');
+    });
+});
 
 
 

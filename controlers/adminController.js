@@ -4,10 +4,15 @@ const Users=require('../controlers/userController')
 const {Product}=require('../models/productmodel');
 const {Category} = require('../models/categorymodel');
 const {Order}=require('../models/ordermodel')
+const {Coupon}=require('../models/couponmodel')
+const  Banner=require('../models/bannermodel')
 const multer=require('multer')
 const storage=multer.memoryStorage();
 const PDFDocument = require('pdfkit');
 const upload=multer({storage})
+const sharp=require('sharp')
+
+
 
 
 let adminEmail="admin@gmail.com"
@@ -78,59 +83,76 @@ const form=async(req,res)=>{
 }
 
 
-const addProducts=async(req,res)=>{
-    const category=await Category.find({})
-    console.log('categoty sdfgdfg',category);
-    res.render('admin/addproduct',{category})
-}
 
 
 
-const addProduct = async (req, res) => {
+const addProducts = async (req, res) => {
+  try {
+      const category = await Category.find({});
+      const productImages = []; 
+
+      console.log('category', category);
+      console.log('productImages', productImages);
+
+      res.render('admin/addproduct', { category, productImages });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("An error occurred while loading the data.");
+  }
+  }
+
+
+
+
+
+
+  const addProduct = async (req, res) => {
     console.log(req.body);
     // console.log(req.files);
 
     try {
         if(!req.files || req.files.length===0){
-            return res.render('admin/addproduct',{error:'please upload atleast one image'})
-        }
+          return res.render('admin/addproduct',{error:'please upload atleast one image'})
+      }
 
 
-        const productImages = req.files.map(file => ({
-            filename: file.originalname, 
-            data: file.buffer, 
-            contentType: file.mimetype 
-        }));
+      const productImages = req.files.map(file => ({
+          filename: file.originalname, 
+          data: file.buffer, 
+          contentType: file.mimetype 
+      }));
+      const croppedImageData = req.body.croppedImage;
+      const productPrice = parseFloat(req.body.productPrice);
 
-        const productPrice = parseFloat(req.body.productPrice);
-
-        if (productPrice < 0) {
-            return res.render('admin/addproduct', { error: "Product price cannot be negative" });
-        }
-        console.log(req.body);
-        const isListed = req.body.isListed === 'on'; 
-        const newProduct = new Product({
-            productName: req.body.productName,
-            productImage: productImages,
-            productPrice: productPrice,
-            productDescription: req.body.productDescription,
-            productCategory: req.body.productCategory,
-            productStock: req.body.productStock,
-            isListed: isListed, 
-        });
-        const savedProduct = await newProduct.save();
-        if (savedProduct) {
-            console.log('Product saved successfully:', savedProduct);
-            res.redirect('/admin/products');
-        } else {
-            console.error('Failed to save product.');
-            res.render('admin/addproduct', { error: "Error adding the product" });
-        }
-    } catch (error) {
-        console.error('Error adding product:', error);
-        res.render('admin/addproduct', { error: "Error adding the product" });
-    }
+      if (productPrice < 0) {
+          return res.render('admin/addproduct', { error: "Product price cannot be negative" });
+      }
+      console.log(req.body);
+      const isListed = req.body.isListed === 'on'; 
+      const newProduct = new Product({
+          productName: req.body.productName,
+          productImage: productImages,
+          productPrice: productPrice,
+          productDescription: req.body.productDescription,
+          productCategory: req.body.productCategory,
+          productStock: req.body.productStock,
+          isListed: isListed, 
+      });
+      const savedProduct = await newProduct.save();
+      if (savedProduct) {
+          console.log('Product saved successfully:', savedProduct);
+          res.redirect('/admin/products');
+      } else {
+          console.error('Failed to save product.');
+          res.render('admin/addproduct', { error: "Error adding the product" });
+      }
+  } catch (error) {
+      console.error('Error adding product:', error);
+      res.render('admin/addproduct', { error: "Error adding the product" });
+  }
 }
+
+
 
 
 
@@ -172,11 +194,10 @@ const deleteProduct = async (req, res) => {
 
 
   
-  
   const editProduct = async (req, res) => {
     const productId = req.params.productId;
     try {
-        const product = await Product.findById(productId)
+        const product = await Product.findById(productId);
 
         if (!product) {
             res.status(404).send('Product not found');
@@ -196,15 +217,22 @@ const deleteProduct = async (req, res) => {
         product.productPrice = productPrice;
         product.productDescription = req.body.productDescription;
         product.productCategory = req.body.productCategory;
-        product.productStock=req.body.productStock;
-
+        product.productStock = req.body.productStock;
 
         if (req.files && req.files.length > 0) {
-            product.productImage = req.files.map((file) => ({
-                filename: file.originalname,
-                data: file.buffer,
-                contentType: file.mimetype,
-            }));
+            product.productImage = [];
+
+            for (const file of req.files) {
+                const croppedBuffer = await sharp(file.buffer)
+                    .resize({ width: 300, height: 300, fit: 'cover' }) 
+                    .toBuffer();
+
+                product.productImage.push({
+                    filename: file.originalname,
+                    data: croppedBuffer,
+                    contentType: file.mimetype,
+                });
+            }
         }
 
         const updatedProduct = await product.save();
@@ -219,6 +247,7 @@ const deleteProduct = async (req, res) => {
         res.render('admin/editproduct', { productId, error: "Error updating the product" });
     }
 };
+
 
 
 
@@ -281,6 +310,8 @@ const blockUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+
 
 
 
@@ -347,6 +378,8 @@ const blockUser = async (req, res) => {
         }
 
 
+        
+
         const addcategory = async (req, res) => {
             try {
                 const { CategoryName } = req.body;
@@ -369,6 +402,8 @@ const blockUser = async (req, res) => {
         
 
     
+
+
 const deleteCategory = async (req, res) => {
     const categoryId = req.params.categoryId; 
     try {
@@ -384,6 +419,8 @@ const deleteCategory = async (req, res) => {
     }
   };
   
+
+
 
 
   const editcategoryform = async (req, res) => {
@@ -536,6 +573,8 @@ const cancelOrder = async (req, res) => {
   
 
 
+
+
   const totalUsers=async(req,res)=>{
     try {
       const totalUsers = await User.countDocuments();
@@ -623,6 +662,96 @@ const cancelOrder = async (req, res) => {
   
 
 
+    const coupon=async(req,res)=>{
+      try{
+        const coupons=await Coupon.find();
+        res.render('admin/coupon',{coupons})
+      }catch(error){
+        res.status(500).send('Internal Server Error')
+      }
+    }
+
+
+
+    const couponCode=async(req,res)=>{
+      res.render('admin/addCoupon')
+    }
+
+
+
+
+
+    const addCoupon = async (req, res) => {
+      const { couponcode, discountprice, minimumprice } = req.body;
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+  
+      const newCoupon = new Coupon({
+          couponCode: couponcode,
+          discountPrice: discountprice,
+          minimumPrice: minimumprice,
+          expiryDate: expiryDate, 
+      });
+  
+      try {
+          const savedCoupon = await newCoupon.save();
+          const coupons = await Coupon.find();
+  
+          if (savedCoupon) {
+              res.render('admin/coupon', { coupons });
+          } else {
+              res.redirect('/admin/coupon');
+          }
+      } catch (error) {
+          console.error('Error saving coupon:', error);
+          res.status(500).send('Internal server error');
+      }
+  };
+  
+
+      const banner=async(req,res)=>{
+        try{
+          const banners=await Banner.find()
+          res.render('admin/banner',{banners})
+        }catch(error){
+          console.error('error fetching bannners:',error)
+                res.status(500).send('Internal server error')
+        }
+        }
+       
+  
+        const addBanner=async(req,res)=>{
+          res.render('admin/addbanner')
+        }
+
+
+      const createBanner = async (req, res) => {
+        const { title, description, couponCode, discountPercentage, expiryDate, isActive } = req.body;
+        const bannerImage = {
+          filename: req.file.filename,
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+        };
+      
+        try {
+          const newBanner = new Banner({
+            title,
+            description,
+            couponCode,
+            discountPercentage,
+            expiryDate,
+            isActive: isActive === 'on', 
+            bannerImage,
+          });
+      
+          await newBanner.save();
+          res.redirect('/admin/banner'); 
+        } catch (error) {
+          console.error('Error creating banner:', error);
+          res.status(500).send('Internal Server Error');
+        }
+      };
+
 
 
 const logout = (req, res) => {
@@ -661,5 +790,11 @@ module.exports = {
     totalUsers,
     generateReport,
     totalRevenue,
+    coupon,
+    couponCode,
+    addCoupon,
+    banner,
+    addBanner,
+    createBanner,
     logout
 }

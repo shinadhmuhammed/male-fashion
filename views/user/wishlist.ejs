@@ -1,0 +1,178 @@
+<%- include('../layout/header') %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        h3 {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        li {
+            text-align: center;
+            margin: 10px;
+        }
+
+        img {
+            max-width: 100px;
+            max-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+
+    
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="./index"><img src="img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li><a href="./index">Home</a></li>
+                            <li class="active"><a href="./shop">Shop</a></li>
+                            <li><a href="#">Pages</a>
+                                <ul class="dropdown">
+                                    <li><a href="./shop">Shop Details</a></li>
+                                    <li><a href="./shoppingcart">Shopping Cart</a></li>
+                                    <li><a href="./checkout">Check Out</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="./contact">Contacts</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+                        <a href="#"><img src="img/icon/heart.png" alt=""></a>
+                        <a href="#"><img src="img/icon/cart.png" alt=""></a>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shopping Cart</h4>
+                        <div class="breadcrumb__links">
+                            <a href="./index.html">Home</a>
+                            <a href="./shop.html">Shop</a>
+                            <span>wishlist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <h3>Your Wishlist</h3>
+
+    <% if (wishlistItems.length > 0) { %>
+        <ul>
+            <% wishlistItems.forEach(item => { %>
+                <li>
+                    <img src="/malefashion-master/images/<%= item.ProductImage %>" alt="<%= item.ProductName %>" style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 5px;">
+                    <h4><%= item.ProductName %></h4>
+                    <p>Price: $<%= item.ProductPrice %></p>
+                    <button type="button" onclick="removeFromWishlist('<%= item._id %>')">Remove from Wishlist</button>
+                    <div>
+                        <a href="./shopdetails?id=<%= item.ProductId._id %>">
+                            <img src="/malefashion-master/img/icon/search.png" alt="" style="max-width: 20px; max-height: 20px;">
+                        </a>
+                    </div>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>Your wishlist is empty.</p>
+    <% } %>
+</body>
+</body>
+
+</html>
+<%- include('../layout/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    async function removeFromWishlist(itemId) {
+        const confirmation = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+        if (confirmation.isConfirmed) {
+            try {
+                const response = await fetch(`/wishlist/${itemId}/remove`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    console.log('Product removed from wishlist successfully');
+                    location.reload();
+                } else {
+                    const errorMessage = await response.text();
+                    console.error('Failed to remove product from wishlist:', errorMessage);
+                }
+
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        }
+    }
+</script>
+
