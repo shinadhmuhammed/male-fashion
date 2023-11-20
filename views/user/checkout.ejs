@@ -514,13 +514,11 @@ async function CheckplaceOrder() {
             const totalAmountData = await totalAmountResponse.json();
             let amount = totalAmountData.totalAmount;
 
-            // Fetch discount information from the DOM
             const discountDetails = {
                 offerPrice: parseFloat(document.getElementById('offerPrice').textContent.replace('$', '')),
                 discountPrice: parseFloat(document.getElementById('discountPrice').textContent.replace('$', '')),
             };
 
-            // If a valid coupon is applied, adjust the total amount
             if (discountDetails.discountPrice > 0) {
                 amount -= discountDetails.discountPrice;
             }
@@ -727,21 +725,44 @@ document.getElementById('couponForm').addEventListener('submit', function (event
             document.getElementById('totalvalue').textContent = `$${totalWithDiscount}`;
 
             document.getElementById('discountDetails').style.display = 'block';
+
+            // Use SweetAlert success popup
+            Swal.fire({
+                icon: 'success',
+                title: 'Coupon Validated',
+                text: 'Your coupon has been successfully applied!',
+            });
         } else {
             document.getElementById('offerPrice').textContent = '';
             document.getElementById('discountPrice').textContent = '';
+            
+            // Only update total amount when the coupon is invalid and data.totalSum exists
+            if (data.totalSum !== undefined) {
+                document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
+            }
 
-
-            document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
-            alert(data.message ? data.message : 'Invalid coupon code. Please try again.');
+            // Use SweetAlert error popup
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Coupon',
+                text: data.message ? data.message : 'Invalid coupon code. Please try again.',
+            });
         }
     })
     .catch(error => {
         console.error('Error applying coupon:', error);
 
-        alert('An error occurred while applying the coupon. Please try again later.');
+        // Use SweetAlert error popup for the catch block
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while applying the coupon. Please try again later.',
+        });
     });
 });
+
+
+
 
 
 

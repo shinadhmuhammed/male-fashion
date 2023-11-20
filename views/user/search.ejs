@@ -14,6 +14,18 @@
             text-align: center; 
             
         }
+
+        .wishlist-btn {
+    background-color: transparent;
+     border: none;
+     cursor: pointer;
+     font-size: 1.5em; 
+    color: rgb(0, 0, 0); 
+    }
+
+    .wishlist-btn:hover {
+  color: darkred; 
+    }
     </style>
     
 
@@ -24,36 +36,6 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
-        </div>
-       
-
-        <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="/malefashion-master/img/icon/search.png" alt=""></a>
-            <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
-    </div>
     <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
@@ -72,14 +54,12 @@
                         <li><a href="/shop">Shop</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="dropdown">
-                                <li><a href="./about">About Us</a></li>
                                 <li><a href="./shop-details">Shop Details</a></li>
                                 <li><a href="./shopping-cart">Shopping Cart</a></li>
                                 <li><a href="./checkout">Check Out</a></li>
                                 <li><a href="./blog-details">Blog Details</a></li>
                             </ul>
                         </li>
-                        <li><a href="./blog">Blog</a></li>
                         <li><a href="./contact">Contacts</a></li>
                     </ul>
                 </nav>
@@ -88,7 +68,7 @@
                 <!-- Your existing nav options code -->
                 <div class="header__nav__option">
                     <div class="nav-icons">
-                        <a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
+                        <a href="./wishlist"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
                         <a href="./shoppingcart"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span></span></a>
                     </div>
                 </div>
@@ -122,7 +102,10 @@
                                 <div class="product-item">
                                     <img src="/malefashion-master/images/<%= product.productImage[0].filename %>" alt="<%= product.productName %>" style="width: 250px; height: 250px;">
                                     <a href="./shopdetails?id=<%= product._id %>"><img src="/malefashion-master/img/icon/search.png" alt=""></a>
-                                    <li><a href="#"><img src="/malefashion-master/img/icon/heart.png" alt=""></a></li>
+                                    <li>
+                                        <button class="wishlist-btn" data-product-id="<%= product._id %>">
+                                          &#10084;
+                                        </button>
                                     <div class="product__item__text">
                                         <h6><%= product.productName %></h6>
                                         <h5>$<%= product.productPrice %></h5>
@@ -137,4 +120,63 @@
             </div>
         </div>
         
-                        
+    
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        
+document.addEventListener('DOMContentLoaded', function () {
+    const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+
+    wishlistButtons.forEach(button => {
+        button.addEventListener('click', async function () {
+            const productId = button.getAttribute('data-product-id');
+
+            if (!productId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Product information is missing.'
+                });
+                return;
+            }
+
+            try {
+                const response = await fetch(`/wishlist/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                       
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log('Product added to wishlist successfully');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Product added to the wishlist successfully.'
+                    });
+                } else {
+                    console.error('Failed to add product to wishlist');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to add the product to the wishlist.'
+                    });
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred. Please try again.'
+                });
+            }
+        });
+    });
+});
+    </script>

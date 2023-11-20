@@ -77,7 +77,7 @@
           <p>Description: <%= banner.description %></p>
           <p>Coupon Code: <%= banner.couponCode %></p>
           <p>Discount Percentage: <%= banner.discountPercentage %></p>
-          <p>Expiry Date: <%= banner.expiryDate %></p>
+          <p>Expiry Date: <%= banner.expiryDate.toDateString() %></p>
           <p>Is Active: <%= banner.isActive %></p>
 
           <% if (banner.bannerImage && banner.bannerImage.filename) { %>

@@ -122,12 +122,6 @@
                     <h4><%= item.ProductName %></h4>
                     <p>Price: $<%= item.ProductPrice %></p>
                     <button type="button" onclick="removeFromWishlist('<%= item._id %>')">Remove from Wishlist</button>
-                    <div>
-                        <a href="./shopdetails?id=<%= item.ProductId._id %>">
-                            <img src="/malefashion-master/img/icon/search.png" alt="" style="max-width: 20px; max-height: 20px;">
-                        </a>
-                    </div>
-                </li>
             <% }); %>
         </ul>
     <% } else { %>

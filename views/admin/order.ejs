@@ -41,7 +41,7 @@
                   <% orders.forEach((order, index) => { %>
                   <tr>
                     <td><%= index + 1 %></td>
-                    <td><%= order._id %></td>
+                    <td><%= order.orderId %></td>
                     <td><%= order.products[0].productPrice %></td>
                     <td><%= order.products[0].quantity %></td>
                     <td><%= order.total %></td>

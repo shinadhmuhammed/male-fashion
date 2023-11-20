@@ -404,7 +404,7 @@ const blockUser = async (req, res) => {
     
 
 
-const deleteCategory = async (req, res) => {
+  const deleteCategory = async (req, res) => {
     const categoryId = req.params.categoryId; 
     try {
       const deletedCategory = await Category.findByIdAndRemove(categoryId);
@@ -472,7 +472,6 @@ const deleteCategory = async (req, res) => {
 const order=async(req,res)=>{
     try{
         const orders=await Order.find({})
-        console.log(orders,'kkkkkkkkkkkkkkkkkk');
         res.render('admin/order',{orders})
     }catch(error){
         console.error(error);

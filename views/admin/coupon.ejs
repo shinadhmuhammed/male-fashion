@@ -17,18 +17,20 @@
       <table class="table table-hover mt-4">
         <thead>
           <tr>
-            <th scope="col">Coupen Code</th>
+            <th scope="col">Coupon Code</th>
             <th scope="col">Discount Price</th>
-            <th scope="col">minimum Price</th>
+            <th scope="col">Minimum Price</th>
+            <th scope="col">Expiry Date</th>
           </tr>
         </thead>
-
+        
         <tbody>
           <% coupons.forEach(coupon => { %>
             <tr>
               <td><%= coupon.couponCode %></td>
               <td><%= coupon.discountPrice %></td>
               <td><%= coupon.minimumPrice %></td>
+              <td><%= coupon.expiryDate.toDateString() %></td> 
             </tr>
           <% }); %>
         </tbody>

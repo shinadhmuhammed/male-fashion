@@ -346,7 +346,7 @@ const categorySelection = async (req, res) => {
   
   const sortProducts = async (req, res) => {
     try {
-        const option = req.params.option;
+        const option = req.query.option;
         let sortedProducts;
 
         if (option === 'lowToHigh') {
@@ -358,12 +358,13 @@ const categorySelection = async (req, res) => {
         }
 
         res.json(sortedProducts);
-        console.log(sortedProducts,'kkkkkkkkkkkkk');
+        console.log(sortedProducts, 'kkkkkkkkkkkkk');
     } catch (error) {
         console.error('Error sorting the products', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 
@@ -394,24 +395,32 @@ const searchProducts=async(req,res)=>{
 
 
 
-// const pagination = async (req, res) => {
-//     try {
-//         const page = parseInt(req.params.page) || 1;
-//         const pageSize = 8;
 
-//         const products = await Product(page, pageSize);
+const pagination = async (req, res) => {
+    try {
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 8;
 
-//         // Calculate total pages
-//         const totalProducts = await Product(); 
-//         const totalPages = Math.ceil(totalProducts / pageSize);
+        const products = await Product.find()
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .exec();
 
-//         // Pass totalPages as part of the data object when rendering the view
-//         res.render('user/shop', { products, totalPages, currentPage: page });
-//     } catch (error) {
-//         console.error('Error getting paginated products:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / pageSize);
+
+        console.log('Total Pages:', totalPages);
+
+    
+        res.render('user/shop', { products, totalPages, currentPage: page });
+    } catch (error) {
+        console.error('Error getting paginated products:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
 
 
 
@@ -663,8 +672,11 @@ const loadcheckoutpage = async (req, res) => {
             } else {
                 discountedTotal = totalSum;
             }
-    
+            
+
+            const newOrderId=generateOrderId('USR');
             const newOrder = new Order({
+                orderId:newOrderId,
                 userId: userId,
                 products: products,
                 address: selectedAddress, 
@@ -683,9 +695,17 @@ const loadcheckoutpage = async (req, res) => {
       
 
 
-      
+    function generateOrderId(prefix) {
+        const timestamp = Date.now().toString(36);
+        const randomString = Math.random().toString(36).substr(2, 5); 
+    
+        return `${prefix}-${timestamp}-${randomString}`;
+    }
+    
 
 
+
+    
     const getOrder = async (req, res) => {
         const userId = req.session.user;
         try {
@@ -700,41 +720,50 @@ const loadcheckoutpage = async (req, res) => {
       
       
 
-
-    const cancelOrder = async (req, res) => {
-    const orderId = req.params.orderId;
-    try {
-    const order = await Order.findById(orderId);
-
-    if (order && !order.cancelled) { 
-      const userId = req.session.user;
-      const user = await User.findById(userId);
-
-      order.cancelled = true;
-      order.cancellation = new Date();
-      order.returnExpiry = new Date(order.cancellation.getTime() + 4 * 24 * 60 * 60 * 1000);
-
-      if (order.paymentMethod === 'Razorpay') {
-        user.wallet -= order.total;
-      }
-
-      await Promise.all([order.save(), user.save()]);
-
-      if (order.paymentMethod === 'Razorpay') {
-        const updatedWalletAmount = user.wallet.toFixed(2);
-        res.status(200).json({ message: 'Amount credited to wallet', walletAmount: updatedWalletAmount });
-      } else {
-        res.status(200).json({ message: 'Order cancelled successfully' });
-      }
-    } else {
-      res.status(400).json({ error: 'Order is already cancelled or not found' });
-    }
-  } catch (error) {
-    console.error('Error cancelling the order:', error);
-    res.status(500).json({ error: 'Error cancelling the order' });
-    }
-    };
-
+      const cancelOrder = async (req, res) => {
+        const orderId = req.params.orderId;
+        const cancellationReason = req.body.cancellationReason; 
+      
+        try {
+          const order = await Order.findById(orderId);
+      
+          if (order && !order.cancelled) {
+            const userId = req.session.user;
+            const user = await User.findById(userId);
+      
+            order.cancelled = true;
+            order.cancellation = new Date();
+            order.returnExpiry = new Date(order.cancellation.getTime() + 4 * 24 * 60 * 60 * 1000);
+            order.cancellationReason = cancellationReason; 
+      
+            if (order.paymentMethod === 'Razorpay') {
+              user.wallet -= order.total;
+            }
+      
+            await Promise.all([order.save(), user.save()]);
+      
+            if (order.paymentMethod === 'Razorpay') {
+              const updatedWalletAmount = user.wallet.toFixed(2);
+              res.status(200).json({
+                message: 'Amount credited to wallet',
+                walletAmount: updatedWalletAmount,
+                cancellationReason: order.cancellationReason,
+              });
+            } else {
+              res.status(200).json({
+                message: 'Order cancelled successfully',
+                cancellationReason: order.cancellationReason,
+              });
+            }
+          } else {
+            res.status(400).json({ error: 'Order is already cancelled or not found' });
+          }
+        } catch (error) {
+          console.error('Error cancelling the order:', error);
+          res.status(500).json({ error: 'Error cancelling the order' });
+        }
+      };
+      
       
       
       
@@ -997,83 +1026,7 @@ const loadcheckoutpage = async (req, res) => {
                     res.status(500).json({ error: 'Internal server error' });
                 }
             };
-            
-
-
-
-
-           
-    const wishlistPage = async (req, res) => {
-    try {
-        const userId = req.session.user;
-        if (!userId) {
-            return res.redirect('/login');
-        }
-        const wishlistItems = await Wishlist.find({ UserId: userId }).populate('ProductId');
-
-        res.render('user/wishlist', { wishlistItems });
-    } catch (error) {
-        console.error('An error occurred:', error);
-        res.status(500).json({ error: 'An error occurred while processing the request' });
-    }
-};
-
-
-
-
-    const addToWishlist = async (req, res) => {
-    try {
-        const userId = req.session.user;
-        const productId = req.params.productId;
-        const product = await Product.findById(productId);
-
-        if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-
-        const existingWishlistItem = await Wishlist.findOne({ ProductId: productId, UserId: userId });
-
-        if (existingWishlistItem) {
-            res.json({ message: 'Product is already in the wishlist.' });
-        } else {
-            const newWishlistItem = new Wishlist({
-                ProductId: productId,
-                UserId: userId,
-                ProductName: product.productName,
-                ProductImage: product.productImage[0].filename,
-                ProductPrice: product.productPrice,
-            });
-
-            await newWishlistItem.save();
-            res.json({ message: 'Product added to the wishlist successfully.' });
-        }
-    } catch (error) {
-        console.error("An error occurred:", error);
-        res.status(500).json({ error: "An error occurred while processing your request." });
-    }
-    };
-
-
-
-    const removeFromWishlist = async (req, res) => {
-        try {
-            const itemId = req.params.itemId;
-            const deletedItem = await Wishlist.findByIdAndDelete(itemId);
-    
-            if (!deletedItem) {
-                return res.status(404).json({ error: 'Item not found in the wishlist' });
-            }
-            res.status(200).json({ message: 'Product removed from wishlist successfully' });
-        } catch (error) {
-            console.error("An error occurred:", error);
-            res.status(500).json({ error: "An error occurred while processing your request." });
-        }
-    };
-    
-    
-    
-    
-
+        
 
 
 
@@ -1115,13 +1068,10 @@ module.exports = {
     categorySelection,
     sortProducts,
     searchProducts,
-    // pagination,
+    pagination,
     razorPay,
     totalAmount,
     couponValidate,
-    wishlistPage,
-    addToWishlist,
-    removeFromWishlist,
     logout,
 }
 
