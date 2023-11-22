@@ -3,9 +3,26 @@
 <html lang="en">
 
 <head>
+  <style>
+    .wallet-container {
+        background-color: #f8f8f8;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+    }
 
+   
+    #wallet-amount {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4CAF50; 
+    }
+
+</style>
   <title>My Orders</title>
 </head>
+
 
 <body>
   <div class="container">
@@ -22,26 +39,25 @@
             <th>Payment Method</th>
             <th>Status</th>
             <th>Actions</th>
-            <!-- Add a new column for the "Show Address" button -->
             <th>Show Address</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <h4>Your current wallet balance: <span id="wallet-amount"><%= Math.abs(wallet) %></span></h4>
-          </tr>
+          <div class="wallet-container">
+              <h4>Wallet: <span id="wallet-amount" class="<%= wallet < 0 ? 'negative' : '' %>"><%= Math.abs(wallet) %></span></h4>
+          </div>
           <% for (let i = orders.length - 1; i >= 0; i--) { %>
-            <% const order = orders[i]; %>
-            <% order.products.forEach((product) => { %>
-              <tr>
-                <td><%= product.productName %></td>
-                <td><%= product.productPrice %></td>
-                <td><%= product.quantity %></td>
-                <td><%= product.quantity * product.productPrice %></td>
-                <td><%= order.date.toLocaleDateString() %></td>
-                <td><%= order.paymentMethod %></td>
-                <td><span class="badge badge-info"><%= order.status %></span></td>
-                <td>
+              <% const order = orders[i]; %>
+              <% order.products.forEach((product) => { %>
+                  <tr>
+                      <td><%= product.productName %></td>
+                      <td><%= formatProductPrice(product) %></td> 
+                      <td><%= product.quantity %></td>
+                      <td><%= product.quantity * formatProductPrice(product) %></td>
+                      <td><%= order.date.toLocaleDateString() %></td>
+                      <td><%= order.paymentMethod %></td>
+                      <td><span class="badge badge-info"><%= order.status %></span></td>
+                      <td>
                   <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)"
                     <% if (order.cancelled) { %>disabled<% } %>>
                     <% if (order.cancelled) { %>
@@ -156,7 +172,12 @@
 }
 
 
+function formatProductPrice(product) {
+    const originalPrice = product.productPrice;
+    const offerPrice = product.offerPrice || originalPrice;
 
+    return offerPrice; 
+}
 
   </script>
 

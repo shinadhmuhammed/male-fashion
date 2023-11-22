@@ -108,8 +108,6 @@ const addProducts = async (req, res) => {
 
   const addProduct = async (req, res) => {
     console.log(req.body);
-    // console.log(req.files);
-
     try {
         if(!req.files || req.files.length===0){
           return res.render('admin/addproduct',{error:'please upload atleast one image'})
@@ -181,7 +179,6 @@ const deleteProduct = async (req, res) => {
     const productId = req.params.productId;
     const product = await Product.findById(productId)
     const category=await Category.find()
- console.log(category);
     if (!product) {
       res.status(404).send('Product not found');
       return;
@@ -708,6 +705,8 @@ const cancelOrder = async (req, res) => {
   };
   
 
+
+
       const banner=async(req,res)=>{
         try{
           const banners=await Banner.find()
@@ -719,9 +718,12 @@ const cancelOrder = async (req, res) => {
         }
        
   
+
         const addBanner=async(req,res)=>{
           res.render('admin/addbanner')
         }
+
+
 
 
       const createBanner = async (req, res) => {
@@ -731,7 +733,6 @@ const cancelOrder = async (req, res) => {
           data: req.file.buffer,
           contentType: req.file.mimetype,
         };
-      
         try {
           const newBanner = new Banner({
             title,
@@ -750,6 +751,60 @@ const cancelOrder = async (req, res) => {
           res.status(500).send('Internal Server Error');
         }
       };
+
+
+
+      // Render edit form
+const editBanner = async (req, res) => {
+  try {
+      const banner = await Banner.findById(req.params.id);
+      res.render('admin/editbanner', { banner });
+  } catch (error) {
+      console.error('Error fetching banner for editing:', error);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
+// Update banner
+const updateBanner = async (req, res) => {
+  const { title, description, couponCode, discountPercentage, expiryDate, isActive } = req.body;
+
+  const updatedBanner = {
+      title,
+      description,
+      couponCode,
+      discountPercentage,
+      expiryDate,
+      isActive: isActive === 'on',
+  };
+
+  if (req.file) {
+      updatedBanner.bannerImage = {
+          filename: req.file.filename,
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+      };
+  }
+
+  try {
+      await Banner.findByIdAndUpdate(req.params.id, updatedBanner);
+      res.redirect('/admin/banner');
+  } catch (error) {
+      console.error('Error updating banner:', error);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
+
+ 
+
+
+
+
+
+
+
+
 
 
 
@@ -795,5 +850,7 @@ module.exports = {
     banner,
     addBanner,
     createBanner,
+    editBanner,
+    updateBanner,
     logout
 }

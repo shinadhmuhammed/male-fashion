@@ -120,7 +120,12 @@
                 <li>
                     <img src="/malefashion-master/images/<%= item.ProductImage %>" alt="<%= item.ProductName %>" style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 5px;">
                     <h4><%= item.ProductName %></h4>
-                    <p>Price: $<%= item.ProductPrice %></p>
+                    <p>Price: ₹<%= item.ProductPrice %></p>
+                    <div>
+                        <a href="./shopdetails?id=<%= item.ProductId._id %>">
+                            <img src="/malefashion-master/img/icon/search.png" alt="" style="max-width: 20px; max-height: 20px;">
+                        </a>
+                    </div>
                     <button type="button" onclick="removeFromWishlist('<%= item._id %>')">Remove from Wishlist</button>
             <% }); %>
         </ul>

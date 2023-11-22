@@ -88,8 +88,8 @@
                             <li class="active"><a href="./shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./shop-details">Shop Details</a></li>
-                                    <li><a href="./shopping-cart">Shopping Cart</a></li>
+                                    <li><a href="./shop">Shop Details</a></li>
+                                    <li><a href="./shoppingcart">Shopping Cart</a></li>
                                     <li><a href="./checkout">Check Out</a></li>
                                 </ul>
                             </li>
@@ -155,7 +155,7 @@
                                             </div>
                                             <div class="product__cart__item__text">
                                                 <h6><%= item.ProductId.productName %></h6>
-                                                <div class="cart__price total__price">$<%= item.ProductId.productPrice %></div>
+                                                <div class="cart__price total__price">₹<%= item.ProductId.productPrice %></div>
                                             </div>
                                         </td>
     
@@ -208,7 +208,7 @@
                     <div class="cart__total">
                         <h6>Cart total</h6>
                         <ul>
-                            <li>Total <span id="totalvalue">$<span id="displayTotal"><%= totalSum %></span></span></li>
+                            <li>Total <span id="totalvalue">₹<span id="displayTotal"><%= totalSum %></span></span></li>
                         </ul>
                     </div>
                     
@@ -276,8 +276,7 @@
                             <script>
                                 document.write(new Date().getFullYear());
                             </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                          
                         </p>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
@@ -308,81 +307,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
-<script>
-
-function changeQuantity(productId, increment) {
-    var inputElement = document.getElementById(productId);
-    var currentValue = parseInt(inputElement.value);
-    var newValue = currentValue + increment;
-    var max = parseInt(inputElement.getAttribute("max"));
-
-    if (newValue >= 1 && newValue <= max) {
-        inputElement.value = newValue;
-
-        if (newValue === max) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Product stock reached',
-                text: 'The product stock is at its maximum.',
-            });
-        }
-
-        fetch('/cartupdation', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                productId,
-                count: increment,
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
-            document.getElementById('displayTotal').textContent = data.totalSum;
-        });
-    }
-}
+<script src="malefashion-master/js/shoppingcart.js"></script>
 
 
-$(document).ready(function () {
-    $('.deleteItemButton').on('click', function () {
-      var itemId = $(this).data('item-id');
-
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $.ajax({
-            url: `/removeCartItem/${itemId}`,
-            method: 'DELETE',
-            contentType: 'application/json',
-            success: function (data) {
-              console.log('Item deleted');
-              location.reload();
-            },
-            error: function (error) {
-              console.error('Failed to delete item', error);
-            },
-          });
-        }
-      });
-    });
-  });
-
-
-
-
-
-
-
-</script>
 <%- include('../layout/footer') %>

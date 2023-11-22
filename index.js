@@ -5,10 +5,13 @@ const session = require('express-session');
 const nocache = require('nocache');
 const path = require('path');
 const otpGenerator = require('otp-generator');
-
 const morgan = require('morgan');
 const userRoute = require('./routes/userRoutes');
 const adminroute = require('./routes/adminRoutes');
+require('dotenv').config();
+
+
+
 
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
@@ -31,7 +34,7 @@ app.use('/', userRoute);
 app.use('/admin', adminroute);
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/myuser', { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('DB Connected');
     app.listen(3000, () => {
@@ -39,3 +42,4 @@ mongoose
     });
   })
   .catch((err) => console.error('Error connecting to the database:', err));
+

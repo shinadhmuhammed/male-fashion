@@ -1,0 +1,98 @@
+<%- include('../layout/dashhead') %>
+<%- include('../layout/header') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Banner</title>
+  <style>
+      body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    checkbox {
+      margin-top: 8px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h2>Edit Banner</h2>
+
+  <form action="/admin/editbanner/<%= banner._id %>" method="post" enctype="multipart/form-data">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" value="<%= banner.title %>" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required><%= banner.description %></textarea>
+
+    <label for="couponCode">Coupon Code:</label>
+    <input type="text" id="couponCode" name="couponCode" value="<%= banner.couponCode %>" required>
+
+    <label for="discountPercentage">Discount Percentage:</label>
+    <input type="number" id="discountPercentage" name="discountPercentage" value="<%= banner.discountPercentage %>" required>
+
+    <label for="expiryDate">Expiry Date:</label>
+    <input type="date" id="expiryDate" name="expiryDate" value="<%= banner.expiryDate.toISOString().split('T')[0] %>" required>
+
+    <label for="isActive">Is Active:</label>
+    <input type="checkbox" id="isActive" name="isActive" <% if (banner.isActive) { %>checked<% } %> >
+
+    <label for="bannerImage">Banner Image:</label>
+    <input type="file" id="bannerImage" name="bannerImage" accept="image/*">
+
+    <button type="submit">Update Banner</button>
+  </form>
+</body>
+</html>

@@ -13,6 +13,10 @@ user_route.post('/register', userController.insertUser)
 user_route.get('/showOtp/:userID/:otp', isLogedout, userController.showOtp);
 user_route.post('/resendOtp',isLogedout,userController.resendOtp)
 user_route.post('/otpenter', isLogedout, userController.verifyOtp)
+user_route.get('/forgotpassword', isLogedout, userController.loadForgotPassword);
+user_route.post('/forgotpassword', isLogedout, userController.forgotPassword);
+user_route.get('/resetpassword/:email', isLogedout, userController.loadResetPassword);
+user_route.post('/resetpassword/:email', isLogedout, userController.resetPassword);
 user_route.get('/',Auth.checkinguseroradmin)
 user_route.post('/logout',Auth.logouting)
 
@@ -51,7 +55,6 @@ user_route.get('/changepassword', userController.loadChangePassword);
 user_route.post('/changepassword',userController.changepassword)
 user_route.get('/myorder',userController.getOrder)
 user_route.post('/cancelOrder/:orderId', userController.cancelOrder);
-
 user_route.post('/coupon-validate',userController.couponValidate)
 
 
@@ -59,6 +62,8 @@ user_route.get('/wishlist', wishlistController.wishlistPage);
 user_route.post('/wishlist/:productId', wishlistController.addToWishlist);
 user_route.delete('/wishlist/:itemId/remove', wishlistController.removeFromWishlist);
 
+
+user_route.post('/walletorder',userController.walletorder)
 
 
 

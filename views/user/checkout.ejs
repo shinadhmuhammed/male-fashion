@@ -119,6 +119,19 @@ input[type="number"] {
         <div class="loader"></div>
     </div>
 
+        <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+         
+        </div>
+        <div class="offcanvas__nav__option">
+            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+            <a href="#"><img src="img/icon/heart.png" alt=""></a>
+            <a href="#"><img src="img/icon/cart.png" alt=""> 
+           
+        </div>
+        <div id="mobile-menu-wrap"></div>
+    </div>
   
 
     <!-- Header Section Begin -->
@@ -146,13 +159,7 @@ input[type="number"] {
                         </ul>
                     </nav>
                 </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">$0.00</div>
-                    </div>
+             
                 </div>
             </div>
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
@@ -196,49 +203,47 @@ input[type="number"] {
                         </form>
                     </div>
                     <h6 class="checkout__title">Your Address</h6>
-    
+
                     <button id="showAddressBtn">Add Address</button>
-    
-                    <div id="addressForm" style="display: none;">
-                        <form action="/checkout" method="post">
-                            <div class="user-address">
-                                <div class="address-item">
-                                    <label for="name">Name:</label>
-                                    <input type="text" id="name" name="name" required pattern="[A-Za-z ]+" title="Name must contain alphabetic characters">
-                                </div>
-                        
-                                <div class="address-item">
-                                    <label for="number">Mobile Number:</label>
-                                    <input type="tel" id="number" name="number" required pattern="[0-9]{10}" title="Mobile Number must be 10 digits">
-                                </div>
-    
-                                <div class="address-item">
-                                    <label for="house">House:</label>
-                                    <input type="text" id="house" name="house" value="" required>
-                                </div>
-    
-                                <div class="address-item">
-                                    <label for="city">City:</label> 
-                                    <input type="text" id="city" name="city" value="" required>
-                                </div>
-    
-                                <div class="address-item">
-                                    <label for="state">State:</label>
-                                    <input type="text" id="state" name="state" value="" required>
-                                </div>
-    
-                                <div class="address-item">
-                                    <label for="pincode">Pincode:</label>
-                                    <input type="text" id="pincode" name="pincode" required pattern="\d{6}" title="PIN code must be 6 digits">
-                                </div>
-                                
-                                <div class="address-item">
-                                    <label for="delivery_point">Delivery Point:</label>
-                                    <input type="text" id="delivery_point" name="delivery_point" value="" required>
-                                </div>
-    
-                                <button type="submit" class="site-btn">Submit Address</button>
+
+                    <div id="addressForm">
+                        <form action="/checkout" method="post" class="user-address">
+                            <div class="address-item">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name" required pattern="[A-Za-z ]+" title="Name must contain alphabetic characters">
                             </div>
+                            
+                            <div class="address-item">
+                                <label for="number">Mobile Number:</label>
+                                <input type="tel" id="number" name="number" required pattern="[0-9]{10}" title="Mobile Number must be 10 digits">
+                            </div>
+                
+                            <div class="address-item">
+                                <label for="house">House:</label>
+                                <input type="text" id="house" name="house" value="" required>
+                            </div>
+                
+                            <div class="address-item">
+                                <label for="city">City:</label> 
+                                <input type="text" id="city" name="city" value="" required>
+                            </div>
+                
+                            <div class="address-item">
+                                <label for="state">State:</label>
+                                <input type="text" id="state" name="state" value="" required>
+                            </div>
+                
+                            <div class="address-item">
+                                <label for="pincode">Pincode:</label>
+                                <input type="text" id="pincode" name="pincode" required pattern="\d{6}" title="PIN code must be 6 digits">
+                            </div>
+                            
+                            <div class="address-item">
+                                <label for="delivery_point">Delivery Point:</label>
+                                <input type="text" id="delivery_point" name="delivery_point" value="" required>
+                            </div>
+                
+                            <button type="submit" class="site-btn">Submit Address</button>
                         </form>
                     </div>
 
@@ -279,7 +284,7 @@ input[type="number"] {
                                             <span class="product-name"><%= item.ProductId.productName %></span>
                                             <span>Quantity: <%= item.Quantity %></span>
                                             <div>
-                                                <span class="product-price">$<%= item.ProductId.productPrice %></span>
+                                                <span class="product-price">₹<%= item.ProductId.productPrice %></span>
                                             </div>
                                         </div>
                                         <div class="quantity"></div>
@@ -297,10 +302,9 @@ input[type="number"] {
                             <div class="total-summary">
                                 <h6>Cart total</h6>
                                 <ul>
-                                    <li>Total <span id="totalvalue">$<span id="displayTotal"><%= totalSum %></span></span></li>
+                                    <li>Total <span id="totalvalue">₹<span id="displayTotal"><%= totalSum %></span></span></li>
                                 </ul>
                             </div>
-                
                             <section class="payment-method">
                                 <div class="form-check">
                                     <input
@@ -325,7 +329,20 @@ input[type="number"] {
                                         id="Razorpay"
                                     />
                                     <label class="form-check-label" for="Razorpay">
-                                        Pay Online (Razorpay)
+                                        Online Payment
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        onclick="togglePaymentMethod(this)"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="Wallet"
+                                        id="Wallet"
+                                    />
+                                    <label class="form-check-label" for="Wallet">
+                                        Pay with Wallet
                                     </label>
                                 </div>
                                 <button
@@ -404,8 +421,6 @@ input[type="number"] {
                             <script>
                                 document.write(new Date().getFullYear());
                             </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
                         </p>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
@@ -435,367 +450,12 @@ input[type="number"] {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+<script src="malefashion-master/js/order.js"></script>
+
+
 <script>
-
-async function togglePaymentMethod(element) {
-    var placeOrderButton = document.getElementById("placeOrderButton");
-
-    if (element.checked) {
-        placeOrderButton.removeAttribute("disabled");
-    } else {
-        placeOrderButton.setAttribute("disabled", "disabled");
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const selectedAddressRadioButtons = document.getElementsByName("selectedAddress");
-    const selectedAddressIdInput = document.getElementById("selectedAddressId");
-
-    for (let i = 0; i < selectedAddressRadioButtons.length; i++) {
-        selectedAddressRadioButtons[i].addEventListener("change", function () {
-            if (this.checked) {
-                selectedAddressIdInput.value = this.value;
-            }
-        });
-    }
-});
-
-
-
-async function CheckplaceOrder() {
-    const selectedAddressId = document.getElementById("selectedAddressId").value;
-    console.log("Selected Address ID: ", selectedAddressId);
-
-    if (selectedAddressId === "") {
-        Swal.fire({
-            text: "Please select an address!",
-            icon: "error",
-            showConfirmButton: false,
-            timer: 1000,
-        });
-        return;
-    }
-
-    const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!paymentMethodRadio) {
-        Swal.fire({
-            text: "Please select a payment method!",
-            icon: "error",
-            showConfirmButton: false,
-            timer: 1000,
-        });
-        return;
-    }
-
-    const paymentMethod = paymentMethodRadio.value;
-    console.log("Payment Method: ", paymentMethod);
     
-    const couponCode = document.getElementById('couponCode').value;
-    console.log('Coupon Code:', couponCode);
-
-    try {
-        if (paymentMethod === 'COD') {
-            await handleCashOnDelivery(selectedAddressId, paymentMethod);
-        } else if (paymentMethod === 'Razorpay') {
-            const totalAmountResponse = await fetch('/getTotalAmount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    selectedAddressId,
-                }),
-            });
-
-            if (!totalAmountResponse.ok) {
-                throw new Error(`Failed to fetch total amount. Status: ${totalAmountResponse.status}`);
-            }
-
-            const totalAmountData = await totalAmountResponse.json();
-            let amount = totalAmountData.totalAmount;
-
-            const discountDetails = {
-                offerPrice: parseFloat(document.getElementById('offerPrice').textContent.replace('$', '')),
-                discountPrice: parseFloat(document.getElementById('discountPrice').textContent.replace('$', '')),
-            };
-
-            if (discountDetails.discountPrice > 0) {
-                amount -= discountDetails.discountPrice;
-            }
-
-            const razorpayOrderResponse = await fetch('/razorpayorder', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        amount,
-        selectedAddressId,
-        paymentMethod,
-        couponCode, 
-    }),
-});
-
-        if (!razorpayOrderResponse.ok) {
-                throw new Error(`Failed to fetch Razorpay order. Status: ${razorpayOrderResponse.status}`);
-            }
-
-            const razorpayOrderData = await razorpayOrderResponse.json();
-            const { orderId, razorpayOrder } = razorpayOrderData;
-
-            await handleRazorpay(amount, orderId, selectedAddressId, paymentMethod, razorpayOrder);
-        }
-    } catch (error) {
-        console.error(error);
-        Swal.fire({
-            text: 'Error processing the order!',
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 1000,
-        });
-    }
-}
-
-
-
-
-
-async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
-    try {
-        const response = await fetch('/order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selectedAddressId,
-                paymentMethod,
-            }),
-        });
-
-        if (response.status === 200) {
-            Swal.fire({
-                text: "Order placed successfully!",
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1000,
-            });
-        } else {
-            Swal.fire({
-                text: "Failed to place the order!",
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 1000,
-            });
-        }
-    } catch (error) {
-        console.error(error);
-        Swal.fire({
-            text: "Error placing the order!",
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 1000,
-        });
-    }
-}
-
-async function loadRazorpayScript() {
-    return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.onload = resolve;
-        document.head.appendChild(script);
-    });
-}
-
-
-
-async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder, originalAmount) {
-    try {
-        const response = await fetch('/order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selectedAddressId,
-                paymentMethod,
-                razorpayOrder,
-                originalAmount, 
-            }),
-        });
-
-        if (response.status === 200) {
-            Swal.fire({
-                text: "Order placed successfully!",
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1000,
-            });
-        } else {
-            Swal.fire({
-                text: "Failed to place the order!",
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 1000,
-            });
-        }
-    } catch (error) {
-        console.error(error);
-        Swal.fire({
-            text: "Error placing the order!",
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 1000,
-        });
-    }
-}
-
-
-async function handleRazorpay(amount, orderId, selectedAddressId, paymentMethod, razorpayOrder) {
-    console.log(selectedAddressId, paymentMethod, 'kkkkkkkkkkkkkkkkkkkkkkk');
-    try {
-        await loadRazorpayScript();
-
-        const options = {
-            key: "rzp_test_0UjhmVyB7i2e6b",
-            amount: razorpayOrder.amount,
-            currency: razorpayOrder.currency,
-            name: 'Male Fashion',
-            description: 'Purchase from our online store',
-            order_id: orderId,
-            handler: function (response) {
-                console.log(response);
-
-                handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrder, amount);
-            },
-            prefill: {
-                name: 'Customer Name',
-                email: 'customer@example.com',
-                contact: '1234567890',
-            },
-            theme: {
-                color: '#3399cc',
-            },
-        };
-
-        const razorpay = new Razorpay(options);
-        razorpay.open();
-    } catch (error) {
-        console.error('Error in handleRazorpay function:', error);
-        Swal.fire({
-            text: 'Error with Razorpay payment!',
-            icon: 'error',
-            showConfirmButton: false,
-            timer: 1000,
-        });
-    }
-}
-
-
-function calculateOfferPrice(originalPrice, discountPrice) {
-    return originalPrice - discountPrice;
-}
-
-document.getElementById('couponForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const couponCode = document.getElementById('couponCode').value;
-    console.log('Submitting coupon code:', couponCode);
-
-    fetch('/coupon-validate', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ couponCode }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Coupon validation response:', data);
-
-        if (data.valid) {
-            const offerPrice = calculateOfferPrice(data.totalSum, data.coupon.discountPrice);
-            const discountPrice = data.coupon.discountPrice;
-
-            document.getElementById('offerPrice').textContent = `$${offerPrice}`;
-            document.getElementById('discountPrice').textContent = `$${discountPrice}`;
-
-            const totalWithDiscount = data.totalSum - discountPrice;
-            document.getElementById('totalvalue').textContent = `$${totalWithDiscount}`;
-
-            document.getElementById('discountDetails').style.display = 'block';
-
-            // Use SweetAlert success popup
-            Swal.fire({
-                icon: 'success',
-                title: 'Coupon Validated',
-                text: 'Your coupon has been successfully applied!',
-            });
-        } else {
-            document.getElementById('offerPrice').textContent = '';
-            document.getElementById('discountPrice').textContent = '';
-            
-            // Only update total amount when the coupon is invalid and data.totalSum exists
-            if (data.totalSum !== undefined) {
-                document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
-            }
-
-            // Use SweetAlert error popup
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Coupon',
-                text: data.message ? data.message : 'Invalid coupon code. Please try again.',
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error applying coupon:', error);
-
-        // Use SweetAlert error popup for the catch block
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An error occurred while applying the coupon. Please try again later.',
-        });
-    });
-});
-
-
-
-
-
-
-$(document).ready(function() {
-        $('#showAddressBtn').click(function() {
-            $('#userAddress').toggle();
-            $('#addressForm').toggle();
-        });
-    });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

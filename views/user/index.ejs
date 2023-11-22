@@ -3,17 +3,68 @@
 <!DOCTYPE html>
 <html lang="zxx">
 
+<style>
+    #logoutButton {
+        background-color: #000000;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    #logoutButton:hover {
+        background-color: #45a049;
+    }
+    
+
+    .btn.btn-warning {
+        font-size: 18px;
+    }
+    .header__nav__option {
+    display: flex;
+    align-items: center;
+}
+
+.nav-icons {
+    display: flex;
+}
+
+.nav-icons a {
+    margin-right: 30px;
+}
+
+#logoutButton {
+    margin-left: 30px; 
+}
+
+
+
+</style>
 
 
 <body>
-
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+         
+        </div>
+        <div class="offcanvas__nav__option">
+            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+            <a href="#"><img src="img/icon/heart.png" alt=""></a>
+            <a href="#"><img src="img/icon/cart.png" alt=""> 
+           
+        </div>
+        <div id="mobile-menu-wrap"></div>
+    </div>
     <!-- Header Section Begin -->
         <div class="container">
              
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href="./index"><img src="/malefashion-master/img/logo.png" alt=""></a>
+                        <a href="./index"><img src="/malefashion-master/images/logo.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
@@ -35,8 +86,8 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
                         <div class="nav-icons">
-                            <a href="./wishlist"><img src="/malefashion-master/img/icon/heart.png" alt=""></a>
-                            <a href="./shoppingcart"><img src="/malefashion-master/img/icon/cart.png" alt=""> <span></span></a>
+                            <a href="./wishlist"><img src="/malefashion-master/images/heart.png" alt=""></a>
+                            <a href="./shoppingcart"><img src="/malefashion-master/images/cart.png" alt=""> <span></span></a>
                             <a href="./profile"><img src="/malefashion-master/images/profile.png" alt=""></a>
                         </div>
                         <button id="logoutButton" type="button">Logout</button>
@@ -63,11 +114,10 @@
                                     <h6><%= banner.title %></h6>
                                     <h2><%= banner.description %></h2>
                                     <p>Coupon Code: <%= banner.couponCode %></p>
-                                    <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                    <!-- <a href="./shop" class="primary-btn">Shop now <span class="arrow_right"></span></a> -->
                                     <div class="hero__social">
                                         <a href="#"><i class="fa fa-facebook"></i></a>
                                         <a href="#"><i class="fa fa-twitter"></i></a>
-                                        <a href="#"><i class="fa fa-pinterest"></i></a>
                                         <a href="#"><i class="fa fa-instagram"></i></a>
                                     </div>
                                 </div>
@@ -153,8 +203,7 @@
                     <div class="footer__widget">
                         <h6>Shopping</h6>
                         <ul>
-                            <li><a href="#">Clothing Store</a></li>
-                            <li><a href="#">Trending Shoes</a></li>
+                            <li><a href="./shop">Clothing Store</a></li>
                             <li><a href="#">Accessories</a></li>
                             <li><a href="#">Sale</a></li>
                         </ul>
@@ -214,21 +263,13 @@
     </div>
     <!-- Search End -->
 
-    <!-- Js Plugins -->
-    <!-- <script src="malefashion-master/js/jquery-3.3.1.min.js"></script>
-    <script src="malefashion-master/js/bootstrap.min.js"></script>
-    <script src="malefashion-master/js/jquery.nice-select.min.js"></script>
-    <script src="malefashion-master/js/jquery.nicescroll.min.js"></script>
-    <script src="malefashion-master/js/jquery.magnific-popup.min.js"></script>
-    <script src="malefashion-master/js/jquery.countdown.min.js"></script>
-    <script src="malefashion-master/js/jquery.slicknav.js"></script>
-    <script src="malefashion-master/js/mixitup.min.js"></script>
-    <script src="malefashion-master/js/owl.carousel.min.js"></script>
-    <script src="malefashion-master/js/main.js"></script> -->
 </body>
 
 </html>
 
+<script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
 
 
@@ -253,29 +294,6 @@
   </script>
 
 
-
-<style>
-    .btn.btn-warning {
-        font-size: 18px;
-    }
-    .header__nav__option {
-    display: flex;
-    align-items: center;
-}
-
-.nav-icons {
-    display: flex;
-}
-
-.nav-icons a {
-    margin-right: 30px;
-}
-
-#logoutButton {
-    margin-left: 30px; 
-}
-
-</style>
 
             </div>
         </div>

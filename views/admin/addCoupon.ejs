@@ -49,24 +49,28 @@ button:hover {
 
 
 
+<form action="/admin/addcoupon" method="post">
+    <p>
+        <label for="Couponcode">Coupon Code</label>
+        <input type="text" name="couponcode" required>
+    </p>
 
-    <form action="/admin/addcoupon" method="post">
-<p>
-    <label for="Couponcode">Coupon Code</label>
-    <input type="text" name="couponcode" required>
-</p>
+    <p>
+        <label for="discountprice">Discount Price</label>
+        <input type="text" name="discountprice" required>
+    </p>
 
-<p>
-    <label for="discountprice">Discount Price</label>
-    <input type="text"  name="discountprice" required>
-</p>
+    <p>
+        <label for="minimumprice">Minimum Price</label>
+        <input type="text" name="minimumprice" required>
+    </p>
 
-<p>
-    <label for="minimumprice">Minimum Price</label>
-    <input type="text"  name="minimumprice" required>
-</p>
+    <p>
+        <label for="expirydate">Expiry Date</label>
+        <input type="date" name="expirydate" required>
+    </p>
 
-<button type="submit">SUBMIT</button>
-
+    <button type="submit">SUBMIT</button>
 </form>
+
                      

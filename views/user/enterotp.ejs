@@ -106,7 +106,7 @@
                 isResending = true;
                 document.getElementById('resendOTP').disabled = true;
                 document.getElementById('resendMessage').style.display = 'block'; // Show the message
-                document.getElementById('countdown').textContent = '1:00'; // Set initial countdown value
+                document.getElementById('countdown').textContent = '1:00'; 
     
                 fetch('/resendOtp', {
                     method: 'POST',

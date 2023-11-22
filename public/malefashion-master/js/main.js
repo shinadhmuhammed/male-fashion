@@ -214,3 +214,21 @@
     });
 
 })(jQuery);
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+        $('#showAddressBtn').click(function() {
+            $('#userAddress').toggle();
+            $('#addressForm').toggle();
+        });
+    });

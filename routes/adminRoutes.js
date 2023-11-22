@@ -65,6 +65,9 @@ admin_route.post('/addcoupon',adminController.addCoupon)
 admin_route.get('/banner',adminController.banner)
 admin_route.get('/addbanner',adminController.addBanner)
 admin_route.post('/addbanner', Auth.loggedadmin, uploadMulter.single('bannerImage'), adminController.createBanner);
+admin_route.get('/editbanner/:id', Auth.loggedadmin, adminController.editBanner);
+admin_route.post('/editbanner/:id', Auth.loggedadmin, uploadMulter.single('bannerImage'), adminController.updateBanner);
+
 
 
 module.exports = admin_route;

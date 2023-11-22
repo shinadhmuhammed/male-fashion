@@ -9,21 +9,9 @@
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Male-Fashion | Template</title>
+    <title>Male-Fashion</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-        rel="stylesheet">
 
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 
 <body>
@@ -36,29 +24,15 @@
     <div class="offcanvas-menu-overlay"></div>
     <div class="offcanvas-menu-wrapper">
         <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
+         
         </div>
         <div class="offcanvas__nav__option">
             <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
             <a href="#"><img src="img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+            <a href="#"><img src="img/icon/cart.png" alt=""> 
            
         </div>
         <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
     </div>
     <!-- Offcanvas Menu End -->
 
@@ -86,14 +60,6 @@
                         </ul>
                     </nav>
                 </div>
-                <!-- <div class="col-lg-3 col-md-3">
-                    <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">$0.00</div>
-                    </div>
-                </div> -->
             </div>
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
         </div>
@@ -122,31 +88,40 @@
                         <ul>
                             <li>
                                 <h4>India</h4>
-                                <p>195 E Parker Square Dr, Parker, CO 801 <br />+43 982-314-0958</p>
-                            </li>
-                            <li>
-                                <h4>France</h4>
-                                <p>109 Avenue Léon, 63 Clermont-Ferrand <br />+12 345-423-9893</p>
+                                <p>Parker Square Dr, Parker<br />8606214253</p>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <div class="contact__form">
-                        <form action="#">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <input type="text" placeholder="Name">
-                                </div>
-                                <div class="col-lg-6">
-                                    <input type="text" placeholder="Email">
-                                </div>
-                                <div class="col-lg-12">
-                                    <textarea placeholder="Message"></textarea>
-                                    <button type="submit" class="site-btn">Send Message</button>
-                                </div>
+                        <form role="form" id="form1" class="email-form" method="post"
+                        action="https://formsubmit.co/muhammedshinad2@gmail.com"
+                        onsubmit="return validateform()">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Your Name</label>
+                                <input type="text" name="name" class="form-control" id="name" required>
                             </div>
-                        </form>
+                            <div class="form-group col-md-6">
+                                <label for="name">Your Email</label>
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Subject</label>
+                            <input type="text" class="form-control" name="subject" id="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Message</label>
+                            <textarea class="form-control" id="msg" name="message" rows="10"
+                                required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit">Send Message</button>
+                        </div>
+                    </form>
+                        
                     </div>
                 </div>
             </div>
@@ -236,5 +211,44 @@
 </body>
 
 </html>
+
+
+    <script>
+        function validateform() {
+  var nameInput = document.getElementById("name");
+  var name = nameInput.value;
+  var text = document.getElementById("msg").value;
+  var email = document.getElementById("email").value;
+  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  var alphanumericRegex = /^[a-zA-Z\s]*$/;
+
+  if (name == null || name.trim() === "") {
+    alert("Name can't be blank");
+    return false;
+  } else if (!alphanumericRegex.test(name)) {
+    alert("Invalid Name. Please enter alphabetic characters only.");
+    return false;
+  } else if (name.match(/\d/)) {
+    alert("Invalid Name. Please do not include numbers.");
+    return false;
+  } else if (!email.match(mailformat)) {
+    alert("You have entered an invalid email address!");
+    document.getElementById("email").focus();
+    return false;
+  } else if (text == "" || text.trim() === null) {
+    alert("Message is empty.");
+    return false;
+  } else if (text.length < 10) {
+    alert("Message should be at least 10 characters long.");
+    return false;
+  } else {
+    alert("Form Submitted Successfully");
+  }
+}
+
+    </script>
+
+
+
 
 <%- include('../layout/footer') %>
