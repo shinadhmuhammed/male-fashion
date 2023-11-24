@@ -221,7 +221,20 @@
 
 
 
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = document.querySelector('.toggle-password');
 
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon.classList.remove('fas', 'fa-eye');
+      icon.classList.add('fas', 'fa-eye-slash');
+    } else {
+      passwordInput.type = "password";
+      icon.classList.remove('fas', 'fa-eye-slash');
+      icon.classList.add('fas', 'fa-eye');
+    }
+  }
 
 
 
@@ -232,3 +245,4 @@ $(document).ready(function() {
             $('#addressForm').toggle();
         });
     });
+

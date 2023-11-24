@@ -47,8 +47,8 @@ admin_route.post('/orders/cancel/:orderId',Auth.loggedadmin,adminController.canc
 
 
 
-admin_route.get('/dashboard/sales-data', adminController.getSalesData);
-admin_route.get('/dashboard/total-users',adminController.totalUsers)
+admin_route.get('/dashboard/sales-data',Auth.loggedadmin, adminController.getSalesData);
+admin_route.get('/dashboard/total-users',Auth.loggedadmin,adminController.totalUsers)
 admin_route.get('/dashboard/orders-report', Auth.loggedadmin, adminController.generateReport);
 admin_route.get('/dashboard/total-revenue',Auth.loggedadmin,adminController.totalRevenue)
 admin_route.post('/logout', Auth.loggedadmin, adminController.logout)
@@ -56,14 +56,14 @@ admin_route.post('/logout', Auth.loggedadmin, adminController.logout)
 
 
 
-admin_route.get('/coupon',adminController.coupon)
-admin_route.get('/addCoupon',adminController.couponCode)
-admin_route.post('/addcoupon',adminController.addCoupon)
+admin_route.get('/coupon',Auth.loggedadmin,adminController.coupon)
+admin_route.get('/addCoupon',Auth.loggedadmin,adminController.couponCode)
+admin_route.post('/addcoupon',Auth.loggedadmin,adminController.addCoupon)
 
 
 
-admin_route.get('/banner',adminController.banner)
-admin_route.get('/addbanner',adminController.addBanner)
+admin_route.get('/banner',Auth.loggedadmin,adminController.banner)
+admin_route.get('/addbanner',Auth.loggedadmin,adminController.addBanner)
 admin_route.post('/addbanner', Auth.loggedadmin, uploadMulter.single('bannerImage'), adminController.createBanner);
 admin_route.get('/editbanner/:id', Auth.loggedadmin, adminController.editBanner);
 admin_route.post('/editbanner/:id', Auth.loggedadmin, uploadMulter.single('bannerImage'), adminController.updateBanner);

@@ -29,6 +29,11 @@ const loggedadmin = (req, res, next) => {
 }
 
 
+
+
+
+
+
 const logoutAdmin = (req, res, next) => {
     if(!req.session.admin){
         next()
@@ -41,18 +46,15 @@ const logoutAdmin = (req, res, next) => {
 const logouting = (req,res,next) => {
     req.session.destroy()
     res.redirect('/login') 
-
-   
-    
-    
-    
 }
+
+
+
+
 const checkinguseroradmin = async (req,res,next) =>{
     if(req.session.admin){
-        // req.admin = req.session.user
        return res.redirect("/admin/dashboard")
     }else if(req.session.user){
-    //   return res.render('user/home')
       return res.redirect('/home')
     }else {
        res.redirect('/login')
@@ -68,6 +70,4 @@ module.exports ={
     loggedadmin,
     logouting,
     checkinguseroradmin,
-   
-    
 }

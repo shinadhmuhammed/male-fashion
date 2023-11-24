@@ -61,14 +61,11 @@
                             <li class="active"><a href="./shop">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about">About Us</a></li>
                                     <li><a href="./shop">Shop Details</a></li>
                                     <li><a href="./shoppingcart">Shopping Cart</a></li>
                                     <li><a href="./checkout">Check Out</a></li>
-                                    <li><a href="./blog-details">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog">Blog</a></li>
                             <li><a href="./contact">Contacts</a></li>
                         </ul>
                     </nav>
@@ -406,7 +403,6 @@
                 for (const radio of sizeRadios) {
                     if (radio.checked) {
                         selectedsize=radio.value
-                        console.log(selectedsize);
                     } else {
                        
                         console.log(`The radio button with value ${radio.value} is not checked`);

@@ -81,9 +81,7 @@
                 </div>
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="img/icon/cart.png" alt=""></a>
+                        <a href="./shoppingcart"><img src="/malefashion-master/images/cart.png" alt=""></a>
                         
                     </div>
                 </div>
@@ -123,7 +121,7 @@
                     <p>Price: ₹<%= item.ProductPrice %></p>
                     <div>
                         <a href="./shopdetails?id=<%= item.ProductId._id %>">
-                            <img src="/malefashion-master/img/icon/search.png" alt="" style="max-width: 20px; max-height: 20px;">
+                            <img src="/malefashion-master/images/search.png" alt="" style="max-width: 20px; max-height: 20px;">
                         </a>
                     </div>
                     <button type="button" onclick="removeFromWishlist('<%= item._id %>')">Remove from Wishlist</button>

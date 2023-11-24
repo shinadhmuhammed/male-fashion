@@ -24,46 +24,45 @@ user_route.post('/logout',Auth.logouting)
 
 user_route.get('/home',Auth.isLogged,userController.loadHome)
 user_route.get('/index',Auth.isLogged,userController.loadindex)
-user_route.get('/shop',userController.loadshop)
+user_route.get('/shop',Auth.isLogged,userController.loadshop)
 user_route.get('/shopdetails',Auth.isLogged,  userController.shopdetails);
-user_route.get('/contact',userController.contact)
-user_route.get('/categoryselection/:categoryName', userController.categorySelection);
-user_route.get('/sortProducts/:option',userController.sortProducts)
-user_route.get('/sortProducts', userController.sortProducts);
-user_route.get('/search',userController.searchProducts)
+user_route.get('/contact',Auth.isLogged,userController.contact)
+user_route.get('/categoryselection/:categoryName', Auth.isLogged,userController.categorySelection);
+user_route.get('/sortProducts/:option',Auth.isLogged,userController.sortProducts)
+user_route.get('/sortProducts', Auth.isLogged,userController.sortProducts);
+user_route.get('/search',Auth.isLogged,userController.searchProducts)
 
 
 
-user_route.get('/shoppingcart',userController.shoppingpage);
-user_route.post('/shoppingcart/:productId',userController.shoppingcart);
-user_route.post('/cartupdation',userController.updateCart)
-user_route.get('/profile',userController.profileView)
-user_route.get('/checkout',userController.loadcheckoutpage)
+user_route.get('/shoppingcart',Auth.isLogged,userController.shoppingpage);
+user_route.post('/shoppingcart/:productId',Auth.isLogged,userController.shoppingcart);
+user_route.post('/cartupdation',Auth.isLogged,userController.updateCart)
+user_route.get('/profile',Auth.isLogged,userController.profileView)
+user_route.get('/checkout',Auth.isLogged,userController.loadcheckoutpage)
 user_route.post('/checkout',userController.checkout)
-user_route.delete('/removeCartItem/:itemId',userController.removeCartItem)
-user_route.post('/getTotalAmount',userController.totalAmount)
+user_route.delete('/removeCartItem/:itemId',Auth.isLogged,userController.removeCartItem)
+user_route.post('/getTotalAmount',Auth.isLogged,userController.totalAmount)
 
 
 
 
-user_route.post('/order', userController.order); 
-user_route.get('/edit-address/:id', userController.editAddress);
-user_route.post('/update-address/:id',userController.updateAddress)
-user_route.get('/deleteaddress',userController.deleteAddress)
-user_route.post('/razorpayorder',userController.razorPay)
-user_route.get('/changepassword', userController.loadChangePassword);
-user_route.post('/changepassword',userController.changepassword)
-user_route.get('/myorder',userController.getOrder)
-user_route.post('/cancelOrder/:orderId', userController.cancelOrder);
-user_route.post('/coupon-validate',userController.couponValidate)
+user_route.post('/order',Auth.isLogged, userController.order); 
+user_route.get('/edit-address/:id',Auth.isLogged, userController.editAddress);
+user_route.post('/update-address/:id',Auth.isLogged,userController.updateAddress)
+user_route.get('/deleteaddress',Auth.isLogged,userController.deleteAddress)
+user_route.post('/razorpayorder',Auth.isLogged,userController.razorPay)
+user_route.get('/changepassword',Auth.isLogged, userController.loadChangePassword);
+user_route.post('/changepassword',Auth.isLogged,userController.changepassword)
+user_route.get('/myorder',Auth.isLogged,userController.getOrder)
+user_route.post('/cancelOrder/:orderId',Auth.isLogged, userController.cancelOrder);
+user_route.post('/coupon-validate',Auth.isLogged,userController.couponValidate)
 
 
-user_route.get('/wishlist', wishlistController.wishlistPage);
-user_route.post('/wishlist/:productId', wishlistController.addToWishlist);
-user_route.delete('/wishlist/:itemId/remove', wishlistController.removeFromWishlist);
 
-
-user_route.post('/walletorder',userController.walletorder)
+user_route.get('/wishlist',Auth.isLogged, wishlistController.wishlistPage);
+user_route.post('/wishlist/:productId',Auth.isLogged, wishlistController.addToWishlist);
+user_route.delete('/wishlist/:itemId/remove',Auth.isLogged, wishlistController.removeFromWishlist);
+user_route.post('/walletorder',Auth.isLogged,userController.walletorder)
 
 
 

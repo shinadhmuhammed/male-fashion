@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function CheckplaceOrder() {
     const selectedAddressId = document.getElementById("selectedAddressId").value;
-    console.log("Selected Address ID: ", selectedAddressId);
 
     if (selectedAddressId === "") {
         Swal.fire({
@@ -49,10 +48,8 @@ async function CheckplaceOrder() {
     }
 
     const paymentMethod = paymentMethodRadio.value;
-    console.log("Payment Method: ", paymentMethod);
 
 const couponCode = document.getElementById('couponCode').value;
-console.log('Coupon Code:', couponCode);
 
 try {
     if (paymentMethod === 'COD') {
@@ -76,8 +73,8 @@ try {
         let amount = totalAmountData.totalAmount;
 
         const discountDetails = {
-            offerPrice: parseFloat(document.getElementById('offerPrice').textContent.replace('$', '')),
-            discountPrice: parseFloat(document.getElementById('discountPrice').textContent.replace('$', '')),
+            offerPrice: parseFloat(document.getElementById('offerPrice').textContent.replace('₹', '')),
+            discountPrice: parseFloat(document.getElementById('discountPrice').textContent.replace('₹', '')),
         };
 
         if (discountDetails.discountPrice > 0) {
@@ -276,7 +273,7 @@ async function handleWalletPayment(selectedAddressId, couponCode) {
             if (errorResponse.error === 'Insufficient wallet balance') {
                 throw new Error('Insufficient wallet balance. Please add funds to your wallet.');
             }
-            throw new Error(`Failed to process wallet payment. Status: ${walletOrderResponse.status}, Error: ${errorResponse.error}`);
+            throw new Error(`Failed to process wallet payment. Status: ₹{walletOrderResponse.status}, Error: ₹{errorResponse.error}`);
         }
 
         const result = await walletOrderResponse.json();
@@ -307,6 +304,11 @@ function calculateOfferPrice(originalPrice, discountPrice) {
     return originalPrice - discountPrice;
 }
 
+// function calculateDiscountAmount(originalPrice, discountPercentage) {
+//     const discountAmount = (originalPrice * discountPercentage) / 100;
+//     return discountAmount.toFixed(2);
+// }
+
 document.getElementById('couponForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -328,11 +330,11 @@ document.getElementById('couponForm').addEventListener('submit', function (event
             const offerPrice = calculateOfferPrice(data.totalSum, data.coupon.discountPrice);
             const discountPrice = data.coupon.discountPrice;
 
-            document.getElementById('offerPrice').textContent = `$${offerPrice}`;
-            document.getElementById('discountPrice').textContent = `$${discountPrice}`;
+            document.getElementById('offerPrice').textContent = `₹${offerPrice}`;
+            document.getElementById('discountPrice').textContent = `₹${discountPrice}`;
 
             const totalWithDiscount = data.totalSum - discountPrice;
-            document.getElementById('totalvalue').textContent = `$${totalWithDiscount}`;
+            document.getElementById('totalvalue').textContent = `₹${totalWithDiscount}`;
 
             document.getElementById('discountDetails').style.display = 'block';
 
@@ -347,7 +349,7 @@ document.getElementById('couponForm').addEventListener('submit', function (event
             document.getElementById('discountPrice').textContent = '';
             
             if (data.totalSum !== undefined) {
-                document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
+                document.getElementById('totalvalue').textContent = `₹${data.totalSum}`;
             }
 
 
@@ -398,3 +400,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+

@@ -1,18 +1,84 @@
-
 <%- include('../layout/header') %>
 
+<style>
+  /* Header Styles */
+  .header__logo img {
+    max-width: 100%;
+    height: auto;
+  }
 
+  /* Hero Section Styles */
+  .vh-100 {
+    min-height: 100vh;
+  }
+
+  .card {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+  }
+
+  .card-body {
+    padding: 2rem;
+  }
+
+  .form-outline {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.3rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  .toggle-password {
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+
+  .btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+  }
+
+  .btn-dark:hover {
+    background-color: #23272b;
+    border-color: #23272b;
+  }
+
+  .form-check p {
+    margin-bottom: 0;
+  }
+
+  hr.my-4 {
+    border-color: #d1d1d1;
+  }
+
+</style>
 <div class="container">
   <div class="row">
-      <div class="col-lg-3 col-md-3">
-          <div class="header__logo">
-              <a href="./index"><img src="/malefashion-master/images/logo.png" alt=""></a>
-          </div>
+    <div class="col-lg-3 col-md-3">
+      <div class="header__logo">
+        <a href="./index"><img src="/malefashion-master/images/logo.png" alt="Logo"></a>
       </div>
-      <div class="col-lg-6 col-md-6">
-      </div>
-      <div class="col-lg-3 col-md-3">
-      </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+    </div>
+    <div class="col-lg-3 col-md-3">
+    </div>
   </div>
   <div class="canvas__open"><i class="fa fa-bars"></i></div>
 </div>
@@ -20,50 +86,48 @@
 <!-- Header Section End -->
 
 <!-- Hero Section Begin -->
+<section class="vh-100" style="background-color: white;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
 
- 
-    <section class="vh-100" style="background-color:white">
-        <div class="container py-5 h-100">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-              <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                <div class="card-body p-5 text-center">
-      
-                  <h3 class="mb-5">Login</h3>
-      
-                <form action="/login" method="post">
-                  <div class="form-outline mb-4">
-                    <input placeholder="email" type="email" name="email"  id="typeEmailX-2" class="form-control form-control-lg" />
-                 
-                  </div>
-      
-                  <div class="form-outline mb-4">
-                    <input type="password" placeholder="password" name="password"  id="typePasswordX-2" class="form-control form-control-lg" />
-                 
-                  </div>
-                  <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
-                 
-                </form>
-                  <br><br>
-                  <div class="form-check d-flex justify-content-center mb-4">
-                    <p>Create an account <a href="/register">Register</a></p>
-                    <p>Forgot your password? <a href="/forgotpassword">Reset it</a></p>
-                  </div>
-                  <hr class="my-4">
-                      <% 
-                      if(typeof message !== 'undefined'){ 
-                          %>
-                              <p style="color: green;"><%= message%> </p>
-                          <%
-                      }
-                    %>
-      
-                </div>
+            <h3 class="mb-5">Login</h3>
+
+            <form action="/login" method="post">
+              <div class="form-outline mb-4">
+                <input placeholder="Email" type="email" name="email" id="typeEmailX-2" class="form-control form-control-lg" />
               </div>
+
+              <div class="form-outline mb-4 position-relative">
+                <input type="password" placeholder="Password" name="password" id="typePasswordX-2" class="form-control form-control-lg" />
+                <span class="toggle-password fas fa-eye position-absolute end-0 top-50 translate-middle-y" onclick="togglePassword('typePasswordX-2')"></span>
+              </div>
+
+              <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
+
+            </form>
+            <br><br>
+            <div class="form-check d-flex justify-content-center mb-4">
+              <p>Create an account <a href="/register">Register</a></p>
+              <p>Forgot your password? <a href="/forgotpassword">Reset it</a></p>
             </div>
+            <hr class="my-4">
+            <% if (typeof message !== 'undefined') { %>
+              <p style="color: green;"><%= message %></p>
+            <% } %>
+
           </div>
         </div>
-      </section>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Hero Section End -->
 
-  <%- include( '../layout/footer') %>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script src="/malefashion-master/js/main.js"></script>
+
+
+<%- include('../layout/footer') %>

@@ -29,7 +29,7 @@ function changeQuantity(productId, increment) {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            document.getElementById('totalvalue').textContent = `$${data.totalSum}`;
+            document.getElementById('totalvalue').textContent = `₹${data.totalSum}`;
             document.getElementById('displayTotal').textContent = data.totalSum;
         });
     }

@@ -153,6 +153,9 @@ async function sendOtpMail(email, otp) {
 
 
 
+
+
+
     const verifyOtp = async (req, res) => {
     const enteredOtp = req.body.otp;
     const savedOtp = req.session.saveOtp;
@@ -220,7 +223,7 @@ const loadForgotPassword = async (req, res) => {
       const user = await User.findOne({ email });
   
       if (!user) {
-        return res.render('user/forgotpassword', { message: 'User with this email does not exist.' });
+        return res.render('user/forgetpassword', { message: 'User with this email does not exist.' });
       }
   
       const otp = generateOTP();
@@ -255,7 +258,6 @@ const loadForgotPassword = async (req, res) => {
     try {
     const { email } = req.params;
     const { otp, password } = req.body;
-
     const savedOtp = req.session.resetPasswordOtp;
     const otpExpiration = req.session.resetPasswordOtpExpiration;
 
@@ -296,7 +298,7 @@ const loadlogin = async(req,res)=>{
     } catch(error){
         console.log(error.message);
     }
-}
+    }
 
 
 
@@ -390,7 +392,6 @@ const loadHome = async (req, res) => {
 const categorySelection = async (req, res) => {
     try {
       const categoryName = req.params.categoryName;
-  
       const category = await Category.findOne({ category: categoryName }).exec();
   
       if (!category) {
@@ -593,16 +594,11 @@ const shopdetails= async (req, res) => {
 
   const removeCartItem = async (req, res) => {
     const itemId = req.params.itemId;
-    console.log('Item ID:', itemId);
-
     try {
         const deletedItem = await Cart.findByIdAndRemove(itemId);
-        console.log('Deleted Item:', deletedItem);
-
         if (!deletedItem) {
             return res.status(404).json({ success: false, error: 'Item not found.' });
         }
-
         res.json({ success: true });
     } catch (err) {
         console.error('Error removing item:', err);
@@ -750,6 +746,7 @@ const calculateTotalAmount = (cartItems) => {
             });
     
             await newOrder.save();
+            await Cart.deleteMany({ UserId: userId });
             res.status(200).send('Order placed successfully');
         } catch (error) {
             console.error(error);
@@ -786,7 +783,6 @@ const calculateTotalAmount = (cartItems) => {
         try {
             const user = await User.findById(userId);
             const orders = await Order.find({ userId: userId }).lean();
-            console.log('All Orders:', orders); 
             const cartItems = await Cart.find({ userId: userId });
             res.render('user/myorder', { orders, wallet: user.wallet, formatProductPrice, cartItems });
         } catch (error) {
@@ -820,8 +816,7 @@ const calculateTotalAmount = (cartItems) => {
             order.cancellationReason = cancellationReason;
     
             if (order.paymentMethod === 'Razorpay') {
-                console.log('Order total:', order.total);
-    
+
                 user.wallet += order.total;
                 await user.save();
             }
@@ -1087,7 +1082,6 @@ const calculateTotalAmount = (cartItems) => {
                 try {
                     const { couponCode } = req.body;
                     const coupon = await Coupon.findOne({ couponCode });
-                    console.log(coupon, 'correct coupon');
             
                     if (coupon && coupon.isActive && new Date() <= coupon.expiryDate) {
                         const userId = req.session.user;
@@ -1147,6 +1141,7 @@ const calculateTotalAmount = (cartItems) => {
                     });
             
                     await newOrder.save();
+                    await Cart.deleteMany({ UserId: userId });
                     res.status(200).json({ message: 'Wallet order placed successfully' });
                 } catch (error) {
                     console.error('Error placing wallet order:', error);

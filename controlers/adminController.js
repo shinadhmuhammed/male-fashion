@@ -67,7 +67,6 @@ const userDashboard = async (req,res)=>{
     try {
         const products = await Product.find({}).populate('productCategory');
         const productImages = products.map(product => product.productImage);
-        console.log(products,'productImages', productImages);
         res.render("admin/product", { products, productImages });
     } catch (error) {
         console.error(error);
@@ -90,10 +89,6 @@ const addProducts = async (req, res) => {
   try {
       const category = await Category.find({});
       const productImages = []; 
-
-      console.log('category', category);
-      console.log('productImages', productImages);
-
       res.render('admin/addproduct', { category, productImages });
   } catch (error) {
       console.error(error);
@@ -107,7 +102,6 @@ const addProducts = async (req, res) => {
 
 
   const addProduct = async (req, res) => {
-    console.log(req.body);
     try {
         if(!req.files || req.files.length===0){
           return res.render('admin/addproduct',{error:'please upload atleast one image'})
@@ -125,7 +119,6 @@ const addProducts = async (req, res) => {
       if (productPrice < 0) {
           return res.render('admin/addproduct', { error: "Product price cannot be negative" });
       }
-      console.log(req.body);
       const isListed = req.body.isListed === 'on'; 
       const newProduct = new Product({
           productName: req.body.productName,
@@ -138,7 +131,6 @@ const addProducts = async (req, res) => {
       });
       const savedProduct = await newProduct.save();
       if (savedProduct) {
-          console.log('Product saved successfully:', savedProduct);
           res.redirect('/admin/products');
       } else {
           console.error('Failed to save product.');
@@ -290,6 +282,8 @@ const user=async(req,res)=>{
 };
 
 
+
+
 const blockUser = async (req, res) => {
     try {
         const id = req.params.userId;
@@ -315,21 +309,13 @@ const blockUser = async (req, res) => {
     const unblockUser = async (req, res) => {
         try {
             const id = req.params.userId;
-    
-            console.log(`Attempting to unblock user with ID: ${id}`);
-    
             const user = await User.findById(id);
     
             if (!user) {
-                console.log(`User with ID ${id} not found`);
                 return res.status(404).json({ message: 'User not found' });
             }
-    
             user.is_blocked = false;
-    
             await user.save();
-    
-            console.log(`User with ID ${id} unblocked successfully`);
             res.redirect("/admin/users");
         } catch (error) {
             console.error(error);
@@ -401,7 +387,11 @@ const blockUser = async (req, res) => {
     
 
 
-  const deleteCategory = async (req, res) => {
+        
+
+
+
+    const deleteCategory = async (req, res) => {
     const categoryId = req.params.categoryId; 
     try {
       const deletedCategory = await Category.findByIdAndRemove(categoryId);
@@ -624,7 +614,7 @@ const cancelOrder = async (req, res) => {
         doc.text(`Pincode: ${address.pincode}`);
         doc.text(`Delivery Point: ${address.delivery_point}`);
   
-        doc.moveDown(); // Add space between orders
+        doc.moveDown(); 
       });
   
       doc.end();
@@ -636,6 +626,8 @@ const cancelOrder = async (req, res) => {
 
 
 
+
+  
     const totalRevenue=async(req,res)=>{
       try {
         const totalRevenue = await Order.aggregate([
@@ -713,7 +705,7 @@ const cancelOrder = async (req, res) => {
           res.render('admin/banner',{banners})
         }catch(error){
           console.error('error fetching bannners:',error)
-                res.status(500).send('Internal server error')
+            res.status(500).send('Internal server error')
         }
         }
        
@@ -754,7 +746,7 @@ const cancelOrder = async (req, res) => {
 
 
 
-      // Render edit form
+      
 const editBanner = async (req, res) => {
   try {
       const banner = await Banner.findById(req.params.id);
@@ -765,7 +757,7 @@ const editBanner = async (req, res) => {
   }
 };
 
-// Update banner
+
 const updateBanner = async (req, res) => {
   const { title, description, couponCode, discountPercentage, expiryDate, isActive } = req.body;
 

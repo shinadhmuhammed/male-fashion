@@ -42,7 +42,6 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-md-3">
-                <!-- Your existing header logo code -->
                 <div class="header__logo">
                     <a href="./index"><img src="/malefashion-master/img/logo.png" alt=""></a>
                 </div>
@@ -127,10 +126,10 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         
-document.addEventListener('DOMContentLoaded', function () {
-    const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+        document.addEventListener('DOMContentLoaded', function () {
+        const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 
-    wishlistButtons.forEach(button => {
+         wishlistButtons.forEach(button => {
         button.addEventListener('click', async function () {
             const productId = button.getAttribute('data-product-id');
 
