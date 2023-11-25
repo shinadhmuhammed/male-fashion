@@ -50,26 +50,32 @@
               <% const order = orders[i]; %>
               <% order.products.forEach((product) => { %>
                   <tr>
-                      <td><%= product.productName %></td>
-                      <td><%= formatProductPrice(product) %></td> 
-                      <td><%= product.quantity %></td>
-                      <td><%= product.quantity * formatProductPrice(product) %></td>
-                      <td><%= order.date.toLocaleDateString() %></td>
-                      <td><%= order.paymentMethod %></td>
-                      <td><span class="badge badge-info"><%= order.status %></span></td>
-                      <td>
-                  <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)"
-                    <% if (order.cancelled) { %>disabled<% } %>>
-                    <% if (order.cancelled) { %>
-                      <% if (order.returnExpiry) { %>
-                        Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
-                      <% } else { %>
-                        Cancelled. Return date not available.
-                      <% } %>
-                    <% } else { %>Cancel<% } %>
-                  </button>
-                </td>
-                <td>
+                    <td><%= product.productName %></td>
+                    <td><%= formatProductPrice(product) %></td>
+                    <td><%= product.quantity %></td>
+                    <td>
+                        <% if (discountApplied) { %>
+                            <%= (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) %>
+                        <% } else { %>
+                            <%= (product.quantity * product.productPrice).toFixed(2) %>
+                        <% } %>
+                    </td>
+                    <td><%= order.date.toLocaleDateString() %></td>
+                    <td><%= order.paymentMethod %></td>
+                    <td><span class="badge badge-info"><%= order.status %></span></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
+                            <% if (order.cancelled) { %>
+                                <% if (order.returnExpiry) { %>
+                                    Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
+                                <% } else { %>
+                                    Cancelled. Return date not available.
+                                <% } %>
+                            <% } else { %>Cancel<% } %>
+                        </button>
+                    </td>
+                    <td>
+                    
                   <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
                     Show Address
                   </button>

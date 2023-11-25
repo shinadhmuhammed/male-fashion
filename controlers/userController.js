@@ -311,7 +311,6 @@ const userValid = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            console.log("User not found in the database");
             return res.render('user/login', { message: "User not found" });
         }
 
@@ -446,17 +445,17 @@ const categorySelection = async (req, res) => {
 
 
 
-const searchProducts=async(req,res)=>{
-    try {
+        const searchProducts=async(req,res)=>{
+        try {
         const query = req.query.query;
         const searchResults = await Product.find({ productName: { $regex: new RegExp(query, 'i') } });
 
         res.render('user/search', { searchResults, query });
-    } catch (error) {
+         } catch (error) {
         console.error('Error during search:', error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
+        }
+        };
 
 
 
@@ -474,14 +473,12 @@ const pagination = async (req, res) => {
 
         const totalProducts = await Product.countDocuments();
         const totalPages = Math.ceil(totalProducts / pageSize);
-
-    
         res.render('user/shop', { products, totalPages, currentPage: page });
-    } catch (error) {
+        } catch (error) {
         console.error('Error getting paginated products:', error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
+     }
+    };
 
 
 
@@ -689,12 +686,15 @@ const loadcheckoutpage = async (req, res) => {
       
 const calculateTotalAmount = (cartItems) => {
     if (!cartItems || cartItems.length === 0) {
-        return 0; 
+        return 0;
     }
 
     let totalSum = 0;
     cartItems.forEach((item) => {
-        totalSum += item.ProductId.productPrice * item.Quantity;
+        const originalPrice = item.ProductId.productPrice;
+        const offerPrice = item.ProductId.offerPrice || originalPrice;
+
+        totalSum += offerPrice * item.Quantity;
     });
 
     return totalSum;
@@ -733,8 +733,6 @@ const calculateTotalAmount = (cartItems) => {
             } else {
                 discountedTotal = totalSum;
             }
-            
-
             const newOrderId=generateOrderId('USR');
             const newOrder = new Order({
                 orderId:newOrderId,
@@ -784,7 +782,8 @@ const calculateTotalAmount = (cartItems) => {
             const user = await User.findById(userId);
             const orders = await Order.find({ userId: userId }).lean();
             const cartItems = await Cart.find({ userId: userId });
-            res.render('user/myorder', { orders, wallet: user.wallet, formatProductPrice, cartItems });
+            const discountApplied=req.session.discountedTotal > 0
+            res.render('user/myorder', { orders, wallet: user.wallet, formatProductPrice, cartItems,discountApplied });
         } catch (error) {
             console.error(error);
             res.status(500).send('Error fetching orders');
@@ -999,6 +998,8 @@ const calculateTotalAmount = (cartItems) => {
             }
             };
         
+
+
 
 
             const razorPay = async (req, res) => {
