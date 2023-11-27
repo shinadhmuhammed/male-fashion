@@ -42,7 +42,8 @@
                   <tr>
                     <td><%= index + 1 %></td>
                     <td><%= order.orderId %></td>
-                    <% if (order.products && order.products.length > 0) { %>
+                    
+                      <% if (order.products && order.products.length > 0) { %>
                       <td><%= order.products[0].productPrice %></td>
                       <td><%= order.products[0].quantity %></td>
                     <% } else { %>
