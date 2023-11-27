@@ -66,20 +66,41 @@
         </div>
         <div id="mobile-menu-wrap"></div>
     </div>
-   
+    
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            <p><strong>welcome to malefashion</strong></p>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        <div class="header__top__right">
+                            <div class="header__top__links">
+                                <a href="/register">Sign in</a>
+                                <a href="/login">Log In</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href="./index"><img src="malefashion-master/img/logo.png" alt=""></a>
+                        <a href="./index"><img src="malefashion-master/images/logo.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <nav class="header__menu mobile-menu">
                         <ul>
-                            <li><a href="./index">Home</a></li>
-                            <li class="active"><a href="./shop">Shop</a></li>
+                            <li><a href="/">Home</a></li>
+                            <li class="active"><a href="/shops">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="./shop">Shop Details</a></li>
@@ -93,7 +114,6 @@
                 </div>
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
-                        <!-- <a href="#" class="search-switch"><img src="malefashion-master/img/icon/search.png" alt=""></a> -->
                         <a href="./wishlist"><img src="malefashion-master/images/heart.png" alt=""></a>
                         <a href="./shoppingcart"><img src="malefashion-master/images/cart.png" alt=""> <span></span></a>
                         <div class="price"></div>
@@ -113,7 +133,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index">Home</a>
+                            <a href="/">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -163,7 +183,6 @@
 
                                 <div class="card">
                                     <div class="card-heading">
-                                        <!-- <a data-toggle="collapse" data-target="#collapseSix">Tags</a> -->
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +196,6 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__left">
-                                    <!-- <p>Showing 1–8 of 26 results</p> -->
                                 </div>
                             </div>
 
@@ -185,7 +203,6 @@
                                 <div class="shop__product__option__right">
                                     <p>Sort by Price:</p>
                                     <select id="sortSelect">
-                                        <!-- <option value="default">Default</option> -->
                                         <option value="lowToHigh">Low to High</option>
                                         <option value="highToLow">High to Low</option>
                                     </select>
@@ -215,7 +232,7 @@
                                               </li>
     
                                             <li>
-                                              <a href="./shopdetails?id=<%= product._id %>"><img src="/malefashion-master/images/search.png" alt=""></a>
+                                              <a href="/shopdetailss?id=<%= product._id %>"><img src="/malefashion-master/images/search.png" alt=""></a>
                                             </li>
                                           </ul>
                                         </div>
@@ -225,7 +242,6 @@
                                   <div class="product__item__text">
                                     <h6><%= product.productName %></h6>
                                     <p><%= product.productDescription %></p>
-                                    <!-- <a class="add-cart" value="pr" data-product-id="<%= product._id %>" data-user-id="<%= userId %>">+ Add to Cart</a> -->
                                     <div class="rating">
                                         <i class="fa fa-star" style="color: orange;"></i>
                                         <i class="fa fa-star" style="color: orange;"></i>
@@ -347,7 +363,40 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="malefashion-master/js/shop.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+  
+      if (wishlistButtons.length > 0) {
+        wishlistButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            window.location.href = '/login';
+          });
+        });
+      }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    const sortButton = document.getElementById('sortButton');
+
+    if (sortButton) {
+      sortButton.addEventListener('click', function () {
+        window.location.href = '/login';
+      });
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    if (categoryLinks) {
+      categoryLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          window.location.href = '/login';
+        });
+      });
+    }
+  });
+  </script>
+  
+  
 
 
 </html>

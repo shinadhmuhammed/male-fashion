@@ -102,23 +102,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     async function fetchAndRenderSortedProducts(option) {
-    try {
-        const url = `/sortProducts?option=${option}`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        try {
+            const url = `/sortProducts?option=${option}`;
+            const response = await fetch(url);
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const sortedProducts = await response.json();
+            renderProducts(sortedProducts);
+            sessionStorage.setItem('sortingOption', option);
+        } catch (error) {
+            console.error('Error fetching and displaying sorted products:', error);
         }
-
-        const sortedProducts = await response.json();
-        console.log('Sorted Products:', sortedProducts);
-        renderProducts(sortedProducts);
-
-        history.pushState({ option }, null, url);
-    } catch (error) {
-        console.error('Error fetching and displaying sorted products:', error);
     }
-}
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const storedSortingOption = sessionStorage.getItem('sortingOption');
+        if (storedSortingOption) {
+            fetchAndRenderSortedProducts(storedSortingOption);
+        }
+    });
+    
+    
+    
 
 
 

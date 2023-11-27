@@ -57,11 +57,11 @@
                 <div class="col-lg-6 col-md-6">
                     <nav class="header__menu mobile-menu">
                         <ul>
-                            <li><a href="./index">Home</a></li>
-                            <li class="active"><a href="./shop">Shop</a></li>
+                            <li><a href="/">Home</a></li>
+                            <li class="active"><a href="/shops">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="./shop">Shop Details</a></li>
+                                    <li><a href="/shops">Shop Details</a></li>
                                     <li><a href="./shoppingcart">Shopping Cart</a></li>
                                     <li><a href="./checkout">Check Out</a></li>
                                 </ul>
@@ -73,7 +73,7 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
                         <a href="#"><img src="malefashion-master/imges/heart.png" alt=""></a>
-                        <a href="#"><img src="malefashion-master/images/cart.png" alt=""> 
+                        <a href="./contact"><img src="malefashion-master/images/cart.png" alt=""> 
                     </div>
                 </div>
             </div>
@@ -89,8 +89,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="product__details__breadcrumb">
-                            <a href="./index">Home</a>
-                            <a href="./shop">Shop</a>
+                            <a href="/">Home</a>
+                            <a href="/shops">Shop</a>
                             <span>Product Details</span>
                         </div>
                     </div>
@@ -388,98 +388,18 @@
         });
     });
 
+  document.addEventListener('DOMContentLoaded', function () {
+    const addToCartButton = document.querySelector('.add-cart');
+
+    if (addToCartButton) {
+      addToCartButton.addEventListener('click', function () {
+        window.location.href = '/login';
+      });
+    }
+  });
+
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const addToCartButtons = document.querySelectorAll('.add-cart');
-    
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', async function() {
-                const productId = button.getAttribute('data-product-id');
-                const userId = button.getAttribute('data-user-id');
-                const sizeRadios = document.querySelectorAll('input[name="size"]');
-                let selectedsize = ''
-                for (const radio of sizeRadios) {
-                    if (radio.checked) {
-                        selectedsize=radio.value
-                    } else {
-                       
-                        console.log(`The radio button with value ${radio.value} is not checked`);
-                    }
-                }
-                if ( !selectedsize) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: ' size is missing.'
-                    });
-                    return;
-                }
-                
-                const data={
-                    productId,
-                    userId,
-                    size:selectedsize
-                }
-                console.log(productId,userId,data);
-                try {
-                    console.log(data,JSON.stringify(data));
-                    const response = await fetch(`/shoppingcart/${productId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body:JSON.stringify(data)
-                    });
-                    
 
-                    if (response.ok) {
-            const result = await response.json();
-            if (result.message === 'Product added to the cart successfully.') {
-         Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Product added to the cart successfully.'
-          });
-
-          setTimeout(() => {
-                window.location.href = '/shoppingcart';
-            }, 1000);
-
-         } else if (result.message === 'Product is already in the cart.') {
-         Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Product is already in the cart.'
-         });
-         } else {
-         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to add the product to the cart.'
-         });
-            }
-        } else {
-         Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to communicate with the server.'
-        });
-        }
-        } catch (error) {
-        console.error('An error occurred:', error);
-        Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred. Please try again.'
-        });
-        }
-         });
-        });
-        });
-  
-    
-</script>
 
 <%- include('../layout/footer') %>

@@ -138,8 +138,13 @@ async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
                 text: "Order placed successfully!",
                 icon: 'success',
                 showConfirmButton: false,
-                timer: 1000,
+                timer: 2000,
             });
+
+            setTimeout(()=>{
+            window.location.href='/myorder'
+        },2000)
+
         } else {
             Swal.fire({
                 text: "Failed to place the order!",
@@ -192,6 +197,10 @@ async function handleRazorpayOrder(selectedAddressId, paymentMethod, razorpayOrd
                 showConfirmButton: false,
                 timer: 1000,
             });
+            setTimeout(()=>{
+                window.location.href='/myorder'
+            },2000)
+            
         } else {
             Swal.fire({
                 text: "Failed to place the order!",
