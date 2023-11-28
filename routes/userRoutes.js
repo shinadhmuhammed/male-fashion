@@ -55,6 +55,7 @@ user_route.post('/order',Auth.isLogged, orderController.order);
 user_route.get('/myorder',Auth.isLogged,orderController.getOrder)
 user_route.post('/cancelOrder/:orderId',Auth.isLogged, orderController.cancelOrder);
 user_route.get('/download-invoice/:orderId', Auth.isLogged, orderController.downloadInvoice);
+user_route.get('/checkOrderStatus/:orderId', Auth.isLogged, orderController.checkOrderStatus);
 
 
 

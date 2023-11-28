@@ -163,7 +163,23 @@ const calculateTotalAmount = (cartItems) => {
         }
     };
     
-    
+
+        const checkOrderStatus = async (req, res) => {
+        const orderId = req.params.orderId;
+      
+        try {
+          const order = await Order.findById(orderId);
+      
+          if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+          }
+      
+          res.json({ status: order.status }); 
+        } catch (error) {
+          console.error('Error checking order status:', error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+      };
  
 
     const downloadInvoice = async (req, res) => {
@@ -208,5 +224,7 @@ const calculateTotalAmount = (cartItems) => {
         order,
         getOrder,
         cancelOrder,
-        downloadInvoice
+        downloadInvoice,
+        checkOrderStatus
+
     }

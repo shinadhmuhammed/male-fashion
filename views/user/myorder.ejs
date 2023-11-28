@@ -145,66 +145,83 @@
   }
  
  
+
+  
   function cancelOrder(orderId, buttonElement) {
-  Swal.fire({
-    title: 'Provide a reason for cancellation',
-    input: 'text',
-    inputAttributes: {
-      required: 'true',
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Cancel Order',
-    cancelButtonText: 'Cancel',
-  }).then(result => {
-    if (result.isConfirmed) {
-      const cancellationReason = result.value;
-
-
-      fetch(`/cancelOrder/${orderId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cancellationReason }), 
-      })
-        .then(response => response.json())
-        .then(data => {
-
-          if (data.message) {
-            console.log(data.message);
-
-            if (data.walletAmount) {
-              document.getElementById('wallet-amount').textContent = Math.abs(data.walletAmount);
-
-              if (data.paymentMethod === 'Razorpay') {
-                Swal.fire({
-                  title: 'Amount Credited to Wallet',
-                  text: `Amount credited to your wallet: ${data.creditedAmount.toFixed(2)}`,
-                  icon: 'success',
-                });
-              }
-            }
-
-            if (data.cancellationReason) {
-              Swal.fire({
-                title: 'Order Cancelled',
-                text: `Order cancelled for the following reason: ${data.cancellationReason}`,
-                icon: 'success',
-              });
-            }
-          } else {
-            console.error('Error cancelling order:', data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error cancelling order:', error);
+  fetch(`/checkOrderStatus/${orderId}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log('Order status data:', data); 
+      if (data.status === 'Delivered') {
+        Swal.fire({
+          title: 'Order Delivered',
+          text: 'The order has already been delivered. You cannot cancel it now.',
+          icon: 'error',
         });
-      buttonElement.disabled = true;
-    } else {
-      console.log('Cancellation canceled');
-    }
-  });
+      } else {
+        Swal.fire({
+          title: 'Provide a reason for cancellation',
+          input: 'text',
+          inputAttributes: {
+            required: 'true',
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Cancel Order',
+          cancelButtonText: 'Cancel',
+        }).then(result => {
+          if (result.isConfirmed) {
+            const cancellationReason = result.value;
+
+            fetch(`/cancelOrder/${orderId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ cancellationReason }), 
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.message) {
+                  console.log(data.message);
+
+                  if (data.walletAmount) {
+                    document.getElementById('wallet-amount').textContent = Math.abs(data.walletAmount);
+
+                    if (data.paymentMethod === 'Razorpay') {
+                      Swal.fire({
+                        title: 'Amount Credited to Wallet',
+                        text: `Amount credited to your wallet: ${data.creditedAmount.toFixed(2)}`,
+                        icon: 'success',
+                      });
+                    }
+                  }
+
+                  if (data.cancellationReason) {
+                    Swal.fire({
+                      title: 'Order Cancelled',
+                      text: `Order cancelled for the following reason: ${data.cancellationReason}`,
+                      icon: 'success',
+                    });
+                  }
+                } else {
+                  console.error('Error cancelling order:', data.error);
+                }
+              })
+              .catch(error => {
+                console.error('Error cancelling order:', error);
+              });
+            buttonElement.disabled = true;
+          } else {
+            console.log('Cancellation canceled');
+          }
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error checking order status:', error);
+    });
 }
+
 
 
 function formatProductPrice(product) {
