@@ -72,6 +72,7 @@ const calculateTotalAmount = (cartItems) => {
         } catch (error) {
             console.error(error);
             res.status(500).send('Error placing the order');
+            
         }
     };
     

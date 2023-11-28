@@ -129,7 +129,7 @@ async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
             },
             body: JSON.stringify({
                 selectedAddressId,
-                paymentMethod,
+                paymentMethod,  
             }),
         });
 
@@ -322,7 +322,6 @@ document.getElementById('couponForm').addEventListener('submit', function (event
     event.preventDefault();
 
     const couponCode = document.getElementById('couponCode').value;
-    console.log('Submitting coupon code:', couponCode);
 
     fetch('/coupon-validate', {
         method: 'POST',
@@ -344,7 +343,6 @@ document.getElementById('couponForm').addEventListener('submit', function (event
 
             const totalWithDiscount = data.totalSum - discountPrice;
             document.getElementById('totalvalue').textContent = `₹${totalWithDiscount}`;
-
             document.getElementById('discountDetails').style.display = 'block';
 
     
