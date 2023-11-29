@@ -221,7 +221,6 @@ const loadForgotPassword = async (req, res) => {
     try {
       const { email } = req.body;
       const user = await User.findOne({ email });
-  
       if (!user) {
         return res.render('user/forgetpassword', { message: 'User with this email does not exist.' });
       }
