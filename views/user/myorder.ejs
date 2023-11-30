@@ -1,13 +1,14 @@
 <%- include('../layout/header') %>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
+      background-color: #dddddd;
     }
 
     .container {
@@ -15,22 +16,23 @@
     }
 
     h3 {
-      color: #007bff;
+      color: #000000;
     }
 
     .wallet-container {
       margin-bottom: 20px;
     }
+
     .wallet-amount {
-    color: green;
-  }
+      color: green;
+    }
 
     .negative {
       color: red;
     }
 
-    .table th, .table td {
-      text-align: center;
+    .card {
+      margin-bottom: 20px;
     }
 
     .btn {
@@ -41,88 +43,76 @@
       margin-top: 20px;
       color: #6c757d;
     }
-
   </style>
   <title>My Orders</title>
 </head>
 
 <body>
   <div class="container">
-    <h3 class="text-center mt-3">My Orders</h3>
     <div class="wallet-container">
       <h4>Wallet: <span id="wallet-amount" class="wallet-amount <%= wallet < 0 ? 'negative' : '' %>"><%= Math.abs(wallet) %></span></h4>
     </div>
+    <h3 class="text-center mt-3">My Orders</h3>
 
     <% if (orders.length > 0) { %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Product Price</th>
-            <th>Product Quantity</th>
-            <th>Total Amount</th>
-            <th>Date</th>
-            <th>Payment Method</th>
-            <th>Status</th>
-            <th>Actions</th>
-            <th>Show Address</th>
-            <th>Download Invoice</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for (let i = orders.length - 1; i >= 0; i--) { %>
-            <% const order = orders[i]; %>
-            <% order.products.forEach((product) => { %>
-              <tr>
-                <td><%= product.productName %></td>
-                <td><%= formatProductPrice(product) %></td>
-                <td><%= product.quantity %></td>
-                <td>
-                  <% if (discountApplied) { %>
-                    <%= (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) %>
-                  <% } else { %>
-                    <%= (product.quantity * product.productPrice).toFixed(2) %>
-                  <% } %>
-                </td>
-                <td><%= order.date.toLocaleDateString() %></td>
-                <td><%= order.paymentMethod %></td>
-                <td><span class="badge badge-info"><%= order.status %></span></td>
-                <td>
-                  <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
-                    <% if (order.cancelled) { %>
-                      <% if (order.returnExpiry) { %>
-                        Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
-                      <% } else { %>
-                        Cancelled. Return date not available.
-                      <% } %>
-                    <% } else { %>Cancel<% } %>
-                  </button>
-                </td>
-                <td>
-                  <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
-                    Show Address
-                  </button>
-                </td>
-                <td>
-                <button class="btn btn-success" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
-              </td>
-              </tr>
-            <% }); %>
-          <% } %>
-        </tbody>
-      </table>
+    <% orders.forEach((order) => { %>
+      <div class="card">
+        <div class="card-body">
+          <h5>Order Details</h5>
+          <p><strong>Date:</strong> <%= order.date.toLocaleDateString() %></p>
+          <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+          <p><strong>Status:</strong> <span class="badge badge-info"><%= order.status %></span></p>
+
+          <h5>Products</h5>
+          <% order.products.forEach((product) => { %>
+            <div class="card mb-2">
+              <div class="card-body">
+                <p><strong>Product Name:</strong> <%= product.productName %></p>
+                <p><strong>Product Price:</strong> <%= formatProductPrice(product) %></p>
+                <p><strong>Quantity:</strong> <%= product.quantity %></p>
+                <p><strong>Total Amount:</strong> <%= (discountApplied ? (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) : (product.quantity * product.productPrice).toFixed(2)) %></p>
+              </div>
+            </div>
+          <% }); %>
+
+          <div class="text-center">
+            <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
+              <% if (order.cancelled) { %>
+                <% if (order.returnExpiry) { %>
+                  Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
+                <% } else { %>
+                  Cancelled. Return date not available.
+                <% } %>
+              <% } else { %>Cancel<% } %>
+            </button>
+            <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
+              Show Address
+            </button>
+            <button class="btn btn-success" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+          </div>
+        </div>
+      </div>
+    <% }); %>
     <% } else { %>
-      <p class="no-orders-message">You have no orders yet.</p>
+    <p class="no-orders-message">You have no orders yet.</p>
     <% } %>
 
     <a href="/" class="btn btn-primary">Back to Home</a>
   </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-</html>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
