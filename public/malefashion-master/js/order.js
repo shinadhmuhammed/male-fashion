@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
+/////////////////////////////////ORDERS///////////////////////////////////////
 
 async function CheckplaceOrder() {
     const selectedAddressId = document.getElementById("selectedAddressId").value;
@@ -97,7 +97,6 @@ try {
         if (!razorpayOrderResponse.ok) {
             throw new Error(`Failed to fetch Razorpay order. Status: ${razorpayOrderResponse.status}`);
         }
-
         const razorpayOrderData = await razorpayOrderResponse.json();
         const { orderId, razorpayOrder } = razorpayOrderData;
 
@@ -118,6 +117,8 @@ try {
 }
 
 
+
+/////////////////////////////CASHONDELIVERY////////////////////////////////////
 
 
 async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
@@ -163,6 +164,10 @@ async function handleCashOnDelivery(selectedAddressId, paymentMethod) {
         });
     }
 }
+
+
+
+////////////////////////////////////RAZORPAY////////////////////////////////////////
 
 async function loadRazorpayScript() {
     return new Promise((resolve) => {
@@ -262,7 +267,7 @@ async function handleRazorpay(amount, orderId, selectedAddressId, paymentMethod,
 }
 
 
-
+/////////////////////////////WALLETPAYMENT/////////////////////////////////
 
 async function handleWalletPayment(selectedAddressId, couponCode) {
     try {
@@ -307,16 +312,12 @@ async function handleWalletPayment(selectedAddressId, couponCode) {
 
 
 
-
+/////////////////////////////////////COUPONCODE/////////////////////////////////////////
 
 function calculateOfferPrice(originalPrice, discountPrice) {
     return originalPrice - discountPrice;
 }
 
-// function calculateDiscountAmount(originalPrice, discountPercentage) {
-//     const discountAmount = (originalPrice * discountPercentage) / 100;
-//     return discountAmount.toFixed(2);
-// }
 
 document.getElementById('couponForm').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -384,7 +385,7 @@ document.getElementById('couponForm').addEventListener('submit', function (event
 
 
 
-
+///////////////////////////TOGGLE ADDRESS BUTTON//////////////////////////////
 
 $(document).ready(function() {
     $(document).on('click', '#showAddressBtn', function() {
