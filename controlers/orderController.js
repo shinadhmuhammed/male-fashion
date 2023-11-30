@@ -137,14 +137,13 @@ const calculateTotalAmount = (cartItems) => {
             order.returnExpiry = new Date(order.cancellation.getTime() + 4 * 24 * 60 * 60 * 1000);
             order.cancellationReason = cancellationReason;
     
-            if (order.paymentMethod === 'Razorpay') {
-
+            if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
                 user.wallet += order.total;
                 await user.save();
             }
             await order.save();
     
-            if (order.paymentMethod === 'Razorpay') {
+            if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
                 const updatedWalletAmount = user.wallet.toFixed(2);
                 return res.status(200).json({
                     message: 'Amount credited to wallet',
@@ -164,6 +163,8 @@ const calculateTotalAmount = (cartItems) => {
     };
     
 
+
+
         const checkOrderStatus = async (req, res) => {
         const orderId = req.params.orderId;
       
@@ -181,6 +182,8 @@ const calculateTotalAmount = (cartItems) => {
         }
       };
  
+
+
 
     const downloadInvoice = async (req, res) => {
         try {
