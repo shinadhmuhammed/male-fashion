@@ -28,7 +28,7 @@ app.use(
 
 
 
-
+/////////////error page//////////////////
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).render('error', { error: err.message });
 });
 
-
+//////////////error page done/////////////////////////////////
 
 
 app.use(express.static(path.join(__dirname, './admin')));
@@ -51,6 +51,8 @@ app.use(express.static(path.join(__dirname, './public')));
 app.use('/', userRoute);
 app.use('/admin', adminroute);
 
+
+////////////////////mongodb connection//////////////////////////
 mongoose
   .connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
