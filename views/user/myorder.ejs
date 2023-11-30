@@ -8,7 +8,7 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #dddddd;
+      background-color: #f8f9fa;
     }
 
     .container {
@@ -16,7 +16,7 @@
     }
 
     h3 {
-      color: #000000;
+      color: #007bff;
     }
 
     .wallet-container {
@@ -52,49 +52,51 @@
     <div class="wallet-container">
       <h4>Wallet: <span id="wallet-amount" class="wallet-amount <%= wallet < 0 ? 'negative' : '' %>"><%= Math.abs(wallet) %></span></h4>
     </div>
+
     <h3 class="text-center mt-3">My Orders</h3>
 
     <% if (orders.length > 0) { %>
-    <% orders.forEach((order) => { %>
-      <div class="card">
-        <div class="card-body">
-          <h5>Order Details</h5>
-          <p><strong>Date:</strong> <%= order.date.toLocaleDateString() %></p>
-          <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
-          <p><strong>Status:</strong> <span class="badge badge-info"><%= order.status %></span></p>
+      <% for (let i = orders.length - 1; i >= 0; i--)  { %>
+        <% const order = orders[i]; %>
+        <div class="card">
+          <div class="card-body">
+            <h5>Order Details</h5>
+            <p><strong>Date:</strong> <%= order.date.toLocaleDateString() %></p>
+            <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+            <p><strong>Status:</strong> <span class="badge badge-info"><%= order.status %></span></p>
 
-          <h5>Products</h5>
-          <% order.products.forEach((product) => { %>
-            <div class="card mb-2">
-              <div class="card-body">
-                <p><strong>Product Name:</strong> <%= product.productName %></p>
-                <p><strong>Product Price:</strong> <%= formatProductPrice(product) %></p>
-                <p><strong>Quantity:</strong> <%= product.quantity %></p>
-                <p><strong>Total Amount:</strong> <%= (discountApplied ? (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) : (product.quantity * product.productPrice).toFixed(2)) %></p>
+            <h5>Products</h5>
+            <% order.products.forEach((product) => { %>
+              <div class="card mb-2">
+                <div class="card-body">
+                  <p><strong>Product Name:</strong> <%= product.productName %></p>
+                  <p><strong>Product Price:</strong> <%= formatProductPrice(product) %></p>
+                  <p><strong>Quantity:</strong> <%= product.quantity %></p>
+                  <p><strong>Total Amount:</strong> <%= (discountApplied ? (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) : (product.quantity * product.productPrice).toFixed(2)) %></p>
+                </div>
               </div>
-            </div>
-          <% }); %>
+            <% }); %>
 
-          <div class="text-center">
-            <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
-              <% if (order.cancelled) { %>
-                <% if (order.returnExpiry) { %>
-                  Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
-                <% } else { %>
-                  Cancelled. Return date not available.
-                <% } %>
-              <% } else { %>Cancel<% } %>
-            </button>
-            <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
-              Show Address
-            </button>
-            <button class="btn btn-success" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+            <div class="text-center">
+              <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
+                <% if (order.cancelled) { %>
+                  <% if (order.returnExpiry) { %>
+                    Cancelled. Will be returned by <%= order.returnExpiry.toLocaleDateString() %>.
+                  <% } else { %>
+                    Cancelled. Return date not available.
+                  <% } %>
+                <% } else { %>Cancel<% } %>
+              </button>
+              <button class="btn btn-info" onclick="showAddressAlert('<%= order.address[0].name %>', '<%= order.address[0].number %>', '<%= order.address[0].house %>', '<%= order.address[0].city %>', '<%= order.address[0].state %>', '<%= order.address[0].pincode %>', '<%= order.address[0].delivery_point %>')">
+                Show Address
+              </button>
+              <button class="btn btn-success" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+            </div>
           </div>
         </div>
-      </div>
-    <% }); %>
+      <% } %>
     <% } else { %>
-    <p class="no-orders-message">You have no orders yet.</p>
+      <p class="no-orders-message">You have no orders yet.</p>
     <% } %>
 
     <a href="/" class="btn btn-primary">Back to Home</a>
