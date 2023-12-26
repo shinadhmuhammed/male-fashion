@@ -72,6 +72,7 @@ user_route.get('/wishlist',Auth.isLogged, wishlistController.wishlistPage);
 user_route.post('/wishlist/:productId',Auth.isLogged, wishlistController.addToWishlist);
 user_route.delete('/wishlist/:itemId/remove',Auth.isLogged, wishlistController.removeFromWishlist);
 user_route.post('/walletorder',Auth.isLogged,userController.walletorder)
+user_route.post('/rateProduct/:orderId/:productId/:rating',Auth.isLogged,userController.rateProduct)
 
 
 

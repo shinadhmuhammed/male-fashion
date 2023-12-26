@@ -28,20 +28,6 @@ app.use(
 
 
 
-/////////////error page//////////////////
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  if (res.headersSent) {
-      return next(err);
-  }
-  if (err.status === 404) {
-      return res.status(404).render('error');
-  }
-  res.status(err.status || 500).render('error', { error: err.message });
-});
-
-//////////////error page done/////////////////////////////////
 
 
 app.use(express.static(path.join(__dirname, './admin')));
@@ -50,6 +36,9 @@ app.use(express.static(path.join(__dirname, './public')));
 
 app.use('/', userRoute);
 app.use('/admin', adminroute);
+app.get('*',(req,res)=>{
+  res.render('user/error')
+})
 
 
 ////////////////////mongodb connection//////////////////////////

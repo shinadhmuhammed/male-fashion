@@ -1074,6 +1074,16 @@ const calculateTotalAmount = (cartItems) => {
              res.redirect('/login')
             }
 
+            
+            const rateProduct=async(req,res)=>{
+                const orderId = req.params.orderId;
+                const productId = req.params.productId;
+                const rating = req.params.rating;
+              
+               
+              
+                res.json({ message: 'Product rated successfully' });
+            }
 
 
 module.exports = {
@@ -1116,6 +1126,7 @@ module.exports = {
     totalAmount,
     couponValidate,
     walletorder,
+    rateProduct,
     logout,
 }
 

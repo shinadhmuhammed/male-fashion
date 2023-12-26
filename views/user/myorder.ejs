@@ -73,6 +73,19 @@
                   <p><strong>Product Price:</strong> <%= formatProductPrice(product) %></p>
                   <p><strong>Quantity:</strong> <%= product.quantity %></p>
                   <p><strong>Total Amount:</strong> <%= (discountApplied ? (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) : (product.quantity * product.productPrice).toFixed(2)) %></p>
+
+                  <% if (order.status === 'Delivered') { %>
+                    <div class="form-group">
+                      <label for="product-rating-<%= product.productId %>">Rate this product:</label>
+                      <select class="form-control" id="product-rating-<%= product.productId %>" onchange="rateProduct('<%= order._id %>', '<%= product.productId %>', this.value)">
+                        <option value="5">5 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="2">2 Stars</option>
+                        <option value="1">1 Star</option>
+                      </select>
+                    </div>
+                  <% } %>
                 </div>
               </div>
             <% }); %>
@@ -102,8 +115,6 @@
     <a href="/" class="btn btn-primary">Back to Home</a>
   </div>
 </body>
-
-</html>
 
 
 
@@ -143,7 +154,6 @@
   fetch(`/checkOrderStatus/${orderId}`)
     .then(response => response.json())
     .then(data => {
-      console.log('Order status data:', data); 
       if (data.status === 'Delivered') {
         Swal.fire({
           title: 'Order Delivered',
@@ -229,6 +239,30 @@ function downloadInvoice(orderId) {
         window.location.href = `/download-invoice/${orderId}`;
     }
 
+    function rateProduct(orderId, productId, rating) {
+  // You may want to add additional validation and handling here
+
+  fetch(`/rateProduct/${orderId}/${productId}/${rating}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      console.log(data.message);
+      // Optionally, you can provide feedback to the user about the successful rating
+    } else {
+      console.error('Error rating product:', data.error);
+      // Optionally, you can provide feedback to the user about the error
+    }
+  })
+  .catch(error => {
+    console.error('Error rating product:', error);
+    // Optionally, you can provide feedback to the user about the error
+  });
+}
 
 
   </script>
