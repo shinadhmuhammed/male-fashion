@@ -225,7 +225,6 @@
                                   <div class="product__item__text">
                                     <h6><%= product.productName %></h6>
                                     <p><%= product.productDescription %></p>
-                                    <!-- <a class="add-cart" value="pr" data-product-id="<%= product._id %>" data-user-id="<%= userId %>">+ Add to Cart</a> -->
                                     <div class="rating">
                                         <i class="fa fa-star" style="color: orange;"></i>
                                         <i class="fa fa-star" style="color: orange;"></i>
@@ -247,15 +246,7 @@
 
                       <div class="row">
                         <div class="col-lg-12">
-                            <div class="product__pagination">
-                                <% for (let i = 1; i <= products; i++) { %>
-                                    <% if (i === currentPage) { %>
-                                        <a class="active" href="#"><%= i %></a>
-                                    <% } else { %>
-                                        <a href="/getProducts/<%= i %>"><%= i %></a>
-                                    <% } %>
-                                <% } %>
-                            </div>
+                           
                         </div>
                     </div>
                     </div>

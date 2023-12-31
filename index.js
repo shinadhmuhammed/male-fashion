@@ -36,9 +36,9 @@ app.use(express.static(path.join(__dirname, './public')));
 
 app.use('/', userRoute);
 app.use('/admin', adminroute);
-app.get('*',(req,res)=>{
-  res.render('user/error')
-})
+// app.get('*',(req,res)=>{
+//   res.render('user/error')
+// })
 
 
 ////////////////////mongodb connection//////////////////////////

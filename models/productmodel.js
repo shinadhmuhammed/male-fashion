@@ -31,6 +31,10 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: true, 
     },
+    productRating: {
+        type: Number,
+        default: 0,
+    },
 });
 
 module.exports = {
