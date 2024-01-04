@@ -956,14 +956,12 @@ const rateProduct = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
   const rating=req.body.rating
-  console.log(orderId,productId,rating);
   try {
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-    console.log(product,'jjj');
    
     product.productRating = rating;
 

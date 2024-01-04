@@ -74,26 +74,30 @@
                   <p><strong>Quantity:</strong> <%= product.quantity %></p>
                   <p><strong>Total Amount:</strong> <%= (discountApplied ? (product.quantity * (product.productPrice - formatProductPrice(product))).toFixed(2) : (product.quantity * product.productPrice).toFixed(2)) %></p>
 
+
+
+                  
                   <% if (order.status === 'Delivered') { %>
                     <form action="/rateProduct/<%= order._id %>/<%= product.productId %>" method="post">
-                        <div class="form-group">
-                      <label for="product-rating-<%= product.productId %>">Rate this product:</label>
-                      <select class="form-control" id="product-rating-<%= product.productId %>" name="rating">
-                        <option value="5">5 Stars</option>
-                        <option value="4">4 Stars</option>
-                        <option value="3">3 Stars</option>
-                        <option value="2">2 Stars</option>
-                        <option value="1">1 Star</option>
-        
-                      </select>
-                      <input type="submit" value="send">
+                      <div class="form-group">
+                        <label for="product-rating-<%= product.productId %>">Rate this product:</label>
+                        <select class="form-control" id="product-rating-<%= product.productId %>" name="rating" onchange="updateRating(this, '<%= product.productId %>')">
+                          <% for (let rating = 5; rating >= 1; rating--) { %>
+                            <option value="<%= rating %>" <%= product.rating === rating ? 'selected' : '' %>><%= rating %> Stars</option>
+                          <% } %>
+                        </select>
+                        <input type="submit" value="send">
+                      </div>
+                    </form>
+                    <div id="selected-rating-<%= product.productId %>">
+                      <% if (product.rating) { %>
+                        Current Rating: <%= product.rating %> Stars
+                      <% } %>
                     </div>
-                  </form>
                   <% } %>
                 </div>
               </div>
             <% }); %>
-
             <div class="text-center">
               <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>', this)" <% if (order.cancelled) { %>disabled<% } %>>
                 <% if (order.cancelled) { %>
@@ -134,6 +138,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
   <script>
+
+
     function showAddressAlert(name, number, house, city, state, pincode, deliveryPoint) {
     const addressString = `
       Name: ${name}
